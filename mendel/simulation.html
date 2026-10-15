@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מעבדת הכלאות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Rubik:wght@400;500;700&family=Amatic+SC:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#FBFCFA;--grid:#DDE7EE;--ink:#1F4D3A;--mut:#5C6F66;--hl:#F4D35E;--red:#B8423A;--card:#fff;--ok:#1E7B4D;--okbg:#E3F2E6;--nobg:#FBE9E7}
+*{box-sizing:border-box;margin:0;padding:0}
+body{color:var(--ink);font-family:Rubik,Arial,sans-serif;background:var(--paper);
+ background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;min-height:100vh}
+.wrap{max-width:1000px;margin:0 auto;padding:20px 16px 60px}
+header{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between;border-bottom:3px double var(--red);padding-bottom:12px;margin-bottom:16px}
+h1,h2,h3{font-family:"Secular One",Rubik,sans-serif;font-weight:400}
+h1{font-size:clamp(30px,5vw,52px);line-height:1.05}h2{font-size:clamp(22px,3vw,30px);margin-bottom:8px}h3{font-size:19px;margin-bottom:6px}
+p,li,label{font-size:17px;line-height:1.55}
+.note{font-family:"Amatic SC",cursive;font-size:28px;color:var(--red);line-height:1.05}
+.name{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.name input{font:inherit;font-size:17px;padding:6px 10px;border:2px solid var(--ink);background:var(--card);width:200px}
+.score{font-family:"Amatic SC";font-size:32px}
+.L{direction:ltr;unicode-bidi:isolate;display:inline-block}sup{font-size:.6em}
+.box{background:var(--card);border:2px solid var(--ink);padding:16px;margin-bottom:14px}
+.box.soft{border-color:var(--grid)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font:inherit;font-weight:700;font-size:17px;padding:10px 16px;border:2px solid var(--ink);background:var(--card);color:var(--ink);cursor:pointer}
+.tab[aria-selected=true]{background:var(--ink);color:#fff}
+.panel{display:none}.panel.on{display:block}
+.btn{font:inherit;font-weight:700;font-size:17px;padding:10px 18px;border:0;background:var(--ink);color:#fff;cursor:pointer}
+.btn.sec{background:var(--card);color:var(--ink);border:2px solid var(--ink)}
+.btn.lnk{background:none;color:var(--mut);text-decoration:underline;padding:4px 6px;font-weight:500;font-size:15px}
+.chip{font:inherit;font-weight:700;font-size:17px;min-width:60px;padding:7px 12px;border:2px solid var(--ink);background:var(--card);color:var(--ink);cursor:pointer}
+.chip[aria-pressed=true]{background:var(--ink);color:#fff}
+input.g,input.n{font:inherit;font-size:19px;font-weight:700;width:76px;padding:6px;border:2px solid var(--ink);text-align:center;direction:ltr;background:#fff}
+input.n{width:90px}
+input.g.ok,input.n.ok,select.ok{background:var(--okbg);border-color:var(--ok)}input.g.no,input.n.no,select.no{background:var(--nobg);border-color:var(--red)}
+select{font:inherit;font-size:16px;padding:6px 8px;border:2px solid var(--ink);background:#fff;max-width:100%}
+.scen{background:#F4F8F5;border-inline-start:6px solid var(--ink);padding:12px 16px;margin-bottom:12px}
+.scen p{font-size:18px}
+.step{border-inline-start:6px solid var(--grid);padding:4px 0;padding-inline-start:12px;margin:14px 0}
+.step.done{border-color:var(--ok)}.step[hidden]{display:none}
+.fb{margin-top:8px;padding:8px 12px;font-weight:500}.fb.ok{background:var(--okbg);color:var(--ok)}.fb.no{background:var(--nobg);color:var(--red)}.fb:empty{display:none}
+.hint{font-size:15px;color:var(--mut)}
+table.pun{border-collapse:collapse;direction:ltr;margin-top:6px}
+.pun th,.pun td{border:2px solid var(--ink);width:110px;height:62px;text-align:center;background:var(--card)}
+.pun th{background:#EEF3F0}.pun .corner{background:repeating-linear-gradient(45deg,#EEF3F0 0 6px,#fff 6px 12px);font-size:12px;color:var(--mut)}
+.res{border-collapse:collapse;background:var(--card);width:100%}.res th,.res td{border:1px solid var(--grid);padding:6px 10px;text-align:start;font-size:16px}.res th{background:var(--ink);color:#fff;font-weight:500}
+.swatch{display:inline-block;width:18px;height:18px;border-radius:50%;vertical-align:middle;border:1px solid rgba(0,0,0,.25);margin-inline-end:6px}
+.data{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:12px;margin:8px 0}
+.cross{background:#fff;border:2px solid var(--ink);padding:12px}
+.cross h3{font-size:17px}.cross ul{list-style:none;display:flex;flex-direction:column;gap:4px}
+.mini{display:flex;height:12px;margin-top:6px;border:1px solid var(--grid)}.mini i{display:block;height:100%}
+.opts{display:flex;flex-direction:column;gap:6px}.opts label{display:flex;gap:8px;align-items:flex-start;background:#fff;border:2px solid var(--grid);padding:8px 10px;cursor:pointer;font-size:16px}
+.opts label.ok{border-color:var(--ok);background:var(--okbg)}.opts label.no{border-color:var(--red);background:var(--nobg)}
+.ind{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:10px}
+.ind label{display:flex;gap:8px;align-items:center;justify-content:space-between;background:#fff;border:1px solid var(--grid);padding:6px 10px}
+.dots{display:flex;flex-wrap:wrap;gap:4px;margin:10px 0}.dots span{width:16px;height:16px;border-radius:50%;border:1px solid rgba(0,0,0,.18)}
+.bar{height:16px;background:var(--grid);position:relative;min-width:120px}.bar i{position:absolute;inset-block:0;inset-inline-start:0}.bar b{position:absolute;inset-block:-3px;width:3px;background:var(--red)}
+.sol{background:#FFF8DC;border:1px dashed #C9A21A;padding:10px 14px;margin-top:8px}
+footer{margin-top:24px;font-size:13px;color:var(--mut)}
+@media (max-width:700px){.pun th,.pun td{width:78px}input.g{width:60px}}
+.pic{width:46px;height:34px;vertical-align:middle;margin-inline-end:6px}
+.pics{display:flex;gap:18px;flex-wrap:wrap;margin-top:8px}.pics figure{display:flex;flex-direction:column;align-items:center;margin:0;font-size:14px;color:var(--mut)}.pics .pic{width:90px;height:66px;margin:0}
+.sitebar{position:fixed;top:10px;inset-inline-end:12px;z-index:50;display:flex;gap:6px}
+.sitebar a{font:700 14px Rubik,Arial,sans-serif;color:#1F4D3A;background:#fff;border:2px solid #1F4D3A;padding:5px 10px;text-decoration:none}
+.gate{position:fixed;inset:0;z-index:100;background:rgba(31,77,58,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.gate[hidden]{display:none}
+.gbox{background:#fff;border:3px solid #1F4D3A;max-width:420px;width:100%;padding:22px;display:flex;flex-direction:column;gap:12px;font-family:Rubik,Arial,sans-serif;color:#1F4D3A}
+.gbox h2{font-family:"Secular One",Rubik,sans-serif;font-weight:400;font-size:28px}.gbox label{display:flex;flex-direction:column;gap:4px;font-weight:500}
+.gbox input{font:inherit;font-size:18px;padding:8px;border:2px solid #1F4D3A}
+.gbox button{font:inherit;font-weight:700;font-size:18px;padding:10px;border:0;background:#1F4D3A;color:#fff;cursor:pointer}
+.gerr{color:#B8423A;font-weight:500;min-height:1.2em}
+@media print{.sitebar,.gate{display:none!important}}
+#summary .log{list-style:none;display:flex;flex-direction:column;gap:6px;margin:8px 0}#summary .log li{background:#F4F8F5;border-inline-start:4px solid #1E7B4D;padding:6px 10px;font-size:15px}
+#summary .log li.sol{border-color:#C9A21A}.pdfnote{color:#5C6F66;font-size:15px}
+@media print{body{background:#fff}.tabs,.panel,.name,#finish,#pdf,.pdfnote,header .note{display:none!important}#summary{border:0}}
+</style></head><body><svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<pattern id="roan" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#A9322B"/><rect width="2.4" height="6" fill="#FFFFFF"/></pattern>
+<!-- כבשה: צבע הצמר דרך --c -->
+<symbol id="sheep" viewBox="0 0 120 84">
+<g fill="#5A4A3A"><rect x="30" y="56" width="7" height="24" rx="3"/><rect x="45" y="58" width="7" height="22" rx="3"/><rect x="70" y="58" width="7" height="22" rx="3"/><rect x="84" y="56" width="7" height="24" rx="3"/></g>
+<g style="fill:var(--c,#FFFFFF)" stroke="#8C8273" stroke-width="1.6"><circle cx="30" cy="44" r="15"/><circle cx="44" cy="30" r="15"/><circle cx="62" cy="27" r="15"/><circle cx="80" cy="31" r="14"/><circle cx="88" cy="46" r="13"/><circle cx="70" cy="56" r="14"/><circle cx="46" cy="57" r="14"/></g>
+<ellipse cx="60" cy="44" rx="30" ry="17" style="fill:var(--c,#FFFFFF)"/>
+<ellipse cx="102" cy="36" rx="11" ry="14" fill="#F2E9DC" stroke="#8C8273" stroke-width="1.6"/>
+<ellipse cx="94" cy="27" rx="7" ry="3.5" fill="#E7CDBF" stroke="#8C8273" stroke-width="1.2" transform="rotate(-25 94 27)"/>
+<circle cx="105" cy="33" r="2.2" fill="#222"/><ellipse cx="108" cy="45" rx="3" ry="2" fill="#C99"/>
+</symbol>
+<symbol id="spots" viewBox="0 0 120 84"><g fill="#6B3E1F"><circle cx="40" cy="36" r="8"/><circle cx="64" cy="48" r="9"/><circle cx="80" cy="30" r="6"/><circle cx="28" cy="52" r="5"/><circle cx="55" cy="26" r="5"/></g><path d="M96 26 q8 -6 15 4 q-4 6 -9 4 z" fill="#6B3E1F"/></symbol>
+<!-- שרקן -->
+<symbol id="guinea" viewBox="0 0 120 80">
+<g fill="#D8A39A"><ellipse cx="40" cy="70" rx="7" ry="4"/><ellipse cx="80" cy="70" rx="7" ry="4"/></g>
+<ellipse cx="56" cy="47" rx="40" ry="24" style="fill:var(--c,#222)" stroke="#555" stroke-width="1.6"/>
+<ellipse cx="92" cy="44" rx="20" ry="18" style="fill:var(--c,#222)" stroke="#555" stroke-width="1.6"/>
+<ellipse cx="84" cy="27" rx="8" ry="5" fill="#D8A39A" stroke="#555" stroke-width="1.2"/>
+<circle cx="100" cy="40" r="3.2" style="fill:var(--eye,#111)"/><ellipse cx="110" cy="48" rx="3" ry="2" fill="#C77"/>
+</symbol>
+<!-- ארנב -->
+<symbol id="rabbit" viewBox="0 -14 120 104">
+<ellipse cx="50" cy="62" rx="34" ry="22" style="fill:var(--c,#8B6B4A)" stroke="#555" stroke-width="1.6"/>
+<circle cx="18" cy="58" r="7" style="fill:var(--c,#8B6B4A)" stroke="#555" stroke-width="1.2"/>
+<ellipse cx="80" cy="18" rx="6" ry="20" style="fill:var(--c,#8B6B4A)" stroke="#555" stroke-width="1.4" transform="rotate(-12 80 18)"/>
+<ellipse cx="92" cy="20" rx="6" ry="20" style="fill:var(--c,#8B6B4A)" stroke="#555" stroke-width="1.4" transform="rotate(10 92 20)"/>
+<circle cx="88" cy="50" r="17" style="fill:var(--c,#8B6B4A)" stroke="#555" stroke-width="1.6"/>
+<circle cx="94" cy="46" r="3.2" style="fill:var(--eye,#111)"/><ellipse cx="104" cy="54" rx="2.5" ry="2" fill="#C77"/>
+</symbol>
+<!-- זבוב הפירות -->
+<symbol id="flyN" viewBox="0 0 120 80"><g fill="#DCE8F2" fill-opacity=".75" stroke="#7F98AD" stroke-width="1.2"><ellipse cx="36" cy="26" rx="34" ry="10" transform="rotate(-12 60 40)"/><ellipse cx="38" cy="36" rx="32" ry="9" transform="rotate(8 60 40)"/></g></symbol>
+<symbol id="flyV" viewBox="0 0 120 80"><g fill="#DCE8F2" stroke="#7F98AD" stroke-width="1.4"><path d="M64 36 q-4 -14 -14 -12 q3 5 -3 8 q6 6 17 4z"/><path d="M60 40 q-10 -4 -16 2 q5 2 1 6 q9 0 15 -8z"/></g></symbol>
+<symbol id="flyB" viewBox="0 0 120 80">
+<g stroke="#5A3A1A" stroke-width="1.6" fill="none"><path d="M58 50 l-8 18"/><path d="M64 51 l0 20"/><path d="M70 50 l8 18"/></g>
+<ellipse cx="42" cy="46" rx="20" ry="11" fill="#8B5A2B"/><g stroke="#5A3A1A" stroke-width="2"><path d="M30 37 v18"/><path d="M38 35 v22"/><path d="M46 35 v22"/></g>
+<ellipse cx="64" cy="44" rx="12" ry="10" fill="#A0703C"/><circle cx="82" cy="42" r="8" fill="#A0703C"/><circle cx="86" cy="40" r="5.5" fill="#C0392B"/>
+</symbol>
+<!-- בקר -->
+<symbol id="cow" viewBox="0 -8 142 100">
+<g fill="#4A4A4A"><rect x="28" y="60" width="8" height="28" rx="3"/><rect x="44" y="62" width="8" height="26" rx="3"/><rect x="80" y="62" width="8" height="26" rx="3"/><rect x="94" y="60" width="8" height="28" rx="3"/></g>
+<path d="M22 40 q-12 6 -10 22" stroke="#555" stroke-width="2.5" fill="none"/>
+<rect x="20" y="28" width="88" height="40" rx="15" style="fill:var(--c,#A9322B)" stroke="#555" stroke-width="1.6"/>
+<rect x="100" y="18" width="28" height="32" rx="10" style="fill:var(--c,#A9322B)" stroke="#555" stroke-width="1.6"/>
+<path d="M104 20 q-6 -10 -12 -8 M124 20 q6 -10 12 -8" stroke="#D9CFC0" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+<ellipse cx="114" cy="46" rx="11" ry="7" fill="#E8B4A8" stroke="#555" stroke-width="1.2"/><circle cx="108" cy="30" r="2.6" fill="#111"/><circle cx="122" cy="30" r="2.6" fill="#111"/>
+</symbol>
+<!-- עגבנייה -->
+<symbol id="tomT" viewBox="0 0 70 130"><path d="M35 128 V14" stroke="#3E7A2E" stroke-width="4"/><g fill="#5FA046"><ellipse cx="22" cy="40" rx="12" ry="6" transform="rotate(-25 22 40)"/><ellipse cx="48" cy="62" rx="12" ry="6" transform="rotate(25 48 62)"/><ellipse cx="22" cy="86" rx="12" ry="6" transform="rotate(-25 22 86)"/><ellipse cx="48" cy="22" rx="11" ry="5" transform="rotate(25 48 22)"/></g><g fill="#D93A2B"><circle cx="46" cy="44" r="7"/><circle cx="24" cy="66" r="7"/><circle cx="46" cy="96" r="7"/></g><rect x="20" y="122" width="30" height="8" rx="2" fill="#8B5E3C"/></symbol>
+<symbol id="tomD" viewBox="0 0 70 130"><path d="M35 128 V92" stroke="#3E7A2E" stroke-width="4"/><g fill="#5FA046"><ellipse cx="22" cy="104" rx="12" ry="6" transform="rotate(-25 22 104)"/><ellipse cx="48" cy="98" rx="12" ry="6" transform="rotate(25 48 98)"/></g><g fill="#D93A2B"><circle cx="46" cy="110" r="7"/><circle cx="26" cy="92" r="6"/></g><rect x="20" y="122" width="30" height="8" rx="2" fill="#8B5E3C"/></symbol>
+<!-- פרח אפונה -->
+<symbol id="peaflower" viewBox="0 0 90 90"><path d="M45 88 V66" stroke="#4E8A26" stroke-width="3"/><path d="M36 66 q9 -8 18 0 q-9 6 -18 0z" fill="#5FA046"/>
+<path d="M45 8 C22 6 8 22 14 40 C18 50 30 52 45 46 C60 52 72 50 76 40 C82 22 68 6 45 8z" style="fill:var(--c,#8E44AD)" stroke="#5E3F6E" stroke-width="1.4"/>
+<path d="M45 14 C44 24 44 34 45 44" stroke="#5E3F6E" stroke-width="1" fill="none" opacity=".5"/>
+<path d="M24 44 C14 50 16 64 30 62 C38 60 42 54 42 48z" style="fill:var(--c2,#B06AD0)" stroke="#5E3F6E" stroke-width="1.2"/>
+<path d="M66 44 C76 50 74 64 60 62 C52 60 48 54 48 48z" style="fill:var(--c2,#B06AD0)" stroke="#5E3F6E" stroke-width="1.2"/>
+<path d="M38 52 C40 62 50 62 52 52 C48 56 42 56 38 52z" style="fill:var(--c3,#E8D6F0)" stroke="#5E3F6E" stroke-width="1"/></symbol>
+<!-- זרע אפונה -->
+<symbol id="seed" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" style="fill:var(--c,#E9C536)" stroke="#8C7A2A" stroke-width="1.5"/><ellipse cx="14" cy="14" rx="5" ry="3" fill="#fff" fill-opacity=".45"/></symbol>
+<symbol id="seedW" viewBox="0 0 40 40"><path d="M20 4 C30 4 36 10 35 18 C38 22 35 30 30 32 C27 37 18 38 13 34 C6 33 3 26 6 20 C3 14 8 6 14 7 C16 5 18 4 20 4z" style="fill:var(--c,#D8C26A)" stroke="#8C7A2A" stroke-width="1.5"/><path d="M12 14 q6 4 2 10 M22 10 q-2 8 6 12 M16 28 q6 -2 10 2" stroke="#8C7A2A" stroke-width="1.2" fill="none"/></symbol>
+</defs></svg>
+<div class="gate" id="gate"><div class="gbox" role="dialog" aria-modal="true" aria-labelledby="gTitle"><h2 id="gTitle">לפני שמתחילים</h2><p>כתבו את השם והכיתה שלכם. הם יופיעו בקובץ שתעלו למשימה ב־Classroom.</p><label>שם מלא<input id="gName" autocomplete="name"></label><label>כיתה<input id="gClass"></label><p class="gerr" id="gErr"></p><button id="gGo">מתחילים</button></div></div><nav class="sitebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a></nav><div class="wrap">
+
+<header><div><span class="note">מהיומן של מנדל</span><h1>מעבדת הכלאות</h1></div>
+<div class="name"><label>שם התלמיד/ה: <input id="sname" autocomplete="off" data-fill="name"></label><span class="score" id="score">ניקוד: 0</span></div></header>
+
+<div class="tabs" role="tablist">
+<button class="tab" role="tab" aria-selected="true" data-t="build">1. בונים הכלאה</button>
+<button class="tab" role="tab" aria-selected="false" data-t="infer">2. מסיקים מהכלאה</button>
+<button class="tab" role="tab" aria-selected="false" data-t="grow">3. גידול צאצאים</button></div>
+
+<section class="panel on" id="build"><div class="box">
+<div class="row" style="justify-content:space-between"><h2>בונים הכלאה מאפס</h2><button class="btn sec" id="bNew">שאלה חדשה</button></div>
+<p class="hint">קראו את הנתונים. את הכול בונים לבד: מקרא, הורים, גמטות, משבצות ויחס. כתבו גנוטיפים באותיות לטיניות, למשל <span class="L">Bb</span>.</p>
+<div class="scen" id="bScen"></div>
+<div class="step" id="b1"><h3>שלב א: מקרא</h3><div class="row" id="bLegend"></div><button class="btn" data-chk="b1" style="margin-top:8px">בדיקה</button><div class="fb"></div></div>
+<div class="step" id="b2" hidden><h3>שלב ב: מה הגנוטיפים של ההורים?</h3><div class="row"><label>הורה 1: <input class="g" id="bp1"></label><label>הורה 2: <input class="g" id="bp2"></label></div><button class="btn" data-chk="b2" style="margin-top:8px">בדיקה</button><div class="fb"></div></div>
+<div class="step" id="b3" hidden><h3>שלב ג: בנו את טבלת הפאנט</h3><p class="hint">בשורה העליונה: הגמטות של הורה 2. בעמודה הימנית: הגמטות של הורה 1. כל גמטה מכילה אלל אחד. אחר כך מלאו את המשבצות.</p>
+<div style="overflow-x:auto"><table class="pun" id="bPun"></table></div><button class="btn" data-chk="b3" style="margin-top:8px">בדיקה</button><div class="fb"></div></div>
+<div class="step" id="b4" hidden><h3>שלב ד: סכמו את התוצאות</h3><div id="bSum"></div><button class="btn" data-chk="b4" style="margin-top:8px">בדיקה</button><div class="fb"></div></div>
+<div class="step" id="b5" hidden><h3>שלב ה: שאלת חישוב</h3><p id="bQ"></p><div class="row"><input class="n" id="bAns"></div><button class="btn" data-chk="b5" style="margin-top:8px">בדיקה</button><div class="fb"></div></div>
+<button class="btn lnk" id="bShow">הצגת פתרון מלא</button><div id="bSol"></div>
+</div></section>
+
+<section class="panel" id="infer"><div class="box">
+<div class="row" style="justify-content:space-between"><h2>מסיקים מהכלאה</h2><button class="btn sec" id="iNew">ניסוי חדש</button></div>
+<p class="hint">לפניכם תוצאות של הכלאות. לא נאמר לכם איזה אלל דומיננטי: הסיקו זאת מהנתונים.</p>
+<div id="iScen"></div>
+<div class="step" id="i1"><h3>שאלה 1: מה יחסי הדומיננטיות בין האללים?</h3><div class="opts" id="iDom"></div><button class="btn" data-chk="i1" style="margin-top:8px">בדיקה</button><div class="fb"></div></div>
+<div class="step" id="i2" hidden><h3>שאלה 2: איזה נימוק מבסס את הקביעה?</h3><div class="opts" id="iWhy"></div><button class="btn" data-chk="i2" style="margin-top:8px">בדיקה</button><div class="fb"></div></div>
+<div class="step" id="i3" hidden><h3>שאלה 3: מה הגנוטיפים?</h3><p class="hint" id="iLetter"></p><div class="ind" id="iInd"></div><button class="btn" data-chk="i3" style="margin-top:8px">בדיקה</button><div class="fb"></div></div>
+<div class="step" id="i4" hidden><h3>שאלה 4: תחזית</h3><p id="iPred"></p><div class="row"><input class="n" id="iAns" placeholder="1/4"></div><p class="hint">אפשר לכתוב שבר (1/4), עשרוני (0.25) או אחוז (25%).</p><button class="btn" data-chk="i4" style="margin-top:8px">בדיקה</button><div class="fb"></div></div>
+<button class="btn lnk" id="iShow">הצגת פתרון מלא</button><div id="iSol"></div>
+</div></section>
+
+<section class="panel" id="grow"><div class="box">
+<h2>גידול צאצאים</h2><p>בכל צאצא, כל הורה תורם גמטה אקראית. כמה קרוב היחס המתקבל ליחס הצפוי?</p>
+<div class="row" id="gOrg" style="margin:8px 0"></div>
+<div class="row"><b>הורה 1:</b><span class="row" id="gp1"></span></div><div class="row" style="margin-top:6px"><b>הורה 2:</b><span class="row" id="gp2"></span></div>
+<div class="row" style="margin:12px 0"><button class="btn" data-n="10">10 צאצאים</button><button class="btn" data-n="100">100 צאצאים</button><button class="btn" data-n="1000">1,000 צאצאים</button></div>
+<div class="dots" id="dots"></div><div style="overflow-x:auto"><table class="res" id="gRes"></table></div>
+<p class="hint">הקו האדום בכל פס מסמן את השכיחות הצפויה.</p>
+<div class="box soft" style="margin-top:12px"><h3>יומן הניסויים</h3><div style="overflow-x:auto"><table class="res" id="hist"></table></div>
+<p class="note" style="font-size:24px;margin-top:8px">שאלה למחברת: באילו ניסויים הסטייה מהיחס הצפוי הייתה גדולה יותר? הסבירו.</p></div></div></section>
+
+<div class="box" id="summary"><h2>סיכום העבודה</h2><p>כשתסיימו לעבוד, לחצו "סיום ✓". יופיע סיכום של השאלות שפתרתם, ואז תוכלו לשמור אותו כקובץ PDF.</p>
+<button class="btn" id="finish">סיום ✓</button><div id="sumOut"></div><button class="btn sec" id="pdf" hidden>📄 שמירה כ־PDF</button>
+<p class="pdfnote" id="pdfNote" hidden>בחלון ההדפסה בחרו "שמירה כ־PDF" (Save as PDF), ואז העלו את הקובץ למשימה ב־Classroom.</p></div>
+<footer>היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים. מעבדת הכלאות · ביולוגיה, כיתה י״ב · תורשה מנדלית. הדוגמאות מבוססות על חומרי מט״ח ("תורשה מנדלית: מונחי יסוד") ועל נתוני מנדל (1866). תכונת הבקר: קו-דומיננטיות, העשרה ולא בבגרות תשפ״ז.</footer>
+</div>
+<script>
+const ORGS=[
+ {id:'flower',name:'אפונה · צבע הפרח',sp:'באפונה',n:'צמח אפונה',np:'צמחי אפונה',L:'M',D:'פרחים סגולים',R:'פרחים לבנים',cD:'#8E44AD',cR:'#FFFFFF'},
+ {id:'shape',name:'אפונה · צורת הזרע',sp:'באפונה',n:'צמח אפונה',np:'צמחי אפונה',L:'R',D:'זרעים חלקים',R:'זרעים מקומטים',cD:'#E9D27A',cR:'repeating-linear-gradient(90deg,#E9D27A 0 3px,#B89B3A 3px 5px)'},
+ {id:'guinea',name:'שרקן · צבע הפרווה',sp:'בשרקנים',n:'שרקן',np:'שרקנים',L:'B',D:'פרווה שחורה',R:'פרווה לבנה',cD:'#222',cR:'#FFFFFF'},
+ {id:'fly',name:'זבוב הפירות · צורת הכנף',sp:'בזבוב הפירות',n:'זבוב פירות',np:'זבובי פירות',L:'V',D:'כנף רגילה',R:'כנף מנוונת',cD:'#C7A27C',cR:'#EFE3D3'},
+ {id:'tomato',name:'עגבנייה · גובה הצמח',sp:'בעגבנייה',n:'צמח עגבנייה',np:'צמחי עגבנייה',L:'D',D:'גבעול גבוה',R:'גבעול ננסי',cD:'#3E8E41',cR:'#A9D18E'},
+ {id:'rabbit',name:'ארנב · צבע הפרווה',sp:'בארנבים',n:'ארנב',np:'ארנבים',L:'A',D:'פרווה בצבע תקין',R:'פרווה לבקנית',cD:'#8B6B4A',cR:'#FFFFFF'},
+ {id:'sheep',name:'כבשים (צאן יעקב) · צבע הצמר',sp:'בכבשים',n:'כבש',np:'כבשים',L:'A',D:'צמר לבן',R:'צמר טלוא',cD:'#FFFFFF',cR:'repeating-radial-gradient(circle at 30% 30%,#6B3E1F 0 3px,#fff 3px 7px)'},
+ {id:'cattle',co:true,name:'בקר שורטהורן · צבע הפרווה (העשרה)',n:'פרט',np:'פרטים',X:'R',Y:'W',PX:'פרווה אדומה',PY:'פרווה לבנה',PH:'פרווה רואן',cX:'#A9322B',cY:'#FFFFFF',cH:'repeating-linear-gradient(45deg,#A9322B 0 4px,#fff 4px 7px)'}
+];
+const CO=ORGS.find(o=>o.co),DOMS=ORGS.filter(o=>!o.co);
+const ICONS={flower:{D:['peaflower',''],R:['peaflower','--c:#fff;--c2:#F1ECF4;--c3:#fff']},shape:{D:['seed','--c:#E2CC6E'],R:['seedW','']},guinea:{D:['guinea',''],R:['guinea','--c:#fff']},
+ fly:{D:['flyN|flyB',''],R:['flyV|flyB','']},tomato:{D:['tomT',''],R:['tomD','']},rabbit:{D:['rabbit',''],R:['rabbit','--c:#fff;--eye:#C0392B']},sheep:{D:['sheep',''],R:['sheep|spots','']},
+ cattle:{X:['cow',''],H:['cow','--c:url(#roan)'],Y:['cow','--c:#fff']}};
+function pic(o,p,cls='pic'){const I=ICONS[o.id];const k=o.co?(p===o.PX?'X':p===o.PY?'Y':'H'):(p===o.D?'D':'R');const[n,st]=I[k];return `<svg class="${cls}" style="${st}" role="img" aria-label="${p}">${n.split('|').map(x=>`<use href="#${x}"/>`).join('')}</svg>`}
+const $=id=>document.getElementById(id),rnd=a=>a[Math.floor(Math.random()*a.length)],ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=ri(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+let score=0;const addScore=n=>{score+=n;$('score').textContent='ניקוד: '+score};
+const al=o=>o.co?[o.X,o.Y]:[o.L,o.L.toLowerCase()];
+const norm=(o,g)=>{const a=al(o);return [...g].sort((x,y)=>a.indexOf(x)-a.indexOf(y)).join('')};
+const fa=(o,x)=>o.co?`C<sup>${x}</sup>`:x;
+const fg=(o,g)=>`<span class="L">${[...g].map(x=>fa(o,x)).join('')}</span>`;
+function ph(o,g){g=norm(o,g);if(o.co)return g===o.X+o.X?o.PX:g===o.Y+o.Y?o.PY:o.PH;return g.includes(o.L)?o.D:o.R}
+const phs=o=>o.co?[o.PX,o.PH,o.PY]:[o.D,o.R];
+function col(o,p){if(o.co)return p===o.PX?o.cX:p===o.PY?o.cY:o.cH;return p===o.D?o.cD:o.cR}
+const sw=(o,p)=>pic(o,p);
+function expect(o,g1,g2){const m={};phs(o).forEach(p=>m[p]=0);for(const x of g1)for(const y of g2)m[ph(o,x+y)]+=.25;return m}
+function genoFrac(o,g1,g2){const m={};for(const x of g1)for(const y of g2){const g=norm(o,x+y);m[g]=(m[g]||0)+.25}return m}
+function sample(o,g1,g2,n){const c={};phs(o).forEach(p=>c[p]=0);const seq=[];for(let k=0;k<n;k++){const p=ph(o,g1[ri(0,1)]+g2[ri(0,1)]);c[p]++;if(n<=100)seq.push(p)}return{c,seq}}
+function sampleNZ(o,g1,g2,n){const e=expect(o,g1,g2);let r;do{r=sample(o,g1,g2,n)}while(Object.keys(e).some(k=>e[k]>0&&r.c[k]===0));return r}
+function readG(o,s){s=(s||'').replace(/\s/g,'');if(o.co){s=s.toUpperCase().replace(/C/g,'');return /^[RW]{2}$/.test(s)?{g:norm(o,s),order:true}:null}
+ const a=al(o);if(s.length!==2||![...s].every(x=>a.includes(x)))return null;return{g:norm(o,s),order:s===norm(o,s)}}
+function readA(o,s){s=(s||'').trim();if(o.co)s=s.toUpperCase().replace(/^C/,'');return al(o).includes(s)?s:null}
+function frac(s){s=(s||'').trim().replace(',','.');if(!s)return NaN;if(s.endsWith('%'))return parseFloat(s)/100;if(s.includes('/')){const[a,b]=s.split('/').map(Number);return a/b}return Number(s)}
+const near=(a,b)=>Math.abs(a-b)<1e-6;
+function fb(step,ok,msg){const f=$(step).querySelector('.fb');f.className='fb '+(ok?'ok':'no');f.innerHTML=msg;if(ok)$(step).classList.add('done')}
+const mark=(el,ok)=>{el.classList.remove('ok','no');el.classList.add(ok?'ok':'no')};
+const tried={};const pts=(step,a,b)=>addScore(tried[step]===1?a:b);
+
+/* ===== מצב 1: בונים ===== */
+let B=null;
+function newBuild(){
+ const o=Math.random()<.16?CO:rnd(DOMS);const N=rnd([80,120,160,200,240,320,400]);let s;
+ if(o.co){const k=rnd(['RWxRR','RWxRW','RWxWW']);
+  if(k==='RWxRR')s={p1:'RW',p2:'RR',txt:`פרט בעל ${o.PH} הוכלא עם פרט בעל ${o.PX}.`,ask:{p:o.PH}};
+  if(k==='RWxRW')s={p1:'RW',p2:'RW',txt:`שני פרטים בעלי ${o.PH} הוכלאו זה עם זה.`,ask:{p:o.PY}};
+  if(k==='RWxWW')s={p1:'RW',p2:'WW',txt:`פרט בעל ${o.PH} הוכלא עם פרט בעל ${o.PY}.`,ask:{p:o.PY}};
+  s.intro='בבקר שורטהורן צבע הפרווה מורש בקו-דומיננטיות (העשרה). בהטרוזיגוט שני האללים מתבטאים: פרווה רואן, שערות אדומות ושערות לבנות מעורבות. סמנו את הגן באות C ואת האללים בכתב עילי R ו-W. בתיבות כתבו רק את הכתב העילי, למשל RW.'}
+ else{const D=o.L,r=D.toLowerCase(),AA=D+D,Aa=D+r,aa=r+r;const k=rnd(['F1xF1','het_rec','pure_het','sibs','rec_pure','carrier']);
+  if(k==='F1xF1')s={p1:Aa,p2:Aa,txt:`הכליאו ${o.n} מזן טהור בעל ${o.D} עם ${o.n} מזן טהור בעל ${o.R}. שני צאצאים מ-F₁ הוכלאו זה עם זה. בנו טבלת פאנט להכלאה בין שני צאצאי F₁.`,ask:{p:o.R}};
+  if(k==='het_rec')s={p1:Aa,p2:aa,txt:`${o.n} בעל ${o.D}, שאחד מהוריו היה בעל ${o.R}, הוכלא עם ${o.n} בעל ${o.R}.`,ask:{p:rnd([o.D,o.R])}};
+  if(k==='pure_het')s={p1:AA,p2:Aa,txt:`${o.n} מזן טהור בעל ${o.D} הוכלא עם ${o.n} בעל ${o.D} שאחד מהוריו היה בעל ${o.R}.`,ask:{g:AA}};
+  if(k==='sibs')s={p1:Aa,p2:Aa,txt:`לשני ${o.np} בעלי ${o.D} נולד צאצא בעל ${o.R}. ההורים הוכלאו שוב.`,ask:{g:Aa}};
+  if(k==='rec_pure')s={p1:aa,p2:AA,txt:`${o.n} בעל ${o.R} הוכלא עם ${o.n} מזן טהור בעל ${o.D}.`,ask:{p:o.R}};
+  if(k==='carrier')s={p1:Aa,p2:Aa,txt:`${o.n} בעל ${o.D}, שאחד מהוריו היה בעל ${o.R}, הוכלא עם ${o.n} בעל ${o.D} שגם אחד מהוריו היה בעל ${o.R}.`,ask:{g2:Aa}};
+  s.intro=`${o.sp}, האלל ל${o.D} דומיננטי לעומת האלל ל${o.R}. השתמשו באות ${D}.`;if(o.id==='sheep')s.intro='בעדר של יעקב (בראשית ל): נניח שצבע הצמר נקבע על ידי גן אחד. '+s.intro}
+ s.o=o;s.N=N;B=s;
+ const e=expect(o,s.p1,s.p2),gf=genoFrac(o,s.p1,s.p2);
+ if(s.ask.g2){s.qtxt=`מתוך ${N} צאצאים, כמה צפויים להיות בעלי ${o.D} וגם הטרוזיגוטים?`;s.ans=N*(gf[s.ask.g2]||0)}
+ else if(s.ask.g){s.qtxt=`מתוך ${N} צאצאים, כמה צפויים להיות בעלי הגנוטיפ ${fg(o,s.ask.g)}?`;s.ans=N*(gf[s.ask.g]||0)}
+ else{s.qtxt=`מתוך ${N} צאצאים, כמה צפויים להיות בעלי ${s.ask.p}?`;s.ans=N*(e[s.ask.p]||0)}
+ $('bScen').innerHTML=`<p>${s.intro}</p><p><b>${s.txt}</b></p><div class="pics">${phs(o).map(p=>`<figure>${pic(o,p,'pic')}${p}</figure>`).join('')}</div>`;
+ $('bLegend').innerHTML=o.co?`<label>האלל ל${o.PX}: C<input class="g" style="width:56px" data-ph="X"></label><label>האלל ל${o.PY}: C<input class="g" style="width:56px" data-ph="Y"></label>`
+  :`<label>האלל ל${o.D}: <input class="g" data-ph="D"></label><label>האלל ל${o.R}: <input class="g" data-ph="R"></label>`;
+ ['b1','b2','b3','b4','b5'].forEach((id,k)=>{$(id).hidden=k>0;$(id).classList.remove('done');const f=$(id).querySelector('.fb');f.className='fb';f.innerHTML=''});
+ $('bp1').value=$('bp2').value='';$('bp1').className=$('bp2').className='g';$('bAns').value='';$('bAns').className='n';$('bSol').innerHTML='';
+ for(const k in tried)if(k[0]==='b')delete tried[k];
+ $('bQ').innerHTML=s.qtxt;
+ $('bPun').innerHTML=`<tr><th class="corner">גמטות</th><th><input class="g" data-h="c0" aria-label="גמטה של הורה 2"></th><th><input class="g" data-h="c1" aria-label="גמטה של הורה 2"></th></tr>`+
+  [0,1].map(i=>`<tr><th><input class="g" data-h="r${i}" aria-label="גמטה של הורה 1"></th>`+[0,1].map(j=>`<td><input class="g" data-c="${i}${j}" aria-label="גנוטיפ"></td>`).join('')+'</tr>').join('');
+ const G=(()=>{const[a,b]=al(o);return[a+a,a+b,b+b]})();
+ $('bSum').innerHTML=`<table class="res"><tr><th>גנוטיפ</th><th>מספר משבצות (מתוך 4)</th><th>פנוטיפ</th></tr>`+G.map(g=>`<tr><td>${fg(o,g)}</td><td><input class="n" style="width:70px" data-gc="${g}"></td><td><select data-gp="${g}"><option value="">בחרו</option>${phs(o).map(p=>`<option>${p}</option>`).join('')}</select></td></tr>`).join('')+`</table>
+ <div class="row" style="margin-top:8px"><label>יחס הפנוטיפים בצאצאים: <input class="n" id="bRatio" style="width:140px" placeholder="למשל 3:1"></label></div><p class="hint">כתבו את היחס לפי הסדר: ${phs(o).join(' : ')}. אם פנוטיפ לא מופיע בצאצאים, כתבו בשבילו 0.</p>`;
+}
+function chkBuild(step){const o=B.o;tried[step]=(tried[step]||0)+1;
+ if(step==='b1'){let ok=true;$('bLegend').querySelectorAll('input').forEach(i=>{const v=i.value.trim();const want=o.co?(i.dataset.ph==='X'?o.X:o.Y):(i.dataset.ph==='D'?o.L:o.L.toLowerCase());const g=o.co?v.toUpperCase()===want:v===want;mark(i,g);if(!g)ok=false});
+  if(ok){fb(step,true,'נכון. אות אחת לגן: '+(o.co?'בקו-דומיננטיות אות בסיס אחת וכתב עילי לכל אלל.':'גדולה לאלל הדומיננטי, קטנה לאלל הרצסיבי.'));pts(step,1,0);$('b2').hidden=false}
+  else fb(step,false,o.co?'בקו-דומיננטיות: C<sup>R</sup> לפרווה אדומה, C<sup>W</sup> לפרווה לבנה. כתבו רק R או W.':`השתמשו באות ${o.L}: אות גדולה לאלל הדומיננטי ואות קטנה לאלל הרצסיבי.`)}
+ if(step==='b2'){const r1=readG(o,$('bp1').value),r2=readG(o,$('bp2').value);const ok1=!!r1&&r1.g===B.p1,ok2=!!r2&&r2.g===B.p2;mark($('bp1'),ok1);mark($('bp2'),ok2);
+  if(ok1&&ok2){fb(step,true,'נכון. '+(r1.order&&r2.order?'':'שימו לב: נהוג לכתוב קודם את האות הגדולה. ')+`הורה 1: ${fg(o,B.p1)}, הורה 2: ${fg(o,B.p2)}.`);pts(step,2,1);$('b3').hidden=false}
+  else fb(step,false,'לא מדויק. היעזרו בנתונים: "זן טהור" = הומוזיגוט. פרט בעל פנוטיפ רצסיבי = הומוזיגוט רצסיבי. אם להורה של פרט היה פנוטיפ רצסיבי, הפרט קיבל ממנו אלל רצסיבי.')}
+ if(step==='b3'){const h=k=>readA(o,$('bPun').querySelector(`[data-h="${k}"]`).value);const rows=[h('r0'),h('r1')],cols=[h('c0'),h('c1')];
+  const okR=rows.every(x=>x)&&[...rows].sort().join()===[...B.p1].sort().join(),okC=cols.every(x=>x)&&[...cols].sort().join()===[...B.p2].sort().join();
+  ['r0','r1'].forEach(k=>mark($('bPun').querySelector(`[data-h="${k}"]`),okR));['c0','c1'].forEach(k=>mark($('bPun').querySelector(`[data-h="${k}"]`),okC));
+  let bad=0;$('bPun').querySelectorAll('[data-c]').forEach(inp=>{const[i,j]=inp.dataset.c.split('').map(Number);const r=readG(o,inp.value);const ok=okR&&okC&&!!r&&r.g===norm(o,rows[i]+cols[j]);mark(inp,ok);if(!ok)bad++});
+  if(okR&&okC&&!bad){fb(step,true,'נכון. כל משבצת היא צירוף של גמטה מהורה 1 וגמטה מהורה 2, וההסתברות לכל משבצת היא 1/4.');pts(step,3,1);$('b4').hidden=false}
+  else fb(step,false,!(okR&&okC)?'בדקו את הגמטות: כל גמטה מכילה אלל אחד של ההורה. להומוזיגוט שני האללים זהים, ולכן כותבים את אותו אלל בשתי התיבות.':`${bad} משבצות שגויות. בכל משבצת: האלל מהשורה + האלל מהעמודה.`)}
+ if(step==='b4'){const gf=genoFrac(o,B.p1,B.p2),e=expect(o,B.p1,B.p2);let ok=true;
+  $('bSum').querySelectorAll('[data-gc]').forEach(i=>{const want=Math.round((gf[i.dataset.gc]||0)*4);const v=i.value.trim()===''?NaN:+i.value;const k=v===want;mark(i,k);if(!k)ok=false});
+  $('bSum').querySelectorAll('[data-gp]').forEach(sel=>{const k=sel.value===ph(o,sel.dataset.gp);mark(sel,k);if(!k)ok=false});
+  const want=phs(o).map(p=>e[p]),got=($('bRatio').value.match(/\d+(\.\d+)?/g)||[]).map(Number),sum=got.reduce((a,b)=>a+b,0);
+  const okR=got.length===want.length&&sum>0&&got.every((x,k)=>near(x/sum,want[k]));mark($('bRatio'),okR);if(!okR)ok=false;
+  if(ok){fb(step,true,'נכון. '+(o.co?'בקו-דומיננטיות לכל גנוטיפ פנוטיפ משלו.':'בדומיננטיות מלאה, להטרוזיגוט ולהומוזיגוט הדומיננטי אותו פנוטיפ.'));pts(step,2,1);$('b5').hidden=false}
+  else fb(step,false,'יש טעות (מסומנת באדום). ספרו את המשבצות בטבלה שבניתם. ביחס הפנוטיפים, כל הגנוטיפים שנותנים אותו פנוטיפ נספרים יחד.')}
+ if(step==='b5'){const v=Number(($('bAns').value||'').trim());const ok=near(v,B.ans);mark($('bAns'),ok);
+  if(ok){fb(step,true,`נכון: ${B.ans}. במדגם אמיתי המספר שיתקבל יהיה קרוב, אבל לא בהכרח זהה.`);pts(step,2,1)}
+  else fb(step,false,'לא מדויק. חשבו קודם את ההסתברות לצאצא כזה לפי הטבלה, ואז הכפילו במספר הצאצאים.'+(B.ask.g||B.ask.g2?' שימו לב: השאלה מתייחסת לגנוטיפ.':''))}
+}
+function solBuild(){const o=B.o,gf=genoFrac(o,B.p1,B.p2),e=expect(o,B.p1,B.p2);
+ $('bSol').innerHTML=`<div class="sol"><b>פתרון:</b> מקרא: ${o.co?`C<sup>${o.X}</sup> = ${o.PX}, C<sup>${o.Y}</sup> = ${o.PY}`:`${o.L} = ${o.D}, ${o.L.toLowerCase()} = ${o.R}`}. הורה 1: ${fg(o,B.p1)}, הורה 2: ${fg(o,B.p2)}.<br>גמטות הורה 1: ${[...new Set(B.p1)].map(x=>fa(o,x)).join(', ')}; גמטות הורה 2: ${[...new Set(B.p2)].map(x=>fa(o,x)).join(', ')}.<br>גנוטיפים: ${Object.entries(gf).map(([g,f])=>`${fg(o,g)} ${f*100}%`).join(', ')}.<br>פנוטיפים: ${Object.entries(e).filter(([,f])=>f>0).map(([p,f])=>`${p} ${f*100}%`).join(', ')}.<br>${B.qtxt} ${B.ans}.</div>`}
+
+/* ===== מצב 2: מסיקים ===== */
+let I=null;
+function crossBox(o,title,pa,pb,r){const tot=Object.values(r.c).reduce((a,b)=>a+b,0);
+ return `<div class="cross"><h3>${title}</h3><p>${pa} × ${pb}</p><p class="hint">התקבלו ${tot} צאצאים:</p><ul>${Object.entries(r.c).filter(([,x])=>x>0).map(([p,x])=>`<li>${sw(o,p)}${p}: <b>${x}</b></li>`).join('')}</ul>
+ <div class="mini">${Object.entries(r.c).filter(([,x])=>x>0).map(([p,x])=>`<i style="width:${x/tot*100}%;background:${col(o,p)}"></i>`).join('')}</div></div>`}
+function newInfer(){const o=Math.random()<.18?CO:rnd(DOMS);const s={o};
+ if(o.co){const r2=sampleNZ(o,'RW','RW',ri(160,480)),n1=ri(20,60);
+  s.html=`<div class="data"><div class="cross"><h3>הכלאה 1 (P)</h3><p>פרט מזן טהור בעל ${o.PX} × פרט מזן טהור בעל ${o.PY}</p><p class="hint">התקבלו ${n1} צאצאים (F₁):</p><ul><li>${sw(o,o.PH)}${o.PH}: <b>${n1}</b></li></ul></div>${crossBox(o,'הכלאה 2: F₁ × F₁',o.PH,o.PH,r2)}</div><p class="hint">בקר שורטהורן. פרווה רואן: שערות אדומות ושערות לבנות מעורבות. (העשרה)</p>`;
+  s.dom='co';s.domOpts=shuffle([[`האלל ל${o.PX} דומיננטי`,'X'],[`האלל ל${o.PY} דומיננטי`,'Y'],['קו-דומיננטיות: שני האללים מתבטאים בהטרוזיגוט','co']]);
+  s.why=[['לצאצאי F₁ פנוטיפ שלישי, שבו מתבטאים הפנוטיפים של שני ההורים, וב-F₂ התקבל יחס של כ-1:2:1',1],['ב-F₂ הופיעו שלושה פנוטיפים, ולכן מעורבים שלושה גנים',0],['האלל לפרווה אדומה חזק יותר בחלק מהשערות',0],['הפנוטיפ רואן שכיח ביותר ב-F₂, ולכן הוא דומיננטי',0]];
+  s.letter='סמנו את הגן באות C ואת האללים בכתב עילי R ו-W. בתיבות כתבו רק את הכתב העילי, למשל RW.';
+  s.ind=[[`הורה מזן טהור בעל ${o.PX}`,'RR'],[`הורה מזן טהור בעל ${o.PY}`,'WW'],['צאצא F₁','RW']];
+  s.pred=`אם יכליאו פרט רואן מ-F₁ עם פרט בעל ${o.PY}, איזה חלק מהצאצאים צפוי להיות בעל ${o.PH}?`;s.ans=.5;
+  s.sol=`קו-דומיננטיות. ההורים הומוזיגוטים (${fg(o,'RR')}, ${fg(o,'WW')}), צאצאי F₁ ${fg(o,'RW')} בעלי פנוטיפ שלישי, וב-F₂ ‏1:2:1. ‏${fg(o,'RW')} × ${fg(o,'WW')}: חצי מהצאצאים רואן.`}
+ else{const D=o.L,r=D.toLowerCase(),AA=D+D,Aa=D+r,aa=r+r;const k=rnd(['pure','same','two','small']);
+  s.dom='D';s.domOpts=shuffle([[`האלל ל${o.D} דומיננטי`,'D'],[`האלל ל${o.R} דומיננטי`,'R'],['קו-דומיננטיות: שני האללים מתבטאים בהטרוזיגוט','co']]);
+  s.letter=`השתמשו באות ${D}: אות גדולה לאלל הדומיננטי ואות קטנה לאלל הרצסיבי.`;
+  const crossA=()=>crossBox(o,'הכלאה א',`${o.n} בעל ${o.D}`,`${o.n} בעל ${o.D}`,sampleNZ(o,Aa,Aa,ri(40,120)));
+  const whyA=[`בהכלאה א, לשני הורים בעלי ${o.D} נולדו צאצאים בעלי ${o.R}: האלל ל${o.R} היה בהורים ולא התבטא בפנוטיפ שלהם`,1];
+  if(k==='pure'){const n1=ri(20,80),r2=sampleNZ(o,Aa,Aa,ri(300,900));
+   s.html=`<div class="data"><div class="cross"><h3>הכלאה 1 (P)</h3><p>${o.n} מזן טהור בעל ${o.R} × ${o.n} מזן טהור בעל ${o.D}</p><p class="hint">התקבלו ${n1} צאצאים (F₁):</p><ul><li>${sw(o,o.D)}${o.D}: <b>${n1}</b></li></ul></div>${crossBox(o,'הכלאה 2: F₁ × F₁',`F₁ בעל ${o.D}`,`F₁ בעל ${o.D}`,r2)}</div>`;
+   s.why=[[`ב-F₁, שצאצאיו הטרוזיגוטים, הופיע רק הפנוטיפ ${o.D}, והפנוטיפ ${o.R} הופיע שוב ב-F₂`,1],[`הפנוטיפ ${o.D} הופיע באחד מההורים`,0],[`האלל ל${o.D} חזק יותר ומשתיק את האלל השני`,0],['ב-F₂ הופיעו שני הפנוטיפים',0]];
+   s.ind=[[`הורה מזן טהור בעל ${o.D}`,AA],[`הורה מזן טהור בעל ${o.R}`,aa],['צאצא F₁',Aa]];
+   s.pred=`אם יכליאו צאצא F₁ עם ההורה בעל ${o.R}, איזה חלק מהצאצאים צפוי להיות בעל ${o.R}?`;s.ans=.5;
+   s.sol=`${o.D}: אלל דומיננטי. P: ${fg(o,AA)} × ${fg(o,aa)}; F₁: ${fg(o,Aa)}; ב-F₂ ‏3:1. ‏${fg(o,Aa)} × ${fg(o,aa)}: חצי מהצאצאים בעלי ${o.R}.`}
+  if(k==='same'){const rr=sampleNZ(o,Aa,Aa,ri(40,140));
+   s.html=`<div class="data">${crossBox(o,'הכלאה',`${o.n} בעל ${o.D}`,`${o.n} בעל ${o.D}`,rr)}</div>`;
+   s.why=[[`לשני הורים בעלי ${o.D} נולדו צאצאים בעלי ${o.R}: האלל ל${o.R} היה בהורים ולא התבטא בפנוטיפ שלהם`,1],[`רוב הצאצאים בעלי ${o.D}`,0],[`ההורים בעלי ${o.D}, ולכן כל האללים שלהם דומיננטיים`,0],[`הצאצאים בעלי ${o.R} נוצרו ממוטציה`,0]];
+   s.ind=[['הורה 1',Aa],['הורה 2',Aa],[`צאצא בעל ${o.R}`,aa]];
+   s.pred=`מבין הצאצאים בעלי ${o.D}, איזה חלק צפוי להיות הטרוזיגוט?`;s.ans=2/3;
+   s.sol=`${o.D}: אלל דומיננטי. ההורים ${fg(o,Aa)} × ${fg(o,Aa)}, הצאצא בעל ${o.R} ${fg(o,aa)}. מבין בעלי ${o.D} (‏1 ${fg(o,AA)} : 2 ${fg(o,Aa)}), ‏2/3 הטרוזיגוטים.`}
+  if(k==='two'){const rb=sampleNZ(o,Aa,aa,ri(60,200));
+   s.html=`<div class="data">${crossA()}${crossBox(o,'הכלאה ב',`${o.n} בעל ${o.D}`,`${o.n} בעל ${o.R}`,rb)}</div>`;
+   s.why=[whyA,[`בהכלאה ב התקבל יחס של כ-1:1`,0],[`בהכלאה א רוב הצאצאים בעלי ${o.D}`,0],[`בהכלאה ב יש רק הורה אחד בעל ${o.R}`,0]];
+   s.ind=[[`הכלאה ב: ההורה בעל ${o.D}`,Aa],[`הכלאה ב: ההורה בעל ${o.R}`,aa],[`הכלאה ב: צאצא בעל ${o.D}`,Aa]];
+   s.pred=`בהכלאה ב, איזה חלק מהצאצאים בעלי ${o.D} הם הטרוזיגוטים?`;s.ans=1;
+   s.sol=`הכלאה א מראה ש${o.D} נקבע על ידי אלל דומיננטי. הכלאה ב היא הכלאת מבחן: ${fg(o,Aa)} × ${fg(o,aa)}, יחס 1:1. כל צאצא בעל ${o.D} בהכלאה ב קיבל ${r} מההורה הרצסיבי, ולכן כולם ${fg(o,Aa)}: החלק הוא 1.`}
+  if(k==='small'){const n=ri(3,6);
+   s.html=`<div class="data">${crossA()}<div class="cross"><h3>הכלאה ב</h3><p>${o.n} בעל ${o.D} × ${o.n} בעל ${o.R}</p><p class="hint">התקבלו ${n} צאצאים:</p><ul><li>${sw(o,o.D)}${o.D}: <b>${n}</b></li></ul></div></div>`;
+   s.why=[whyA,[`בהכלאה ב כל הצאצאים בעלי ${o.D}`,0],[`בהכלאה א רוב הצאצאים בעלי ${o.D}`,0],[`האלל ל${o.D} חזק יותר`,0]];
+   s.ind=[[`הכלאה ב: ההורה בעל ${o.R}`,aa],[`הכלאה ב: ההורה בעל ${o.D}`,'?',[AA,Aa,'?']]];
+   s.pred=`אילו ההורה בעל ${o.D} בהכלאה ב היה הטרוזיגוט, מה ההסתברות שכל ${n} הצאצאים יהיו בעלי ${o.D}?`;s.ans=Math.pow(.5,n);
+   s.sol=`${o.D}: אלל דומיננטי (הכלאה א). בהכלאה ב ההורה בעל ${o.R} ${fg(o,aa)}. ההורה בעל ${o.D} יכול להיות ${fg(o,AA)} או ${fg(o,Aa)}, ובמדגם של ${n} צאצאים אי אפשר לקבוע בוודאות. אילו היה ${fg(o,Aa)}: ‏(1/2)<sup>${n}</sup> = 1/${Math.pow(2,n)}.`}}
+ I=s;$('iScen').innerHTML=s.html;
+ $('iDom').innerHTML=s.domOpts.map(([t,v])=>`<label><input type="radio" name="dom" value="${v}"> ${t}</label>`).join('');
+ $('iWhy').innerHTML=shuffle(s.why).map(([t,v])=>`<label><input type="radio" name="why" value="${v}"> ${t}</label>`).join('');
+ $('iLetter').innerHTML=s.letter;
+ $('iInd').innerHTML=s.ind.map(([t,g,opts],k)=>`<label>${t}: ${opts?`<select data-i="${k}"><option value="">בחרו</option>${opts.map(x=>`<option value="${x}">${x==='?'?'אי אפשר לקבוע בוודאות':x}</option>`).join('')}</select>`:`<input class="g" data-i="${k}">`}</label>`).join('');
+ $('iPred').innerHTML=s.pred;$('iAns').value='';$('iAns').className='n';$('iSol').innerHTML='';
+ ['i1','i2','i3','i4'].forEach((id,k)=>{$(id).hidden=k>0;$(id).classList.remove('done');const f=$(id).querySelector('.fb');f.className='fb';f.innerHTML=''});
+ for(const k in tried)if(k[0]==='i')delete tried[k];}
+function chkInfer(step){const o=I.o;tried[step]=(tried[step]||0)+1;
+ if(step==='i1'){const el=document.querySelector('[name=dom]:checked');document.querySelectorAll('#iDom label').forEach(l=>l.className='');if(!el)return fb(step,false,'בחרו תשובה.');
+  const ok=el.value===I.dom;el.parentElement.className=ok?'ok':'no';
+  if(ok){fb(step,true,'נכון. עכשיו נמקו.');pts(step,2,0);$('i2').hidden=false}else fb(step,false,'לא נכון. חפשו פנוטיפ שהופיע בצאצאים ולא התבטא באף אחד מההורים, או צאצאים בעלי פנוטיפ שלישי.')}
+ if(step==='i2'){const el=document.querySelector('[name=why]:checked');document.querySelectorAll('#iWhy label').forEach(l=>l.className='');if(!el)return fb(step,false,'בחרו נימוק.');
+  const ok=el.value==='1';el.parentElement.className=ok?'ok':'no';
+  if(ok){fb(step,true,'נכון. זה הנימוק שמבסס את הקביעה בוודאות.');pts(step,2,0);$('i3').hidden=false}else fb(step,false,'הנימוק הזה אינו מבסס את הקביעה. האם הוא נכון תמיד? האם הוא מתאר מה עובר מההורים לצאצאים?')}
+ if(step==='i3'){let ok=true,ord=true;I.ind.forEach(([t,g,opts],k)=>{const el=$('iInd').querySelector(`[data-i="${k}"]`);let good;
+   if(opts)good=el.value===g;else{const r=readG(o,el.value);good=!!r&&r.g===g;if(good&&!r.order)ord=false}mark(el,good);if(!good)ok=false});
+  if(ok){fb(step,true,'נכון. '+(ord?'':'שימו לב: נהוג לכתוב קודם את האות הגדולה.'));pts(step,3,1);$('i4').hidden=false}
+  else fb(step,false,'יש גנוטיפ שגוי (באדום). פרט בעל פנוטיפ רצסיבי הוא בוודאות הומוזיגוט. אצל פרט בעל פנוטיפ דומיננטי, בדקו אם קיבל או העביר אלל רצסיבי. ואם אין מספיק מידע?')}
+ if(step==='i4'){const v=frac($('iAns').value),ok=Math.abs(v-I.ans)<.0005;mark($('iAns'),ok);
+  if(ok){fb(step,true,'נכון!');pts(step,3,1)}else fb(step,false,'לא מדויק. כתבו את ההכלאה, בנו טבלת פאנט, ובדקו מהי האוכלוסייה שממנה מחשבים: כל הצאצאים, או רק חלק מהם.')}}
+
+/* ===== מצב 3: גידול ===== */
+let GO=ORGS[0],G1=null,G2=null,hist=[];
+const genos=o=>{const[a,b]=al(o);return[a+a,a+b,b+b]};
+function renderGrow(){$('gOrg').innerHTML=ORGS.map(o=>`<button class="chip" style="font-size:15px" aria-pressed="${o===GO}" data-o="${o.id}">${o.name}</button>`).join('');
+ $('gOrg').querySelectorAll('button').forEach(b=>b.onclick=()=>{GO=ORGS.find(o=>o.id===b.dataset.o);G1=G2=null;renderGrow();table(null)});
+ [['gp1',()=>G1,v=>G1=v],['gp2',()=>G2,v=>G2=v]].forEach(([id,get,set])=>{$(id).innerHTML=genos(GO).map(g=>`<button class="chip" aria-pressed="${get()===g}" data-g="${g}">${fg(GO,g)} <small style="font-weight:400">${ph(GO,g)}</small></button>`).join('');
+  $(id).querySelectorAll('button').forEach(b=>b.onclick=()=>{set(b.dataset.g);renderGrow();table(null)})})}
+function table(run){const g=$('gRes');if(!(G1&&G2)){g.innerHTML='<tr><td>בחרו גנוטיפ לכל אחד מההורים.</td></tr>';$('dots').innerHTML='';return}
+ const e=expect(GO,G1,G2);if(!run){$('dots').innerHTML='';g.innerHTML='<tr><th>פנוטיפ</th><th>שכיחות צפויה</th></tr>'+Object.entries(e).map(([p,x])=>`<tr><td>${sw(GO,p)}${p}</td><td>${x*100}%</td></tr>`).join('');return}
+ $('dots').innerHTML=run.seq.map(p=>`<span title="${p}" style="background:${col(GO,p)}"></span>`).join('');
+ g.innerHTML='<tr><th>פנוטיפ</th><th>צפוי</th><th>התקבל</th><th>שכיחות שהתקבלה</th><th></th></tr>'+Object.entries(e).map(([p,x])=>{const c=run.c[p],pc=c/run.n*100;return `<tr><td>${sw(GO,p)}${p}</td><td>${x*100}%</td><td>${c}</td><td>${pc.toFixed(1)}%</td><td><div class="bar"><i style="width:${pc}%;background:${col(GO,p)};outline:1px solid #0002"></i><b style="inset-inline-start:calc(${x*100}% - 1px)"></b></div></td></tr>`}).join('')}
+document.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{if(!(G1&&G2))return table(null);const n=+b.dataset.n,r=sample(GO,G1,G2,n);r.n=n;table(r);
+ const e=expect(GO,G1,G2),dev=Math.max(...Object.keys(e).map(p=>Math.abs(r.c[p]/n-e[p])))*100;
+ hist.unshift({cross:`${fg(GO,G1)} × ${fg(GO,G2)}`,org:GO.name,n,res:Object.entries(r.c).filter(([p])=>e[p]>0).map(([p,c])=>`${p} ${c}`).join(' : '),dev});renderHist()});
+function renderHist(){$('hist').innerHTML=hist.length?'<tr><th>תכונה</th><th>הכלאה</th><th>צאצאים</th><th>תוצאה</th><th>הסטייה הגדולה מהצפוי</th></tr>'+hist.slice(0,12).map(h=>`<tr><td>${h.org}</td><td>${h.cross}</td><td>${h.n.toLocaleString('he')}</td><td>${h.res}</td><td>${h.dev.toFixed(1)}%</td></tr>`).join(''):'<tr><td>עדיין לא גודלו צאצאים.</td></tr>'}
+
+document.querySelectorAll('[data-chk]').forEach(b=>b.onclick=()=>{const s=b.dataset.chk;(s[0]==='b'?chkBuild:chkInfer)(s)});
+$('bNew').onclick=newBuild;$('iNew').onclick=newInfer;$('bShow').onclick=solBuild;
+$('iShow').onclick=()=>{$('iSol').innerHTML=`<div class="sol"><b>פתרון:</b> ${I.sol}</div>`};
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===b));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id===b.dataset.t))});
+try{$('sname').value=localStorage.getItem('sim-name')||''}catch(e){}
+$('sname').oninput=()=>{try{localStorage.setItem('sim-name',$('sname').value)}catch(e){}};
+newBuild();newInfer();renderGrow();table(null);renderHist();
+
+const LOG=[];
+const _cb=chkBuild;chkBuild=function(s){_cb(s);if(s==='b5'&&$('b5').classList.contains('done')&&!B.logged){B.logged=true;LOG.push({k:'בונים הכלאה',q:B.txt.replace(/<[^>]+>/g,''),sol:!!B.solShown})}};
+const _ci=chkInfer;chkInfer=function(s){_ci(s);if(s==='i4'&&$('i4').classList.contains('done')&&!I.logged){I.logged=true;LOG.push({k:'מסיקים מהכלאה',q:I.o.name,sol:!!I.solShown})}};
+$('bShow').addEventListener('click',()=>{B.solShown=true});$('iShow').addEventListener('click',()=>{I.solShown=true});
+$('finish').onclick=()=>{const st=window.STUDENT||{name:$('sname').value,cls:''};const d=new Date().toLocaleDateString('he-IL');
+ $('sumOut').innerHTML=`<p><b>שם:</b> ${st.name} · <b>כיתה:</b> ${st.cls} · <b>תאריך:</b> ${d}</p><p><b>${$('score').textContent}</b> · שאלות שהושלמו: ${LOG.length}</p>`+
+ (LOG.length?`<ul class="log">${LOG.map((l,i)=>`<li class="${l.sol?'sol':''}">${i+1}. ${l.k}: ${l.q}${l.sol?' (נעזרתי בפתרון)':''}</li>`).join('')}</ul>`:'<p>עדיין לא הושלמה שאלה עד הסוף.</p>');
+ $('pdf').hidden=false;$('pdfNote').hidden=false};
+$('pdf').onclick=()=>window.print();
+</script><script>(function(){const g=document.getElementById('gate'),n=document.getElementById('gName'),c=document.getElementById('gClass');
+try{const s=JSON.parse(localStorage.getItem('genetika-student')||'{}');n.value=s.name||'';c.value=s.cls||''}catch(e){}
+document.getElementById('gGo').onclick=()=>{const nm=n.value.trim(),cl=c.value.trim();
+ if(nm.length<2||!cl){document.getElementById('gErr').textContent='כתבו שם (לפחות 2 אותיות) וכיתה.';return}
+ try{localStorage.setItem('genetika-student',JSON.stringify({name:nm,cls:cl}))}catch(e){}
+ document.querySelectorAll('[data-fill="name"]').forEach(e=>{if('value' in e)e.value=nm;else e.textContent=nm});
+ document.querySelectorAll('[data-fill="class"]').forEach(e=>{if('value' in e)e.value=cl;else e.textContent=cl});
+ window.STUDENT={name:nm,cls:cl};g.hidden=true};n.focus()})();</script></body></html>
