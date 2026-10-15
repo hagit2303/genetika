@@ -69,7 +69,7 @@ footer{margin-top:24px;font-size:13px;color:var(--mut)}
 .gbox button{font:inherit;font-weight:700;font-size:18px;padding:10px;border:0;background:#1F4D3A;color:#fff;cursor:pointer}
 .gerr{color:#B8423A;font-weight:500;min-height:1.2em}
 @media print{.sitebar,.gate{display:none!important}}
-#summary .log{list-style:none;display:flex;flex-direction:column;gap:6px;margin:8px 0}#summary .log li{background:#F4F8F5;border-inline-start:4px solid #1E7B4D;padding:6px 10px;font-size:15px}
+#summary{position:relative}#summary .log{list-style:none;display:flex;flex-direction:column;gap:6px;margin:8px 0}#summary .log li{background:#F4F8F5;border-inline-start:4px solid #1E7B4D;padding:6px 10px;font-size:15px}
 #summary .log li.sol{border-color:#C9A21A}.pdfnote{color:#5C6F66;font-size:15px}
 @media print{body{background:#fff}.tabs,.panel,.name,#finish,#pdf,.pdfnote,header .note{display:none!important}#summary{border:0}}
 </style></head><body><svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -177,8 +177,8 @@ footer{margin-top:24px;font-size:13px;color:var(--mut)}
 <p class="note" style="font-size:24px;margin-top:8px">שאלה למחברת: באילו ניסויים הסטייה מהיחס הצפוי הייתה גדולה יותר? הסבירו.</p></div></div></section>
 
 <div class="box" id="summary"><h2>סיכום העבודה</h2><p>כשתסיימו לעבוד, לחצו "סיום ✓". יופיע סיכום של השאלות שפתרתם, ואז תוכלו לשמור אותו כקובץ PDF.</p>
-<button class="btn" id="finish">סיום ✓</button><div id="sumOut"></div><button class="btn sec" id="pdf" hidden>📄 שמירה כ־PDF</button>
-<p class="pdfnote" id="pdfNote" hidden>בחלון ההדפסה בחרו "שמירה כ־PDF" (Save as PDF), ואז העלו את הקובץ למשימה ב־Classroom.</p></div>
+<button class="btn" id="finish">סיום ✓</button><div id="sumOut"></div><button class="btn sec" id="pdf" hidden>📄 הורדת PDF</button>
+<p class="pdfnote" id="pdfNote" hidden>אחרי ההורדה העלו את הקובץ למשימה ב־Classroom.</p></div>
 <footer>היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים. מעבדת הכלאות · ביולוגיה, כיתה י״ב · תורשה מנדלית. הדוגמאות מבוססות על חומרי מט״ח ("תורשה מנדלית: מונחי יסוד") ועל נתוני מנדל (1866). תכונת הבקר: קו-דומיננטיות, העשרה ולא בבגרות תשפ״ז.</footer>
 </div>
 <script>
@@ -380,8 +380,12 @@ $('finish').onclick=()=>{const st=window.STUDENT||{name:$('sname').value,cls:''}
  $('sumOut').innerHTML=`<p><b>שם:</b> ${st.name} · <b>כיתה:</b> ${st.cls} · <b>תאריך:</b> ${d}</p><p><b>${$('score').textContent}</b> · שאלות שהושלמו: ${LOG.length}</p>`+
  (LOG.length?`<ul class="log">${LOG.map((l,i)=>`<li class="${l.sol?'sol':''}">${i+1}. ${l.k}: ${l.q}${l.sol?' (נעזרתי בפתרון)':''}</li>`).join('')}</ul>`:'<p>עדיין לא הושלמה שאלה עד הסוף.</p>');
  $('pdf').hidden=false;$('pdfNote').hidden=false};
-$('pdf').onclick=()=>window.print();
-</script><script>(function(){const g=document.getElementById('gate'),n=document.getElementById('gName'),c=document.getElementById('gClass');
+$('pdf').onclick=async()=>{const b=$('pdf');b.disabled=true;try{await downloadPdf($('summary'),'מעבדת-הכלאות-'+((window.STUDENT||{}).name||'תלמיד')+'.pdf',n=>!(n.id==='finish'||n.id==='pdf'||n.id==='pdfNote'));$('pdfNote').textContent='הקובץ ירד. העלו אותו למשימה ב-Classroom.'}catch(e){console.error(e);window.print()}b.disabled=false};
+async function downloadPdf(el,fname,filter){const scale=2;const canvas=await htmlToImage.toCanvas(el,{pixelRatio:scale,backgroundColor:'#ffffff',filter});
+ const{jsPDF}=window.jspdf;const pdf=new jsPDF({unit:'mm',format:'a4'});const pw=190,ph=277,px=canvas.width/pw,pageH=Math.floor(ph*px);let y=0,first=true;
+ while(y<canvas.height-2){const end=Math.min(y+pageH,canvas.height);const c=document.createElement('canvas');c.width=canvas.width;c.height=end-y;c.getContext('2d').drawImage(canvas,0,y,canvas.width,end-y,0,0,canvas.width,end-y);
+  if(!first)pdf.addPage();pdf.addImage(c.toDataURL('image/jpeg',.9),'JPEG',10,10,pw,(end-y)/px);first=false;y=end}pdf.save(fname)}
+</script><script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><script>(function(){const g=document.getElementById('gate'),n=document.getElementById('gName'),c=document.getElementById('gClass');
 try{const s=JSON.parse(localStorage.getItem('genetika-student')||'{}');n.value=s.name||'';c.value=s.cls||''}catch(e){}
 document.getElementById('gGo').onclick=()=>{const nm=n.value.trim(),cl=c.value.trim();
  if(nm.length<2||!cl){document.getElementById('gErr').textContent='כתבו שם (לפחות 2 אותיות) וכיתה.';return}

@@ -1,43 +1,52 @@
-<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>תרגולון גנטיקה מנדלית</title>
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>תרגיל הגשה · גנטיקה מנדלית</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Rubik:wght@400;500;700&family=Amatic+SC:wght@700&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#1F4D3A;--mut:#5C6F66;--red:#B8423A;--grid:#DDE7EE;--hl:#F4D35E}
-*{box-sizing:border-box}
-body{margin:0;color:var(--ink);font-family:Rubik,Arial,sans-serif;background:#FBFCFA;
- background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
-.page{max-width:820px;margin:0 auto;background:#fff;padding:32px 40px 48px;border-inline-start:3px double var(--red);min-height:100vh}
-h1,h2{font-family:"Secular One",Rubik,sans-serif;font-weight:400;margin:0}
-h1{font-size:34px;line-height:1.1}h2{font-size:23px;margin:26px 0 6px;padding-bottom:4px;border-bottom:2px solid var(--ink)}
-.note{font-family:"Amatic SC",cursive;font-size:26px;color:var(--red)}
-p,li,td,th{font-size:16px;line-height:1.55}
-.meta{display:flex;flex-wrap:wrap;gap:10px 28px;margin:14px 0;font-size:16px}
-.meta label{display:flex;gap:6px;align-items:center}
-.meta input{font:inherit;border:0;border-bottom:1.5px solid var(--ink);min-width:170px;padding:2px 4px;background:transparent}
-.intro{background:#F4F8F5;border:1px solid var(--grid);padding:10px 14px}
-ol.qs{padding-inline-start:26px;margin:8px 0}
-ol.qs>li{margin:12px 0;break-inside:avoid}
-.L{direction:ltr;unicode-bidi:isolate;display:inline-block}
-sup{font-size:.65em}
-.lines{height:calc(var(--n) * 30px);background:repeating-linear-gradient(transparent 0 29px,#B9C7C0 29px 30px);margin-top:4px}
-table.fill{border-collapse:collapse;width:100%;margin:8px 0}
-.fill th,.fill td{border:1px solid #9FB0A7;padding:6px 8px;text-align:start;height:34px}
-.fill th{background:#EEF3F0;font-weight:500}
+:root{--paper:#FBFCFA;--grid:#DDE7EE;--ink:#1F4D3A;--mut:#5C6F66;--hl:#F4D35E;--red:#B8423A;--card:#fff;--ok:#1E7B4D;--okbg:#E3F2E6;--nobg:#FBE9E7}
+*{box-sizing:border-box;margin:0;padding:0}
+body{color:var(--ink);font-family:Rubik,Arial,sans-serif;background:var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;min-height:100vh;padding-inline:16px}
+.page{max-width:860px;margin:0 auto;background:#fff;padding:28px clamp(16px,4vw,40px) 48px;border-inline-start:3px double var(--red);min-height:100vh}
+h1,h2,h3{font-family:"Secular One",Rubik,sans-serif;font-weight:400}
+h1{font-size:clamp(28px,5vw,40px);line-height:1.1}h2{font-size:23px;margin:26px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--ink)}
+.note{font-family:"Amatic SC",cursive;font-size:28px;color:var(--red)}
+p,li,label{font-size:16px;line-height:1.6}
+.who{display:flex;flex-wrap:wrap;gap:6px 22px;margin:10px 0;font-size:16px}.who b{font-weight:700}
+.howto{background:#F4F8F5;border:2px solid var(--ink);padding:14px 18px;margin:14px 0}
+.howto ol{padding-inline-start:22px;display:flex;flex-direction:column;gap:4px}
+.howto .warn{color:var(--red);font-weight:500;margin-top:6px}
+.L{direction:ltr;unicode-bidi:isolate;display:inline-block}sup{font-size:.65em}
+.q{border:1px solid var(--grid);padding:14px 16px;margin:12px 0;break-inside:avoid}
+.qn{font-family:"Secular One";font-size:18px;color:var(--red)}
+.stem{margin:4px 0 8px}
+.qpics{display:flex;gap:14px;flex-wrap:wrap;margin:4px 0 8px}.qpics svg{width:76px;height:56px}
+.qphoto{display:block;width:100%;max-height:170px;object-fit:cover;border:2px solid var(--ink);margin:6px 0}
+.it{padding:8px 10px;margin:6px 0;border-inline-start:4px solid var(--grid);display:flex;flex-direction:column;gap:6px}
+.it.ok{border-color:var(--ok);background:var(--okbg)}.it.no{border-color:var(--red);background:var(--nobg)}
+.it .lbl{font-weight:500}
+.opts{display:flex;flex-direction:column;gap:4px}.opts label{display:flex;gap:8px;align-items:flex-start;cursor:pointer}
+.opts input{margin-top:6px;flex:none}
+input.t{font:inherit;font-size:18px;font-weight:700;width:96px;padding:5px 6px;border:2px solid var(--ink);text-align:center;direction:ltr;background:#fff}
+input.t.sm{width:56px}
+select{font:inherit;font-size:16px;padding:5px 8px;border:2px solid var(--ink);background:#fff;max-width:100%}
+.ratio{display:flex;gap:6px;align-items:center;direction:ltr;justify-content:flex-end}
+.fix{font-size:15px;color:var(--red);font-weight:500}.fix[hidden]{display:none}
+.exp{display:none;margin-top:8px;background:#FFF8DC;border:1px dashed #C9A21A;padding:8px 12px;font-size:15px}.done .exp{display:block}
+.hint{font-size:14px;color:var(--mut)}
 .badge{font-size:13px;border:2px solid var(--red);color:var(--red);padding:1px 8px;font-family:Rubik;vertical-align:middle}
-.ans{background:#E9F4EC;border-inline-start:4px solid #1E7B4D;padding:8px 12px;margin-top:6px}
-.ans b{color:#1E7B4D}
-.src{font-size:13px;color:var(--mut);margin-top:4px}
-.toc{border-collapse:collapse;width:100%;margin:10px 0 4px}
-.toc th,.toc td{border:1px solid #9FB0A7;padding:6px 8px;text-align:start;font-size:14px}
-.toc th{background:var(--ink);color:#fff;font-weight:500}
-.tm{background:var(--hl);padding:2px 8px;font-weight:700}
-.qpics{display:flex;gap:18px;flex-wrap:wrap;margin:8px 0}.qpics figure{margin:0;display:flex;flex-direction:column;align-items:center;font-size:13px;color:var(--mut)}
-.qphoto{display:block;width:100%;max-height:180px;object-fit:cover;border:2px solid var(--ink);margin:8px 0}
-.cover{width:100%;max-height:200px;object-fit:cover;border:2px solid var(--ink);margin:10px 0}
+.end{margin-top:22px;border:2px solid var(--ink);padding:16px;background:#F4F8F5;display:flex;flex-direction:column;gap:10px}
+.btn{font:inherit;font-weight:700;font-size:18px;padding:12px 22px;border:0;background:var(--ink);color:#fff;cursor:pointer;align-self:flex-start}
+.btn.sec{background:#fff;color:var(--ink);border:2px solid var(--ink)}.btn[hidden]{display:none}
+.score{font-family:"Secular One";font-size:34px}
+#confirm[hidden],#result[hidden]{display:none}
+#repWrap{overflow-x:auto;margin-top:8px}#repWrap[hidden]{display:none}
+#report{width:760px;border:1px solid #DDE7EE;background:#fff;color:#1F4D3A;font-family:Arial,sans-serif;padding:24px;direction:rtl}
+#report h1{font-family:Arial,sans-serif;font-weight:700;font-size:26px}#report .rh{border-bottom:3px solid #1F4D3A;padding-bottom:10px;margin-bottom:10px}
+#report .rblk{border-bottom:1px solid #DDE7EE;padding:8px 0}#report .rq{font-weight:700;margin-bottom:4px;font-size:14px}
+#report .rr{display:grid;grid-template-columns:1fr 150px 22px;gap:8px;font-size:13px;padding:2px 0}#report .rr .y{color:#1E7B4D;font-weight:700}#report .rr .n{color:#B8423A;font-weight:700}
+#report .rc{grid-column:1/-1;color:#B8423A;font-size:12px;padding-inline-start:12px}#report .rx{font-size:12px;color:#5C6F66;margin-top:4px}
 footer{margin-top:28px;font-size:13px;color:var(--mut);border-top:1px solid var(--grid);padding-top:8px}
-@media print{body{background:#fff}.page{border:0;padding:0;max-width:none}h2{break-after:avoid}}
-@page{size:A4;margin:16mm 14mm}
-@media (max-width:600px){.page{padding:20px 16px}}
+@media (max-width:600px){.page{padding:20px 14px}}
 .sitebar{position:fixed;top:10px;inset-inline-end:12px;z-index:50;display:flex;gap:6px}
 .sitebar a{font:700 14px Rubik,Arial,sans-serif;color:#1F4D3A;background:#fff;border:2px solid #1F4D3A;padding:5px 10px;text-decoration:none}
 .gate{position:fixed;inset:0;z-index:100;background:rgba(31,77,58,.55);display:flex;align-items:center;justify-content:center;padding:16px}
@@ -48,13 +57,8 @@ footer{margin-top:28px;font-size:13px;color:var(--mut);border-top:1px solid var(
 .gbox button{font:inherit;font-weight:700;font-size:18px;padding:10px;border:0;background:#1F4D3A;color:#fff;cursor:pointer}
 .gerr{color:#B8423A;font-weight:500;min-height:1.2em}
 @media print{.sitebar,.gate{display:none!important}}
-.aw{width:100%;font:inherit;font-size:16px;line-height:1.5;padding:6px 8px;border:1.5px solid #9FB0A7;background:#fff;margin-top:4px;resize:vertical}
-.pc{display:none;white-space:pre-wrap;border-bottom:1px solid #9FB0A7;padding:4px 0;min-height:1.5em}
-.fin{display:flex;flex-direction:column;gap:8px;margin-top:20px;padding:14px;border:2px solid var(--ink);background:#F4F8F5}
-.fin button{font:inherit;font-weight:700;font-size:17px;padding:10px 18px;border:0;background:var(--ink);color:#fff;cursor:pointer;align-self:flex-start}
-.fin .sec{background:#fff;color:var(--ink);border:2px solid var(--ink)}
-@media print{.aw{display:none}.pc{display:block}.fin{display:none}.page{min-height:0}}
-</style></head><body><svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
 <pattern id="roan" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#A9322B"/><rect width="2.4" height="6" fill="#FFFFFF"/></pattern>
 <!-- כבשה: צבע הצמר דרך --c -->
 <symbol id="sheep" viewBox="0 0 120 84">
@@ -114,70 +118,102 @@ footer{margin-top:28px;font-size:13px;color:var(--mut);border-top:1px solid var(
 <symbol id="seed" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" style="fill:var(--c,#E9C536)" stroke="#8C7A2A" stroke-width="1.5"/><ellipse cx="14" cy="14" rx="5" ry="3" fill="#fff" fill-opacity=".45"/></symbol>
 <symbol id="seedW" viewBox="0 0 40 40"><path d="M20 4 C30 4 36 10 35 18 C38 22 35 30 30 32 C27 37 18 38 13 34 C6 33 3 26 6 20 C3 14 8 6 14 7 C16 5 18 4 20 4z" style="fill:var(--c,#D8C26A)" stroke="#8C7A2A" stroke-width="1.5"/><path d="M12 14 q6 4 2 10 M22 10 q-2 8 6 12 M16 28 q6 -2 10 2" stroke="#8C7A2A" stroke-width="1.2" fill="none"/></symbol>
 </defs></svg>
-<div class="gate" id="gate"><div class="gbox" role="dialog" aria-modal="true" aria-labelledby="gTitle"><h2 id="gTitle">לפני שמתחילים</h2><p>כתבו את השם והכיתה שלכם. הם יופיעו בקובץ שתעלו למשימה ב־Classroom.</p><label>שם מלא<input id="gName" autocomplete="name"></label><label>כיתה<input id="gClass"></label><p class="gerr" id="gErr"></p><button id="gGo">מתחילים</button></div></div><nav class="sitebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a></nav><main class="page">
-<span class="note">מהיומן של מנדל · תרגולון</span>
-<h1>גנטיקה מנדלית: גן אחד, תכונה אחת</h1>
-<p>דומיננטי, רצסיבי וקו-דומיננטיות (העשרה) · ביולוגיה 5 יח״ל, כיתה י״ב</p>
-<img class="cover" src="assets/peas.jpg" alt="תרמילי אפונה עם זרעים צהובים וירוקים ופרחי אפונה סגולים">
-<div class="meta"><label>שם התלמיד/ה: <input data-fill="name"></label><label>כיתה: <input style="min-width:70px" data-fill="class"></label><label>תאריך: <input style="min-width:110px"></label></div>
-<p class="intro">כתבו את התשובות בתיבות. בסוף לחצו "סיום ✓", ואחר כך שמרו כ־PDF והעלו ל־Classroom. בכל הכלאה: כתבו מקרא, גנוטיפים של ההורים, טיפוסי גמטות, גנוטיפים ופנוטיפים של הצאצאים, ויחס. אפשר להיעזר בסימולציה "מעבדת הכלאות" לבדיקת התשובות בחלק ב.</p>
-<h2>חלק א · מושגים וסימון</h2>
-<p>בכל משפט נפלה טעות מושגית או טעות סימון. זהו את הטעות, הסבירו מדוע היא שגויה, ונסחו מחדש בצורה מדעית תקינה.</p>
-<ol class="qs">
-<li>תלמיד א: "צבע הזרע באפונה נקבע על ידי גן אחד. נסמן את האלל לזרע צהוב ב-<span class="L">Y</span> ואת האלל לזרע ירוק ב-<span class="L">G</span>. צמח הטרוזיגוט יסומן <span class="L">YG</span>."<textarea class="aw" rows="4" aria-label="תשובה"></textarea></li>
-<li>תלמיד ב: "צמח אפונה בעל גנוטיפ <span class="L">Aa</span> יוצר במיוזה גמטות שהגנוטיפ שלהן <span class="L">Aa</span>."<textarea class="aw" rows="4" aria-label="תשובה"></textarea></li>
-<li>תלמיד ג: "בצמח הטרוזיגוט <span class="L">Aa</span> לפרחים סגולים, האלל הסגול חזק יותר ומשתיק את האלל הלבן, כדי שהפרח יהיה סגול." (נסחו הסבר מנגנוני, בלי האנשה ובלי תכלית)<textarea class="aw" rows="5" aria-label="תשובה"></textarea></li>
-<li>תלמיד ד: "הפנוטיפ של הכבשה הלבנה בעדר הוא הומוזיגוט דומיננטי."<textarea class="aw" rows="4" aria-label="תשובה"></textarea></li>
-<li><b>מהגן לפנוטיפ: לבקנות.</b> הגן TYR מקודד לאנזים טירוזינאז, המזרז בתאי המלנוציטים את הפיכת החומצה האמינית טירוזין לצבען מלנין. האלל <span class="L">A</span> מקודד לאנזים פעיל, והאלל <span class="L">a</span> מקודד לחלבון חסר פעילות. השלימו את הטבלה.<table class="fill"><tr><th>גנוטיפ</th><th>הומוזיגוט / הטרוזיגוט</th><th>טיפוסי גמטות</th><th>רמת התא: אנזים ומלנין</th><th>פנוטיפ</th></tr><tr><td><span class="L">AA</span></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr><tr><td><span class="L">Aa</span></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr><tr><td><span class="L">aa</span></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr></table></li>
-</ol>
-<h2>חלק ב · הכלאות: מההורים לצאצאים</h2>
-<p>בכל הכלאה כתבו מקרא, גנוטיפים של ההורים, טיפוסי גמטות, גנוטיפים ופנוטיפים של הצאצאים ויחס.</p>
-<ol class="qs">
-<li>באפונה, האלל לפרח סגול <span class="L">M</span> דומיננטי לעומת האלל לפרח לבן <span class="L">m</span>. הכליאו צמח הטרוזיגוט בעל פרחים סגולים עם צמח בעל פרחים לבנים. כתבו את מהלך ההכלאה. מהו היחס הצפוי בין הצאצאים?<div class="qpics"><figure><svg class="qi" style="width:78px;height:58px;" aria-hidden="true"><use href="#peaflower"/></svg><figcaption>פרח סגול</figcaption></figure><figure><svg class="qi" style="width:78px;height:58px;--c:#fff;--c2:#F1ECF4;--c3:#fff" aria-hidden="true"><use href="#peaflower"/></svg><figcaption>פרח לבן</figcaption></figure></div><textarea class="aw" rows="7" aria-label="תשובה"></textarea></li>
-<li>בשרקנים, האלל לפרווה שחורה <span class="L">A</span> דומיננטי לעומת האלל לפרווה לבנה <span class="L">a</span>. הכליאו שרקן שחור ושרקנית לבנה, שניהם מזן טהור. צאצאיהם (F₁) הוכלאו ביניהם.<br>א. כתבו את מהלך ההכלאה עד F₂ (היעזרו בטבלת פאנט).<br>ב. מהו היחס הצפוי בין הגנוטיפים ב-F₂? ובין הפנוטיפים?<div class="qpics"><figure><svg class="qi" style="width:78px;height:58px;" aria-hidden="true"><use href="#guinea"/></svg><figcaption>שרקן שחור</figcaption></figure><figure><svg class="qi" style="width:78px;height:58px;--c:#fff" aria-hidden="true"><use href="#guinea"/></svg><figcaption>שרקן לבן</figcaption></figure></div><textarea class="aw" rows="9" aria-label="תשובה"></textarea></li>
-<li>באפונה, האלל לגבעול ארוך <span class="L">T</span> דומיננטי לעומת האלל לגבעול קצר <span class="L">t</span>. הכליאו שני צמחים הטרוזיגוטים, והתקבלו 800 צאצאים.<br>א. כמה צאצאים צפויים להיות בעלי גבעול קצר?<br>ב. כמה מהצאצאים בעלי הגבעול הארוך צפויים להיות הומוזיגוטים?<textarea class="aw" rows="5" aria-label="תשובה"></textarea></li>
-</ol>
-<h2>חלק ג · מהצאצאים להורים</h2>
-<ol class="qs">
-<li>הכליאו שני צמחי אפונה בעלי פרחים סגולים. בין הצאצאים התקבלו צמחים בעלי פרחים סגולים וצמחים בעלי פרחים לבנים.<br>א. איזה אלל דומיננטי? נמקו.<br>ב. מהם הגנוטיפים של ההורים? נמקו.<br>ג. מהו היחס הצפוי בין הפנוטיפים בצאצאים?<textarea class="aw" rows="7" aria-label="תשובה"></textarea></li>
-<li>לבקנות נקבעת על ידי אלל רצסיבי. אישה בעלת פיגמנטציה תקינה, שאביה לבקן, נישאה לגבר לבקן. מהו היחס הצפוי בין צאצאיהם בעלי הפיגמנטציה התקינה לבין הצאצאים הלבקנים? כתבו את מהלך ההכלאה.<textarea class="aw" rows="7" aria-label="תשובה"></textarea></li>
-<li><b>ביולוגיה בחיוך.</b> להמן ולזרש נולדו שבעה ילדים, כולם בעלי "אוזני המן": אוזניים גדולות ומחודדות. לילד השמיני נולדו אוזניים רגילות. המן טען שהילד אינו בנו. ידוע ש"אוזני המן" נקבעות על ידי אלל דומיננטי, ושלזרש אוזניים רגילות. האם אפשר לקבוע בוודאות שהמן צודק? נמקו.<textarea class="aw" rows="6" aria-label="תשובה"></textarea></li>
-<li>בטבלה תוצאות מחקריו של מנדל בשתי תכונות של אפונה. ההורים היו מזנים טהורים, וכל צאצאי F₁ היו בעלי אותו פנוטיפ.<table class="fill"><tr><th>תכונה</th><th>P</th><th>F₁</th><th>F₂</th></tr><tr><td>צבע הזרע</td><td>צהוב × ירוק</td><td>צהוב</td><td>6,022 צהובים, 2,001 ירוקים</td></tr><tr><td>צורת הזרע</td><td>חלק × מקומט</td><td>חלק</td><td>5,474 חלקים, 1,850 מקומטים</td></tr></table>א. קבעו בכל תכונה איזה אלל דומיננטי. נמקו.<br>ב. חשבו את היחס בין הפנוטיפים ב-F₂. האם התקבל היחס הצפוי? הסבירו.<br>ג. אילו היו נבדקים רק 8 צאצאים של זוג הורים אחד, האם בהכרח היה מתקבל אותו יחס? הסבירו.<textarea class="aw" rows="8" aria-label="תשובה"></textarea></li>
-</ol>
-<h2>חלק ד · הסתברות והכלאת מבחן</h2>
-<ol class="qs">
-<li>לבקנות בארנבים נקבעת על ידי אלל רצסיבי <span class="L">a</span>.<br>א. מהי ההסתברות לצאצא לבקן בהכלאה בין שני ארנבים הטרוזיגוטים? כתבו את מהלך ההכלאה.<br>ב. מהי ההסתברות שהצאצא הראשון <u>וגם</u> הצאצא השני יהיו לבקנים?<br>ג. לזוג הארנבים נולד ארנבון לבקן. מהי ההסתברות שבהמלטה הבאה ייוולד ארנבון לבקן? הסבירו.<div class="qpics"><figure><svg class="qi" style="width:78px;height:58px;" aria-hidden="true"><use href="#rabbit"/></svg><figcaption>צבע תקין</figcaption></figure><figure><svg class="qi" style="width:78px;height:58px;--c:#fff;--eye:#C0392B" aria-hidden="true"><use href="#rabbit"/></svg><figcaption>לבקן</figcaption></figure></div><textarea class="aw" rows="8" aria-label="תשובה"></textarea></li>
-<li>לזוג הורים בעלי פיגמנטציה תקינה נולדו בן לבקן ובן בעל פיגמנטציה תקינה. קבעו אם כל משפט נכון או לא נכון, ונמקו.<br>א. ההסתברות שילד נוסף שייוולד להם יהיה לבקן היא 1/2.<br>ב. ההסתברות שהבן בעל הפיגמנטציה התקינה הוא הטרוזיגוט היא 2/3.<br>ג. ההסתברות שילד נוסף יהיה בעל פיגמנטציה תקינה וגם הטרוזיגוט היא 1/2.<br>ד. פרט בעל פנוטיפ רצסיבי הוא בוודאות הומוזיגוט.<br>ה. פרט בעל פנוטיפ דומיננטי הוא בוודאות הטרוזיגוט.<textarea class="aw" rows="9" aria-label="תשובה"></textarea></li>
-<li>לבקנות נקבעת על ידי אלל רצסיבי. דן ורות בעלי פיגמנטציה תקינה. לדן יש אח לבקן, ולרות יש אחות לבקנית. ההורים של דן וההורים של רות בעלי פיגמנטציה תקינה.<br>א. מהי ההסתברות שגם דן וגם רות הטרוזיגוטים? נמקו.<br>ב. מהי ההסתברות שהילד הראשון של דן ורות יהיה לבקן?<br>ג. לדן ולרות נולדה בת לבקנית. מהי עכשיו ההסתברות ששניהם הטרוזיגוטים? ומהי ההסתברות שהילד הבא יהיה לבקן?<textarea class="aw" rows="9" aria-label="תשובה"></textarea></li>
-<li><b>הכלאת מבחן.</b> בשרקנים, האלל לפרווה שחורה <span class="L">A</span> דומיננטי לעומת האלל לפרווה לבנה <span class="L">a</span>.<br>א. מהם הגנוטיפים האפשריים של שרקן שחור?<br>ב. הציעו הכלאה שבעזרתה אפשר לקבוע את הגנוטיפ שלו. מה שם ההכלאה?<br>ג. מה יהיו התוצאות הצפויות לכל אחד מהגנוטיפים האפשריים? באילו תוצאות אפשר לקבוע את הגנוטיפ בוודאות?<textarea class="aw" rows="9" aria-label="תשובה"></textarea></li>
-<li><b>צאן יעקב.</b> בפרשת ויצא (בראשית ל) לבן הוציא מהעדר את כל הכבשים הטלואות (בעלות כתמים חומים), והשאיר ביד יעקב רק כבשים בעלות צמר לבן. הניחו שהאלל לצמר לבן <span class="L">A</span> דומיננטי לעומת האלל לצמר טלוא <span class="L">a</span>.<br>א. אילו גנוטיפים יכלו להימצא בעדר הכבשים הלבנות?<br>ב. הסבירו כיצד בעדר של כבשים לבנות בלבד נולדו טלאים טלואים.<br>ג. אילו הוכלאו בעדר רק אילים <span class="L">AA</span> עם כבשים <span class="L">Aa</span>, איזה חלק מהטלאים היה טלוא?<br>ד. לפי הסיפור (בראשית ל, לז–לט), יעקב הציב מקלות מפוצלים, עם פסים לבנים, מול הצאן בזמן ההזדווגות. האם המקלות יכולים להסביר את לידת הטלאים הטלואים? נמקו.<br>ה. בחלום (בראשית לא, י–יב) ראה יעקב שהזכרים העולים על הצאן "עקודים, נקודים וברודים", אף שבמראה היו בצבע אחיד. הסבירו בשפה גנטית.<img class="qphoto" src="assets/sheep.jpg" alt="כבשים לבנות וכבשים טלואות בעדר"><div class="qpics"><figure><svg class="qi" style="width:78px;height:58px;" aria-hidden="true"><use href="#sheep"/></svg><figcaption>צמר לבן</figcaption></figure><figure><svg class="qi" style="width:78px;height:58px;" aria-hidden="true"><use href="#sheep"/><use href="#spots"/></svg><figcaption>צמר טלוא</figcaption></figure></div><textarea class="aw" rows="10" aria-label="תשובה"></textarea></li>
-<li>יש מחלות תורשתיות הנקבעות על ידי אלל רצסיבי. הסבירו מדוע בנישואי קרובים (למשל בני דודים) ההסתברות להולדת ילד חולה במחלה כזו גבוהה יותר מאשר בנישואים בין אנשים שאינם קרובי משפחה.<textarea class="aw" rows="6" aria-label="תשובה"></textarea></li>
-</ol>
-<h2>חלק ה · קו-דומיננטיות <span class="badge">העשרה · לא בבגרות תשפ״ז</span></h2>
-<p>בבקר מגזע שורטהורן, בהכלאה בין זן טהור בעל פרווה אדומה לבין זן טהור בעל פרווה לבנה, כל צאצאי F₁ בעלי פרווה "רואן": שערות אדומות ושערות לבנות מעורבות.<div class="qpics"><figure><svg class="qi" style="width:78px;height:58px;" aria-hidden="true"><use href="#cow"/></svg><figcaption>אדומה</figcaption></figure><figure><svg class="qi" style="width:78px;height:58px;--c:url(#roan)" aria-hidden="true"><use href="#cow"/></svg><figcaption>רואן</figcaption></figure><figure><svg class="qi" style="width:78px;height:58px;--c:#fff" aria-hidden="true"><use href="#cow"/></svg><figcaption>לבנה</figcaption></figure></div></p>
-<ol class="qs">
-<li>מהי דרך ההורשה של צבע הפרווה? נמקו.<textarea class="aw" rows="4" aria-label="תשובה"></textarea></li>
-<li>הציעו סימון לאללים, ורשמו את הגנוטיפים של דור ההורים (P) ושל צאצאי F₁.<textarea class="aw" rows="4" aria-label="תשובה"></textarea></li>
-<li>הכליאו שני פרטים מ-F₁. מתוך 160 עגלים שנולדו ב-F₂, כמה צפויים להיות אדומים, כמה רואן וכמה לבנים? מדוע כאן היחס הפנוטיפי שווה ליחס הגנוטיפי, ואילו בצבע הזרע באפונה הוא שונה?<textarea class="aw" rows="6" aria-label="תשובה"></textarea></li>
-<li>מה יהיה היחס בין הפנוטיפים בהכלאה בין פרט רואן לפרט לבן?<textarea class="aw" rows="4" aria-label="תשובה"></textarea></li>
-</ol>
-<h2>חלק ו · שאלה מסכמת בסגנון בגרות</h2>
-<p>צורת הזרע באפונה נקבעת על ידי גן אחד, המקודד לאנזים המשתתף בבניית עמילן בזרע המתפתח. האלל <span class="L">R</span> מקודד לאנזים פעיל. האלל <span class="L">r</span> מקודד לאנזים לא פעיל. בזרעים <span class="L">rr</span> נבנה מעט עמילן ומצטבר בהם סוכר. כתוצאה מכך, בזמן התפתחות הזרע נקלטים בו מים רבים, ובשלב ההתייבשות הוא מאבד מים רבים ומתקמט.</p>
-<ol class="qs">
-<li>הסבירו ברמת התא מדוע זרע הטרוזיגוט <span class="L">Rr</span> חלק.<textarea class="aw" rows="5" aria-label="תשובה"></textarea></li>
-<li>חוקרת קיבלה זרע אפונה חלק שהגנוטיפ שלו אינו ידוע. תארו ניסוי שבעזרתו אפשר לקבוע את הגנוטיפ, וציינו את התוצאות הצפויות בכל אפשרות.<textarea class="aw" rows="6" aria-label="תשובה"></textarea></li>
-<li>הכליאו שני צמחים <span class="L">Rr</span>. מהי ההסתברות ששני זרעים שנבחרו באקראי מהצאצאים יהיו שניהם מקומטים? ומהי ההסתברות שזרע חלק שנבחר באקראי מהצאצאים הוא הטרוזיגוט?<textarea class="aw" rows="5" aria-label="תשובה"></textarea></li>
-<li>נתוני מנדל: 5,474 זרעים חלקים ו-1,850 זרעים מקומטים ב-F₂. מדוע לא התקבל יחס של 3:1 בדיוק?<textarea class="aw" rows="4" aria-label="תשובה"></textarea></li>
-</ol>
-<div class="fin"><b>סיימתם?</b><button id="finish">סיום ✓</button><p id="finMsg"></p><button class="sec" id="pdf" hidden>📄 שמירה כ־PDF</button><p id="pdfNote" hidden>בחלון ההדפסה בחרו "שמירה כ־PDF" (Save as PDF), ואז העלו את הקובץ למשימה ב־Classroom.</p></div>
-<footer>היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים. התרגולון מבוסס בחלקו על חומרי מט״ח: "תורשה מנדלית: מונחי יסוד", ועל שאלות מבחינות הבגרות בביולוגיה. נתוני מנדל: Mendel, 1866.</footer>
-</main><script>
-const aws=[...document.querySelectorAll('.aw')];aws.forEach(t=>{const d=document.createElement('div');d.className='pc';t.after(d)});
-document.getElementById('finish').onclick=()=>{let empty=0;aws.forEach(t=>{t.nextElementSibling.textContent=t.value;if(!t.value.trim())empty++});
- const d=document.querySelector('.meta input[style*="110"]');if(d&&!d.value)d.value=new Date().toLocaleDateString('he-IL');
- document.getElementById('finMsg').textContent=empty?`שימו לב: ${empty} תשובות ריקות. אפשר להשלים ואז ללחוץ שוב "סיום ✓".`:'כל התשובות מולאו. אפשר לשמור.';
- document.getElementById('pdf').hidden=false;document.getElementById('pdfNote').hidden=false};
-document.getElementById('pdf').onclick=()=>window.print();
+<div class="gate" id="gate"><div class="gbox" role="dialog" aria-modal="true" aria-labelledby="gTitle"><h2 id="gTitle">לפני שמתחילים</h2><p>כתבו את השם והכיתה שלכם. הם יופיעו בקובץ שתעלו למשימה ב־Classroom.</p><label>שם מלא<input id="gName" autocomplete="name"></label><label>כיתה<input id="gClass"></label><p class="gerr" id="gErr"></p><button id="gGo">מתחילים</button></div></div><nav class="sitebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a></nav>
+<main class="page">
+<span class="note">מהיומן של מנדל · תרגיל הגשה</span>
+<h1>תרגיל הגשה: גנטיקה מנדלית</h1>
+<div class="who"><span><b>שם:</b> <span data-fill="name">—</span></span><span><b>כיתה:</b> <span data-fill="class">—</span></span><span><b>תאריך:</b> <span id="today"></span></span></div>
+<section class="howto" aria-labelledby="howtoT"><h3 id="howtoT">הנחיות</h3>
+<p>לפניכם תרגיל הגשה בגנטיקה מנדלית: <span id="nQ"></span> שאלות בשישה חלקים, ובסך הכול <span id="nI"></span> סעיפים. המחשב בודק את כל הסעיפים.</p>
+<p><b>עליכם:</b></p><ol>
+<li>לכתוב את השם והכיתה בחלון הפתיחה.</li>
+<li>לענות על כל הסעיפים. אפשר להיעזר בדף טיוטה, במצגת ובסימולציה "מעבדת הכלאות".</li>
+<li>כשסיימתם, ללחוץ "בדיקה ✓". אחרי הבדיקה אי אפשר לשנות תשובות.</li>
+<li>לעבור על הסימונים: ירוק = נכון, אדום = שגוי. ליד כל טעות מופיעה התשובה הנכונה, ובכל שאלה יש הסבר.</li>
+<li>ללחוץ "📄 הורדת PDF". יורד קובץ עם השם, הציון וכל התשובות הבדוקות.</li>
+<li>להעלות את קובץ ה-PDF הבדוק למשימה ב-Classroom וללחוץ "הגשה".</li></ol>
+<p class="hint">גנוטיפים כותבים באותיות לטיניות, למשל <span class="L">Aa</span>. הסתברות אפשר לכתוב כשבר (<span class="L">1/4</span>), כמספר עשרוני (<span class="L">0.25</span>) או באחוזים (<span class="L">25%</span>). התשובות נשמרות בדפדפן גם אם הדף נסגר בטעות.</p>
+</section>
+<div id="qs"></div>
+<section class="end" aria-live="polite">
+<button class="btn" id="check">בדיקה ✓</button>
+<div id="confirm" hidden><p id="confMsg"></p><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="confYes">כן, לבדוק</button><button class="btn sec" id="confNo">חזרה לתרגיל</button></div></div>
+<div id="result" hidden><p class="score" id="scoreTxt"></p><p id="scoreDet"></p>
+<button class="btn" id="pdf">📄 הורדת PDF</button><p class="hint" id="pdfMsg">אחרי ההורדה: העלו את הקובץ הבדוק למשימה ב-Classroom ולחצו "הגשה".</p>
+<div id="repWrap"><p class="hint">תצוגה מקדימה של הקובץ שיורד:</p><div id="report"></div></div></div>
+</section>
+<footer>היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים. השאלות מבוססות על חומרי מט״ח ("תורשה מנדלית: מונחי יסוד"), על שאלות בגרות ועל נתוני מנדל (1866).</footer>
+</main>
+<script src="questions.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const $=id=>document.getElementById(id);const KEY='genetika-mendel-hagasha';
+const strip=s=>String(s).replace(/<sup>(.*?)<\/sup>/g,'^$1').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+let state={a:{},checked:false};try{state=Object.assign(state,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}};
+const ITEMS=[];let qn=0;
+function pics(p){return p?`<div class="qpics">${p.map(([n,st])=>`<svg style="${st}" aria-hidden="true">${n.split('|').map(x=>`<use href="#${x}"/>`).join('')}</svg>`).join('')}</div>`:''}
+function field(it,id){const v=state.a[id];
+ if(it.type==='mc')return `<div class="opts" role="radiogroup">${it.opts.map((o,k)=>`<label><input type="radio" name="${id}" value="${k}" ${v==k?'checked':''}> <span>${o}</span></label>`).join('')}</div>`;
+ if(it.type==='sel')return `<select id="${id}"><option value="">בחרו</option>${it.opts.map((o,k)=>`<option value="${k}" ${v==k?'selected':''}>${strip(o)}</option>`).join('')}</select>`;
+ if(it.type==='ratio')return `<div class="ratio">${Array.from({length:it.n},(_,k)=>`${k?'<b>:</b>':''}<input class="t sm" id="${id}_${k}" inputmode="numeric" value="${(v||[])[k]??''}" aria-label="חלק ${k+1} ביחס">`).join('')}</div>`;
+ const ph=it.type==='frac'?'1/4':it.type==='geno'?(it.co?'RW':''):'';
+ return `<input class="t" id="${id}" value="${v??''}" placeholder="${ph}" ${it.type==='num'||it.type==='frac'?'inputmode="decimal"':''} autocomplete="off" aria-label="תשובה">`}
+let html='';QUESTIONS.forEach((P,pi)=>{html+=`<h2>${P.part}</h2>`;P.qs.forEach((Q,qi)=>{qn++;const qid=`q${qn}`;
+ html+=`<div class="q" id="${qid}"><div class="qn">שאלה ${qn}</div><p class="stem">${Q.stem}</p>${Q.photo?`<img class="qphoto" src="${Q.photo}" alt="כבשים לבנות וכבשים טלואות בעדר">`:''}${pics(Q.pics)}`;
+ Q.items.forEach((it,ii)=>{const id=`${qid}_${ii}`;ITEMS.push({it,id,qn,Q});
+  html+=`<div class="it" id="w_${id}">${it.label?`<span class="lbl">${Q.items.length>1?'אבגדהוזח'[ii]+'. ':''}${it.label}</span>`:''}${field(it,id)}<span class="fix" id="f_${id}" hidden></span></div>`});
+ html+=`<div class="exp"><b>הסבר:</b> ${Q.exp}</div></div>`})});
+$('qs').innerHTML=html;$('nQ').textContent=qn;$('nI').textContent=ITEMS.length;$('today').textContent=new Date().toLocaleDateString('he-IL');
+/* קריאה ושמירה */
+function read(x){const{it,id}=x;if(it.type==='mc'){const r=document.querySelector(`[name="${id}"]:checked`);return r?r.value:''}
+ if(it.type==='ratio')return Array.from({length:it.n},(_,k)=>$(`${id}_${k}`).value.trim());return $(id).value.trim()}
+document.getElementById('qs').addEventListener('input',()=>{if(state.checked)return;ITEMS.forEach(x=>state.a[x.id]=read(x));save()});
+document.getElementById('qs').addEventListener('change',()=>{if(state.checked)return;ITEMS.forEach(x=>state.a[x.id]=read(x));save()});
+/* בדיקה */
+function parseFrac(s){s=(s||'').replace(',','.').replace(/\s/g,'');if(!s)return NaN;if(s.endsWith('%'))return parseFloat(s)/100;if(s.includes('/')){const[a,b]=s.split('/').map(Number);return b?a/b:NaN}return Number(s)}
+function normG(it,s){s=(s||'').replace(/\s/g,'');if(it.co){s=s.toUpperCase().replace(/C/g,'').replace(/\^/g,'');if(!/^[RW]{2}$/.test(s))return null;return[...s].sort().join('')}
+ const D=it.L,r=D.toLowerCase();if(s.length!==2||![...s].every(c=>c===D||c===r))return null;return[...s].sort((a,b)=>a===D?-1:b===D?1:0).join('')}
+function isEmpty(x,v){return x.it.type==='ratio'?v.some(e=>e===''):v===''}
+function grade(x,v){const it=x.it;if(isEmpty(x,v))return false;
+ if(it.type==='mc'||it.type==='sel')return +v===it.ans;
+ if(it.type==='geno')return normG(it,v)===(it.co?[...it.ans].sort().join(''):it.ans);
+ if(it.type==='num'){const n=Number(String(v).replace(',','.'));return Math.abs(n-it.ans)<=(it.tol||0)+1e-9}
+ if(it.type==='frac')return Math.abs(parseFrac(v)-it.ans)<.0005;
+ if(it.type==='ratio'){const n=v.map(Number),s=n.reduce((a,b)=>a+b,0),t=it.ans.reduce((a,b)=>a+b,0);return s>0&&n.every((e,k)=>Math.abs(e/s-it.ans[k]/t)<1e-6)}}
+function frs(x){if(x===0)return'0';for(let q=1;q<=64;q++){const p=Math.round(x*q);if(Math.abs(p/q-x)<1e-9)return q===1?String(p):`${p}/${q}`}return String(x)}
+function correctTxt(it){if(it.type==='mc'||it.type==='sel')return strip(it.opts[it.ans]);if(it.type==='geno')return it.co?`C^${it.ans[0]} C^${it.ans[1]}`:it.ans;
+ if(it.type==='frac')return frs(it.ans);if(it.type==='ratio')return it.ans.join(' : ');return String(it.ans)}
+function givenTxt(x,v){const it=x.it;if(isEmpty(x,v))return '(לא נענה)';if(it.type==='mc'||it.type==='sel')return strip(it.opts[+v]);if(it.type==='ratio')return v.join(' : ');return v}
+$('check').onclick=()=>{const empty=ITEMS.filter(x=>isEmpty(x,read(x))).length;
+ $('confMsg').textContent=(empty?`יש ${empty} סעיפים בלי תשובה. `:'ענית על כל הסעיפים. ')+'אחרי הבדיקה אי אפשר לשנות תשובות. לבדוק עכשיו?';
+ $('confirm').hidden=false;$('check').hidden=true;$('confYes').focus()};
+$('confNo').onclick=()=>{$('confirm').hidden=true;$('check').hidden=false};
+$('confYes').onclick=()=>{ITEMS.forEach(x=>state.a[x.id]=read(x));state.checked=true;save();showResults()};
+function showResults(){let ok=0;
+ ITEMS.forEach(x=>{const v=state.a[x.id]??(x.it.type==='ratio'?Array(x.it.n).fill(''):'');const g=grade(x,v);x.ok=g;x.given=givenTxt(x,v);if(g)ok++;
+  const w=$('w_'+x.id);w.classList.add(g?'ok':'no');if(!g){const f=$('f_'+x.id);f.hidden=false;f.textContent='✘ התשובה הנכונה: '+correctTxt(x.it)}});
+ document.querySelectorAll('#qs input,#qs select').forEach(e=>e.disabled=true);document.querySelectorAll('.q').forEach(q=>q.classList.add('done'));
+ const sc=Math.round(ok/ITEMS.length*100);state.score=sc;state.ok=ok;save();
+ $('confirm').hidden=true;$('check').hidden=true;$('result').hidden=false;$('scoreTxt').textContent=`ציון: ${sc}`;
+ $('scoreDet').textContent=`${ok} סעיפים נכונים מתוך ${ITEMS.length}. עברו על התיקונים וההסברים, ואז הורידו את הקובץ.`;buildReport(sc,ok)}
+function buildReport(sc,ok){const st=window.STUDENT||{};const nm=st.name||document.querySelector('[data-fill="name"]').textContent,cl=st.cls||document.querySelector('[data-fill="class"]').textContent;
+ let h=`<div class="rh"><h1>תרגיל הגשה: גנטיקה מנדלית</h1><p>שם: <b>${nm}</b> · כיתה: <b>${cl}</b> · תאריך: ${$('today').textContent}</p><p style="font-size:20px">ציון: <b>${sc}</b> (${ok} מתוך ${ITEMS.length} סעיפים נכונים)</p></div>`;
+ let cur=0;ITEMS.forEach((x,k)=>{if(x.qn!==cur){if(cur)h+=`<div class="rx">הסבר: ${strip(ITEMS[k-1].Q.exp)}</div></div>`;cur=x.qn;h+=`<div class="rblk"><div class="rq">שאלה ${x.qn}: ${strip(x.Q.stem).slice(0,160)}${strip(x.Q.stem).length>160?'…':''}</div>`}
+  h+=`<div class="rr"><span>${strip(x.it.label||'תשובה')}</span><span>${x.given}</span><span class="${x.ok?'y':'n'}">${x.ok?'✔':'✘'}</span>${x.ok?'':`<span class="rc">התשובה הנכונה: ${correctTxt(x.it)}</span>`}</div>`});
+ h+=`<div class="rx">הסבר: ${strip(ITEMS[ITEMS.length-1].Q.exp)}</div></div><p class="rx" style="margin-top:12px">גנטיקה מנדלית · ביולוגיה י״ב · נבדק אוטומטית</p>`;$('report').innerHTML=h}
+$('pdf').onclick=async()=>{const b=$('pdf');buildReport(state.score,state.ok);b.disabled=true;const old=b.textContent;b.textContent='מכין קובץ…';
+ try{const el=$('report');const scale=2;const canvas=await htmlToImage.toCanvas(el,{pixelRatio:scale,backgroundColor:'#ffffff'});
+  const{jsPDF}=window.jspdf;const pdf=new jsPDF({unit:'mm',format:'a4'});const pw=190,ph=277,px=canvas.width/pw,pageH=Math.floor(ph*px);
+  const top=el.getBoundingClientRect().top;const cuts=[...el.querySelectorAll('.rh,.rblk')].map(e=>Math.round((e.getBoundingClientRect().bottom-top)*scale));
+  let y=0,first=true;while(y<canvas.height-2){let end=Math.min(y+pageH,canvas.height);const ok=cuts.filter(c=>c>y+20&&c<=end);if(end<canvas.height&&ok.length)end=Math.max(...ok);
+   const c=document.createElement('canvas');c.width=canvas.width;c.height=end-y;c.getContext('2d').drawImage(canvas,0,y,canvas.width,end-y,0,0,canvas.width,end-y);
+   if(!first)pdf.addPage();pdf.addImage(c.toDataURL('image/jpeg',.9),'JPEG',10,10,pw,(end-y)/px);first=false;y=end}
+  const nm=((window.STUDENT||{}).name||'תלמיד').replace(/[\\/:*?"<>|]/g,'');pdf.save(`גנטיקה-מנדלית-${nm}.pdf`);$('pdfMsg').textContent='הקובץ ירד. העלו אותו למשימה ב-Classroom ולחצו "הגשה".'}
+ catch(e){console.error(e);$('pdfMsg').textContent='ההורדה הישירה לא הצליחה. נפתח חלון הדפסה: בחרו "שמירה כ-PDF" (Save as PDF).';window.print()}
+ b.disabled=false;b.textContent=old};
+if(state.checked)showResults();
 </script><script>(function(){const g=document.getElementById('gate'),n=document.getElementById('gName'),c=document.getElementById('gClass');
 try{const s=JSON.parse(localStorage.getItem('genetika-student')||'{}');n.value=s.name||'';c.value=s.cls||''}catch(e){}
 document.getElementById('gGo').onclick=()=>{const nm=n.value.trim(),cl=c.value.trim();
