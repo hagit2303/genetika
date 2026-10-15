@@ -149,7 +149,7 @@ footer{margin-top:28px;font-size:13px;color:var(--mut);border-top:1px solid var(
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 const $=id=>document.getElementById(id);const KEY='genetika-mendel-hagasha';
-const strip=s=>String(s).replace(/<sup>(.*?)<\/sup>/g,'^$1').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+const SUP={'1':'¹','2':'²','3':'³'};const strip=s=>String(s).replace(/<sup>(.*?)<\/sup>/g,(m,x)=>[...x].map(c=>SUP[c]||c).join('')).replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
 let state={a:{},checked:false};try{state=Object.assign(state,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}};
 const ITEMS=[];let qn=0;
@@ -158,7 +158,7 @@ function field(it,id){const v=state.a[id];
  if(it.type==='mc')return `<div class="opts" role="radiogroup">${it.opts.map((o,k)=>`<label><input type="radio" name="${id}" value="${k}" ${v==k?'checked':''}> <span>${o}</span></label>`).join('')}</div>`;
  if(it.type==='sel')return `<select id="${id}"><option value="">בחרו</option>${it.opts.map((o,k)=>`<option value="${k}" ${v==k?'selected':''}>${strip(o)}</option>`).join('')}</select>`;
  if(it.type==='ratio')return `<div class="ratio">${Array.from({length:it.n},(_,k)=>`${k?'<b>:</b>':''}<input class="t sm" id="${id}_${k}" inputmode="numeric" value="${(v||[])[k]??''}" aria-label="חלק ${k+1} ביחס">`).join('')}</div>`;
- const ph=it.type==='frac'?'1/4':it.type==='geno'?(it.co?'RW':''):'';
+ const ph=it.type==='frac'?'1/4':it.type==='geno'?(it.co?'12':''):'';
  return `<input class="t" id="${id}" value="${v??''}" placeholder="${ph}" ${it.type==='num'||it.type==='frac'?'inputmode="decimal"':''} autocomplete="off" aria-label="תשובה">`}
 let html='';QUESTIONS.forEach((P,pi)=>{html+=`<h2>${P.part}</h2>`;P.qs.forEach((Q,qi)=>{qn++;const qid=`q${qn}`;
  html+=`<div class="q" id="${qid}"><div class="qn">שאלה ${qn}</div><p class="stem">${Q.stem}</p>${Q.photo?`<img class="qphoto" src="${Q.photo}" alt="כבשים לבנות וכבשים טלואות בעדר">`:''}${pics(Q.pics)}`;
@@ -173,7 +173,7 @@ document.getElementById('qs').addEventListener('input',()=>{if(state.checked)ret
 document.getElementById('qs').addEventListener('change',()=>{if(state.checked)return;ITEMS.forEach(x=>state.a[x.id]=read(x));save()});
 /* בדיקה */
 function parseFrac(s){s=(s||'').replace(',','.').replace(/\s/g,'');if(!s)return NaN;if(s.endsWith('%'))return parseFloat(s)/100;if(s.includes('/')){const[a,b]=s.split('/').map(Number);return b?a/b:NaN}return Number(s)}
-function normG(it,s){s=(s||'').replace(/\s/g,'');if(it.co){s=s.toUpperCase().replace(/C/g,'').replace(/\^/g,'');if(!/^[RW]{2}$/.test(s))return null;return[...s].sort().join('')}
+function normG(it,s){s=(s||'').replace(/\s/g,'');if(it.co){s=s.toUpperCase().replace(/A/g,'').replace(/\^/g,'');if(!/^[12]{2}$/.test(s))return null;return[...s].sort().join('')}
  const D=it.L,r=D.toLowerCase();if(s.length!==2||![...s].every(c=>c===D||c===r))return null;return[...s].sort((a,b)=>a===D?-1:b===D?1:0).join('')}
 function isEmpty(x,v){return x.it.type==='ratio'?v.some(e=>e===''):v===''}
 function grade(x,v){const it=x.it;if(isEmpty(x,v))return false;
@@ -183,7 +183,7 @@ function grade(x,v){const it=x.it;if(isEmpty(x,v))return false;
  if(it.type==='frac')return Math.abs(parseFrac(v)-it.ans)<.0005;
  if(it.type==='ratio'){const n=v.map(Number),s=n.reduce((a,b)=>a+b,0),t=it.ans.reduce((a,b)=>a+b,0);return s>0&&n.every((e,k)=>Math.abs(e/s-it.ans[k]/t)<1e-6)}}
 function frs(x){if(x===0)return'0';for(let q=1;q<=64;q++){const p=Math.round(x*q);if(Math.abs(p/q-x)<1e-9)return q===1?String(p):`${p}/${q}`}return String(x)}
-function correctTxt(it){if(it.type==='mc'||it.type==='sel')return strip(it.opts[it.ans]);if(it.type==='geno')return it.co?`C^${it.ans[0]} C^${it.ans[1]}`:it.ans;
+function correctTxt(it){if(it.type==='mc'||it.type==='sel')return strip(it.opts[it.ans]);if(it.type==='geno')return it.co?`A${SUP[it.ans[0]]}A${SUP[it.ans[1]]}`:it.ans;
  if(it.type==='frac')return frs(it.ans);if(it.type==='ratio')return it.ans.join(' : ');return String(it.ans)}
 function givenTxt(x,v){const it=x.it;if(isEmpty(x,v))return '(לא נענה)';if(it.type==='mc'||it.type==='sel')return strip(it.opts[+v]);if(it.type==='ratio')return v.join(' : ');return v}
 $('check').onclick=()=>{const empty=ITEMS.filter(x=>isEmpty(x,read(x))).length;

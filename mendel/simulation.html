@@ -190,7 +190,7 @@ const ORGS=[
  {id:'tomato',name:'עגבנייה · גובה הצמח',sp:'בעגבנייה',n:'צמח עגבנייה',np:'צמחי עגבנייה',L:'D',D:'גבעול גבוה',R:'גבעול ננסי',cD:'#3E8E41',cR:'#A9D18E'},
  {id:'rabbit',name:'ארנב · צבע הפרווה',sp:'בארנבים',n:'ארנב',np:'ארנבים',L:'A',D:'פרווה בצבע תקין',R:'פרווה לבקנית',cD:'#8B6B4A',cR:'#FFFFFF'},
  {id:'sheep',name:'כבשים (צאן יעקב) · צבע הצמר',sp:'בכבשים',n:'כבש',np:'כבשים',L:'A',D:'צמר לבן',R:'צמר טלוא',cD:'#FFFFFF',cR:'repeating-radial-gradient(circle at 30% 30%,#6B3E1F 0 3px,#fff 3px 7px)'},
- {id:'cattle',co:true,name:'בקר שורטהורן · צבע הפרווה (העשרה)',n:'פרט',np:'פרטים',X:'R',Y:'W',PX:'פרווה אדומה',PY:'פרווה לבנה',PH:'פרווה רואן',cX:'#A9322B',cY:'#FFFFFF',cH:'repeating-linear-gradient(45deg,#A9322B 0 4px,#fff 4px 7px)'}
+ {id:'cattle',co:true,name:'בקר שורטהורן · צבע הפרווה (העשרה)',n:'פרט',np:'פרטים',X:'1',Y:'2',PX:'פרווה אדומה',PY:'פרווה לבנה',PH:'פרווה רואן',cX:'#A9322B',cY:'#FFFFFF',cH:'repeating-linear-gradient(45deg,#A9322B 0 4px,#fff 4px 7px)'}
 ];
 const CO=ORGS.find(o=>o.co),DOMS=ORGS.filter(o=>!o.co);
 const ICONS={flower:{D:['peaflower',''],R:['peaflower','--c:#fff;--c2:#F1ECF4;--c3:#fff']},shape:{D:['seed','--c:#E2CC6E'],R:['seedW','']},guinea:{D:['guinea',''],R:['guinea','--c:#fff']},
@@ -202,7 +202,7 @@ const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=ri(0,i);[a[i],a
 let score=0;const addScore=n=>{score+=n;$('score').textContent='ניקוד: '+score};
 const al=o=>o.co?[o.X,o.Y]:[o.L,o.L.toLowerCase()];
 const norm=(o,g)=>{const a=al(o);return [...g].sort((x,y)=>a.indexOf(x)-a.indexOf(y)).join('')};
-const fa=(o,x)=>o.co?`C<sup>${x}</sup>`:x;
+const fa=(o,x)=>o.co?`A<sup>${x}</sup>`:x;
 const fg=(o,g)=>`<span class="L">${[...g].map(x=>fa(o,x)).join('')}</span>`;
 function ph(o,g){g=norm(o,g);if(o.co)return g===o.X+o.X?o.PX:g===o.Y+o.Y?o.PY:o.PH;return g.includes(o.L)?o.D:o.R}
 const phs=o=>o.co?[o.PX,o.PH,o.PY]:[o.D,o.R];
@@ -212,9 +212,9 @@ function expect(o,g1,g2){const m={};phs(o).forEach(p=>m[p]=0);for(const x of g1)
 function genoFrac(o,g1,g2){const m={};for(const x of g1)for(const y of g2){const g=norm(o,x+y);m[g]=(m[g]||0)+.25}return m}
 function sample(o,g1,g2,n){const c={};phs(o).forEach(p=>c[p]=0);const seq=[];for(let k=0;k<n;k++){const p=ph(o,g1[ri(0,1)]+g2[ri(0,1)]);c[p]++;if(n<=100)seq.push(p)}return{c,seq}}
 function sampleNZ(o,g1,g2,n){const e=expect(o,g1,g2);let r;do{r=sample(o,g1,g2,n)}while(Object.keys(e).some(k=>e[k]>0&&r.c[k]===0));return r}
-function readG(o,s){s=(s||'').replace(/\s/g,'');if(o.co){s=s.toUpperCase().replace(/C/g,'');return /^[RW]{2}$/.test(s)?{g:norm(o,s),order:true}:null}
+function readG(o,s){s=(s||'').replace(/\s/g,'');if(o.co){s=s.toUpperCase().replace(/A/g,'').replace(/\^/g,'');return /^[12]{2}$/.test(s)?{g:norm(o,s),order:true}:null}
  const a=al(o);if(s.length!==2||![...s].every(x=>a.includes(x)))return null;return{g:norm(o,s),order:s===norm(o,s)}}
-function readA(o,s){s=(s||'').trim();if(o.co)s=s.toUpperCase().replace(/^C/,'');return al(o).includes(s)?s:null}
+function readA(o,s){s=(s||'').trim();if(o.co)s=s.toUpperCase().replace(/^A/,'').replace('^','');return al(o).includes(s)?s:null}
 function frac(s){s=(s||'').trim().replace(',','.');if(!s)return NaN;if(s.endsWith('%'))return parseFloat(s)/100;if(s.includes('/')){const[a,b]=s.split('/').map(Number);return a/b}return Number(s)}
 const near=(a,b)=>Math.abs(a-b)<1e-6;
 function fb(step,ok,msg){const f=$(step).querySelector('.fb');f.className='fb '+(ok?'ok':'no');f.innerHTML=msg;if(ok)$(step).classList.add('done')}
@@ -226,10 +226,10 @@ let B=null;
 function newBuild(){
  const o=Math.random()<.16?CO:rnd(DOMS);const N=rnd([80,120,160,200,240,320,400]);let s;
  if(o.co){const k=rnd(['RWxRR','RWxRW','RWxWW']);
-  if(k==='RWxRR')s={p1:'RW',p2:'RR',txt:`פרט בעל ${o.PH} הוכלא עם פרט בעל ${o.PX}.`,ask:{p:o.PH}};
-  if(k==='RWxRW')s={p1:'RW',p2:'RW',txt:`שני פרטים בעלי ${o.PH} הוכלאו זה עם זה.`,ask:{p:o.PY}};
-  if(k==='RWxWW')s={p1:'RW',p2:'WW',txt:`פרט בעל ${o.PH} הוכלא עם פרט בעל ${o.PY}.`,ask:{p:o.PY}};
-  s.intro='בבקר שורטהורן צבע הפרווה מורש בקו-דומיננטיות (העשרה). בהטרוזיגוט שני האללים מתבטאים: פרווה רואן, שערות אדומות ושערות לבנות מעורבות. סמנו את הגן באות C ואת האללים בכתב עילי R ו-W. בתיבות כתבו רק את הכתב העילי, למשל RW.'}
+  if(k==='RWxRR')s={p1:'12',p2:'11',txt:`פרט בעל ${o.PH} הוכלא עם פרט בעל ${o.PX}.`,ask:{p:o.PH}};
+  if(k==='RWxRW')s={p1:'12',p2:'12',txt:`שני פרטים בעלי ${o.PH} הוכלאו זה עם זה.`,ask:{p:o.PY}};
+  if(k==='RWxWW')s={p1:'12',p2:'22',txt:`פרט בעל ${o.PH} הוכלא עם פרט בעל ${o.PY}.`,ask:{p:o.PY}};
+  s.intro='בבקר שורטהורן צבע הפרווה מורש בקו-דומיננטיות (העשרה). בהטרוזיגוט שני האללים מתבטאים: פרווה רואן, שערות אדומות ושערות לבנות מעורבות. סמנו את שני האללים באות A, ומעל כל אחד מספר: A¹ לפרווה אדומה ו-A² לפרווה לבנה. בתיבות כתבו רק את המספרים, למשל 12 (עבור A¹A²).'}
  else{const D=o.L,r=D.toLowerCase(),AA=D+D,Aa=D+r,aa=r+r;const k=rnd(['F1xF1','het_rec','pure_het','sibs','rec_pure','carrier']);
   if(k==='F1xF1')s={p1:Aa,p2:Aa,txt:`הכליאו ${o.n} מזן טהור בעל ${o.D} עם ${o.n} מזן טהור בעל ${o.R}. שני צאצאים מ-F₁ הוכלאו זה עם זה. בנו טבלת פאנט להכלאה בין שני צאצאי F₁.`,ask:{p:o.R}};
   if(k==='het_rec')s={p1:Aa,p2:aa,txt:`${o.n} בעל ${o.D}, שאחד מהוריו היה בעל ${o.R}, הוכלא עם ${o.n} בעל ${o.R}.`,ask:{p:rnd([o.D,o.R])}};
@@ -244,7 +244,7 @@ function newBuild(){
  else if(s.ask.g){s.qtxt=`מתוך ${N} צאצאים, כמה צפויים להיות בעלי הגנוטיפ ${fg(o,s.ask.g)}?`;s.ans=N*(gf[s.ask.g]||0)}
  else{s.qtxt=`מתוך ${N} צאצאים, כמה צפויים להיות בעלי ${s.ask.p}?`;s.ans=N*(e[s.ask.p]||0)}
  $('bScen').innerHTML=`<p>${s.intro}</p><p><b>${s.txt}</b></p><div class="pics">${phs(o).map(p=>`<figure>${pic(o,p,'pic')}${p}</figure>`).join('')}</div>`;
- $('bLegend').innerHTML=o.co?`<label>האלל ל${o.PX}: C<input class="g" style="width:56px" data-ph="X"></label><label>האלל ל${o.PY}: C<input class="g" style="width:56px" data-ph="Y"></label>`
+ $('bLegend').innerHTML=o.co?`<label>האלל ל${o.PX}: A<input class="g" style="width:56px" data-ph="X"></label><label>האלל ל${o.PY}: A<input class="g" style="width:56px" data-ph="Y"></label>`
   :`<label>האלל ל${o.D}: <input class="g" data-ph="D"></label><label>האלל ל${o.R}: <input class="g" data-ph="R"></label>`;
  ['b1','b2','b3','b4','b5'].forEach((id,k)=>{$(id).hidden=k>0;$(id).classList.remove('done');const f=$(id).querySelector('.fb');f.className='fb';f.innerHTML=''});
  $('bp1').value=$('bp2').value='';$('bp1').className=$('bp2').className='g';$('bAns').value='';$('bAns').className='n';$('bSol').innerHTML='';
@@ -258,8 +258,8 @@ function newBuild(){
 }
 function chkBuild(step){const o=B.o;tried[step]=(tried[step]||0)+1;
  if(step==='b1'){let ok=true;$('bLegend').querySelectorAll('input').forEach(i=>{const v=i.value.trim();const want=o.co?(i.dataset.ph==='X'?o.X:o.Y):(i.dataset.ph==='D'?o.L:o.L.toLowerCase());const g=o.co?v.toUpperCase()===want:v===want;mark(i,g);if(!g)ok=false});
-  if(ok){fb(step,true,'נכון. אות אחת לגן: '+(o.co?'בקו-דומיננטיות אות בסיס אחת וכתב עילי לכל אלל.':'גדולה לאלל הדומיננטי, קטנה לאלל הרצסיבי.'));pts(step,1,0);$('b2').hidden=false}
-  else fb(step,false,o.co?'בקו-דומיננטיות: C<sup>R</sup> לפרווה אדומה, C<sup>W</sup> לפרווה לבנה. כתבו רק R או W.':`השתמשו באות ${o.L}: אות גדולה לאלל הדומיננטי ואות קטנה לאלל הרצסיבי.`)}
+  if(ok){fb(step,true,'נכון. אות אחת לגן: '+(o.co?'בקו-דומיננטיות: אותה אות לשני האללים, ומעל כל אחד מספר.':'גדולה לאלל הדומיננטי, קטנה לאלל הרצסיבי.'));pts(step,1,0);$('b2').hidden=false}
+  else fb(step,false,o.co?'בקו-דומיננטיות: A<sup>1</sup> לפרווה אדומה, A<sup>2</sup> לפרווה לבנה. כתבו רק 1 או 2.':`השתמשו באות ${o.L}: אות גדולה לאלל הדומיננטי ואות קטנה לאלל הרצסיבי.`)}
  if(step==='b2'){const r1=readG(o,$('bp1').value),r2=readG(o,$('bp2').value);const ok1=!!r1&&r1.g===B.p1,ok2=!!r2&&r2.g===B.p2;mark($('bp1'),ok1);mark($('bp2'),ok2);
   if(ok1&&ok2){fb(step,true,'נכון. '+(r1.order&&r2.order?'':'שימו לב: נהוג לכתוב קודם את האות הגדולה. ')+`הורה 1: ${fg(o,B.p1)}, הורה 2: ${fg(o,B.p2)}.`);pts(step,2,1);$('b3').hidden=false}
   else fb(step,false,'לא מדויק. היעזרו בנתונים: "זן טהור" = הומוזיגוט. פרט בעל פנוטיפ רצסיבי = הומוזיגוט רצסיבי. אם להורה של פרט היה פנוטיפ רצסיבי, הפרט קיבל ממנו אלל רצסיבי.')}
@@ -281,7 +281,7 @@ function chkBuild(step){const o=B.o;tried[step]=(tried[step]||0)+1;
   else fb(step,false,'לא מדויק. חשבו קודם את ההסתברות לצאצא כזה לפי הטבלה, ואז הכפילו במספר הצאצאים.'+(B.ask.g||B.ask.g2?' שימו לב: השאלה מתייחסת לגנוטיפ.':''))}
 }
 function solBuild(){const o=B.o,gf=genoFrac(o,B.p1,B.p2),e=expect(o,B.p1,B.p2);
- $('bSol').innerHTML=`<div class="sol"><b>פתרון:</b> מקרא: ${o.co?`C<sup>${o.X}</sup> = ${o.PX}, C<sup>${o.Y}</sup> = ${o.PY}`:`${o.L} = ${o.D}, ${o.L.toLowerCase()} = ${o.R}`}. הורה 1: ${fg(o,B.p1)}, הורה 2: ${fg(o,B.p2)}.<br>גמטות הורה 1: ${[...new Set(B.p1)].map(x=>fa(o,x)).join(', ')}; גמטות הורה 2: ${[...new Set(B.p2)].map(x=>fa(o,x)).join(', ')}.<br>גנוטיפים: ${Object.entries(gf).map(([g,f])=>`${fg(o,g)} ${f*100}%`).join(', ')}.<br>פנוטיפים: ${Object.entries(e).filter(([,f])=>f>0).map(([p,f])=>`${p} ${f*100}%`).join(', ')}.<br>${B.qtxt} ${B.ans}.</div>`}
+ $('bSol').innerHTML=`<div class="sol"><b>פתרון:</b> מקרא: ${o.co?`A<sup>${o.X}</sup> = ${o.PX}, A<sup>${o.Y}</sup> = ${o.PY}`:`${o.L} = ${o.D}, ${o.L.toLowerCase()} = ${o.R}`}. הורה 1: ${fg(o,B.p1)}, הורה 2: ${fg(o,B.p2)}.<br>גמטות הורה 1: ${[...new Set(B.p1)].map(x=>fa(o,x)).join(', ')}; גמטות הורה 2: ${[...new Set(B.p2)].map(x=>fa(o,x)).join(', ')}.<br>גנוטיפים: ${Object.entries(gf).map(([g,f])=>`${fg(o,g)} ${f*100}%`).join(', ')}.<br>פנוטיפים: ${Object.entries(e).filter(([,f])=>f>0).map(([p,f])=>`${p} ${f*100}%`).join(', ')}.<br>${B.qtxt} ${B.ans}.</div>`}
 
 /* ===== מצב 2: מסיקים ===== */
 let I=null;
@@ -289,14 +289,14 @@ function crossBox(o,title,pa,pb,r){const tot=Object.values(r.c).reduce((a,b)=>a+
  return `<div class="cross"><h3>${title}</h3><p>${pa} × ${pb}</p><p class="hint">התקבלו ${tot} צאצאים:</p><ul>${Object.entries(r.c).filter(([,x])=>x>0).map(([p,x])=>`<li>${sw(o,p)}${p}: <b>${x}</b></li>`).join('')}</ul>
  <div class="mini">${Object.entries(r.c).filter(([,x])=>x>0).map(([p,x])=>`<i style="width:${x/tot*100}%;background:${col(o,p)}"></i>`).join('')}</div></div>`}
 function newInfer(){const o=Math.random()<.18?CO:rnd(DOMS);const s={o};
- if(o.co){const r2=sampleNZ(o,'RW','RW',ri(160,480)),n1=ri(20,60);
+ if(o.co){const r2=sampleNZ(o,'12','12',ri(160,480)),n1=ri(20,60);
   s.html=`<div class="data"><div class="cross"><h3>הכלאה 1 (P)</h3><p>פרט מזן טהור בעל ${o.PX} × פרט מזן טהור בעל ${o.PY}</p><p class="hint">התקבלו ${n1} צאצאים (F₁):</p><ul><li>${sw(o,o.PH)}${o.PH}: <b>${n1}</b></li></ul></div>${crossBox(o,'הכלאה 2: F₁ × F₁',o.PH,o.PH,r2)}</div><p class="hint">בקר שורטהורן. פרווה רואן: שערות אדומות ושערות לבנות מעורבות. (העשרה)</p>`;
   s.dom='co';s.domOpts=shuffle([[`האלל ל${o.PX} דומיננטי`,'X'],[`האלל ל${o.PY} דומיננטי`,'Y'],['קו-דומיננטיות: שני האללים מתבטאים בהטרוזיגוט','co']]);
   s.why=[['לצאצאי F₁ פנוטיפ שלישי, שבו מתבטאים הפנוטיפים של שני ההורים, וב-F₂ התקבל יחס של כ-1:2:1',1],['ב-F₂ הופיעו שלושה פנוטיפים, ולכן מעורבים שלושה גנים',0],['האלל לפרווה אדומה חזק יותר בחלק מהשערות',0],['הפנוטיפ רואן שכיח ביותר ב-F₂, ולכן הוא דומיננטי',0]];
-  s.letter='סמנו את הגן באות C ואת האללים בכתב עילי R ו-W. בתיבות כתבו רק את הכתב העילי, למשל RW.';
-  s.ind=[[`הורה מזן טהור בעל ${o.PX}`,'RR'],[`הורה מזן טהור בעל ${o.PY}`,'WW'],['צאצא F₁','RW']];
+  s.letter='סמנו את שני האללים באות A, ומעל כל אחד מספר: A¹ לפרווה אדומה ו-A² לפרווה לבנה. בתיבות כתבו רק את המספרים, למשל 12 (עבור A¹A²).';
+  s.ind=[[`הורה מזן טהור בעל ${o.PX}`,'11'],[`הורה מזן טהור בעל ${o.PY}`,'22'],['צאצא F₁','12']];
   s.pred=`אם יכליאו פרט רואן מ-F₁ עם פרט בעל ${o.PY}, איזה חלק מהצאצאים צפוי להיות בעל ${o.PH}?`;s.ans=.5;
-  s.sol=`קו-דומיננטיות. ההורים הומוזיגוטים (${fg(o,'RR')}, ${fg(o,'WW')}), צאצאי F₁ ${fg(o,'RW')} בעלי פנוטיפ שלישי, וב-F₂ ‏1:2:1. ‏${fg(o,'RW')} × ${fg(o,'WW')}: חצי מהצאצאים רואן.`}
+  s.sol=`קו-דומיננטיות. ההורים הומוזיגוטים (${fg(o,'11')}, ${fg(o,'22')}), צאצאי F₁ ${fg(o,'12')} בעלי פנוטיפ שלישי, וב-F₂ ‏1:2:1. ‏${fg(o,'12')} × ${fg(o,'22')}: חצי מהצאצאים רואן.`}
  else{const D=o.L,r=D.toLowerCase(),AA=D+D,Aa=D+r,aa=r+r;const k=rnd(['pure','same','two','small']);
   s.dom='D';s.domOpts=shuffle([[`האלל ל${o.D} דומיננטי`,'D'],[`האלל ל${o.R} דומיננטי`,'R'],['קו-דומיננטיות: שני האללים מתבטאים בהטרוזיגוט','co']]);
   s.letter=`השתמשו באות ${D}: אות גדולה לאלל הדומיננטי ואות קטנה לאלל הרצסיבי.`;
