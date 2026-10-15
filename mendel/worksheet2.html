@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>תרגיל הגשה 2 · גנטיקה מנדלית</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Rubik:wght@400;500;700&family=Amatic+SC:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#FBFCFA;--grid:#DDE7EE;--ink:#1F4D3A;--mut:#5C6F66;--hl:#F4D35E;--red:#B8423A;--card:#fff;--ok:#1E7B4D;--okbg:#E3F2E6;--nobg:#FBE9E7}
+*{box-sizing:border-box;margin:0;padding:0}
+body{color:var(--ink);font-family:Rubik,Arial,sans-serif;background:var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;min-height:100vh;padding-inline:16px}
+.page{max-width:860px;margin:0 auto;background:#fff;padding:28px clamp(16px,4vw,40px) 48px;border-inline-start:3px double var(--red);min-height:100vh}
+h1,h2,h3{font-family:"Secular One",Rubik,sans-serif;font-weight:400}
+h1{font-size:clamp(28px,5vw,40px);line-height:1.1}h2{font-size:23px;margin:26px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--ink)}
+.note{font-family:"Amatic SC",cursive;font-size:28px;color:var(--red)}
+p,li,label{font-size:16px;line-height:1.6}
+.who{display:flex;flex-wrap:wrap;gap:6px 22px;margin:10px 0;font-size:16px}.who b{font-weight:700}
+.howto{background:#F4F8F5;border:2px solid var(--ink);padding:14px 18px;margin:14px 0}
+.howto ol{padding-inline-start:22px;display:flex;flex-direction:column;gap:4px}
+.gloss{border:2px solid var(--ink);padding:14px 18px;margin:14px 0}.gloss dt{font-weight:700;margin-top:8px}.gloss dd{margin-inline-start:0;font-size:15px;line-height:1.6}
+.howto .warn{color:var(--red);font-weight:500;margin-top:6px}
+.L{direction:ltr;unicode-bidi:isolate;display:inline-block}sup{font-size:.65em}
+.q{border:1px solid var(--grid);padding:14px 16px;margin:12px 0;break-inside:avoid}
+.qn{font-family:"Secular One";font-size:18px;color:var(--red)}
+.stem{margin:4px 0 8px}
+.qpics{display:flex;gap:14px;flex-wrap:wrap;margin:4px 0 8px}.qpics svg{width:76px;height:56px}
+.qphoto{display:block;width:100%;max-height:170px;object-fit:cover;border:2px solid var(--ink);margin:6px 0}
+.it{padding:8px 10px;margin:6px 0;border-inline-start:4px solid var(--grid);display:flex;flex-direction:column;gap:6px}
+.it.ok{border-color:var(--ok);background:var(--okbg)}.it.no{border-color:var(--red);background:var(--nobg)}
+.it .lbl{font-weight:500}
+.opts{display:flex;flex-direction:column;gap:4px}.opts label{display:flex;gap:8px;align-items:flex-start;cursor:pointer}
+.opts input{margin-top:6px;flex:none}
+input.t{font:inherit;font-size:18px;font-weight:700;width:96px;padding:5px 6px;border:2px solid var(--ink);text-align:center;direction:ltr;background:#fff}
+input.t.sm{width:56px}
+select{font:inherit;font-size:16px;padding:5px 8px;border:2px solid var(--ink);background:#fff;max-width:100%}
+.ratio{display:flex;gap:6px;align-items:center;direction:ltr;justify-content:flex-end}
+.fix{font-size:15px;color:var(--red);font-weight:500}.fix[hidden]{display:none}
+.exp{display:none;margin-top:8px;background:#FFF8DC;border:1px dashed #C9A21A;padding:8px 12px;font-size:15px}.done .exp{display:block}
+.hint{font-size:14px;color:var(--mut)}
+.badge{font-size:13px;border:2px solid var(--red);color:var(--red);padding:1px 8px;font-family:Rubik;vertical-align:middle}
+.end{margin-top:22px;border:2px solid var(--ink);padding:16px;background:#F4F8F5;display:flex;flex-direction:column;gap:10px}
+.btn{font:inherit;font-weight:700;font-size:18px;padding:12px 22px;border:0;background:var(--ink);color:#fff;cursor:pointer;align-self:flex-start}
+.btn.sec{background:#fff;color:var(--ink);border:2px solid var(--ink)}.btn[hidden]{display:none}
+.score{font-family:"Secular One";font-size:34px}
+#confirm[hidden],#result[hidden]{display:none}
+#repWrap{overflow-x:auto;margin-top:8px}#repWrap[hidden]{display:none}
+#report{width:760px;border:1px solid #DDE7EE;background:#fff;color:#1F4D3A;font-family:Arial,sans-serif;padding:24px;direction:rtl}
+#report h1{font-family:Arial,sans-serif;font-weight:700;font-size:26px}#report .rh{border-bottom:3px solid #1F4D3A;padding-bottom:10px;margin-bottom:10px}
+#report .rblk{border-bottom:1px solid #DDE7EE;padding:8px 0}#report .rq{font-weight:700;margin-bottom:4px;font-size:14px}
+#report .rr{display:grid;grid-template-columns:1fr 150px 22px;gap:8px;font-size:13px;padding:2px 0}#report .rr .y{color:#1E7B4D;font-weight:700}#report .rr .n{color:#B8423A;font-weight:700}
+#report .rc{grid-column:1/-1;color:#B8423A;font-size:12px;padding-inline-start:12px}#report .rx{font-size:12px;color:#5C6F66;margin-top:4px}
+footer{margin-top:28px;font-size:13px;color:var(--mut);border-top:1px solid var(--grid);padding-top:8px}
+@media (max-width:600px){.page{padding:20px 14px}}
+.sitebar{position:fixed;top:10px;inset-inline-end:12px;z-index:50;display:flex;gap:6px}
+.sitebar a{font:700 14px Rubik,Arial,sans-serif;color:#1F4D3A;background:#fff;border:2px solid #1F4D3A;padding:5px 10px;text-decoration:none}
+.gate{position:fixed;inset:0;z-index:100;background:rgba(31,77,58,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.gate[hidden]{display:none}
+.gbox{background:#fff;border:3px solid #1F4D3A;max-width:420px;width:100%;padding:22px;display:flex;flex-direction:column;gap:12px;font-family:Rubik,Arial,sans-serif;color:#1F4D3A}
+.gbox h2{font-family:"Secular One",Rubik,sans-serif;font-weight:400;font-size:28px}.gbox label{display:flex;flex-direction:column;gap:4px;font-weight:500}
+.gbox input{font:inherit;font-size:18px;padding:8px;border:2px solid #1F4D3A}
+.gbox button{font:inherit;font-weight:700;font-size:18px;padding:10px;border:0;background:#1F4D3A;color:#fff;cursor:pointer}
+.gerr{color:#B8423A;font-weight:500;min-height:1.2em}
+@media print{.sitebar,.gate{display:none!important}}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<pattern id="roan" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#A9322B"/><rect width="2.4" height="6" fill="#FFFFFF"/></pattern>
+<!-- כבשה: צבע הצמר דרך --c -->
+<symbol id="sheep" viewBox="0 0 120 84">
+<g fill="#5A4A3A"><rect x="30" y="56" width="7" height="24" rx="3"/><rect x="45" y="58" width="7" height="22" rx="3"/><rect x="70" y="58" width="7" height="22" rx="3"/><rect x="84" y="56" width="7" height="24" rx="3"/></g>
+<g style="fill:var(--c,#FFFFFF)" stroke="#8C8273" stroke-width="1.6"><circle cx="30" cy="44" r="15"/><circle cx="44" cy="30" r="15"/><circle cx="62" cy="27" r="15"/><circle cx="80" cy="31" r="14"/><circle cx="88" cy="46" r="13"/><circle cx="70" cy="56" r="14"/><circle cx="46" cy="57" r="14"/></g>
+<ellipse cx="60" cy="44" rx="30" ry="17" style="fill:var(--c,#FFFFFF)"/>
+<ellipse cx="102" cy="36" rx="11" ry="14" fill="#F2E9DC" stroke="#8C8273" stroke-width="1.6"/>
+<ellipse cx="94" cy="27" rx="7" ry="3.5" fill="#E7CDBF" stroke="#8C8273" stroke-width="1.2" transform="rotate(-25 94 27)"/>
+<circle cx="105" cy="33" r="2.2" fill="#222"/><ellipse cx="108" cy="45" rx="3" ry="2" fill="#C99"/>
+</symbol>
+<symbol id="spots" viewBox="0 0 120 84"><g fill="#6B3E1F"><circle cx="40" cy="36" r="8"/><circle cx="64" cy="48" r="9"/><circle cx="80" cy="30" r="6"/><circle cx="28" cy="52" r="5"/><circle cx="55" cy="26" r="5"/></g><path d="M96 26 q8 -6 15 4 q-4 6 -9 4 z" fill="#6B3E1F"/></symbol>
+<!-- שרקן -->
+<symbol id="guinea" viewBox="0 0 120 80">
+<g fill="#D8A39A"><ellipse cx="40" cy="70" rx="7" ry="4"/><ellipse cx="80" cy="70" rx="7" ry="4"/></g>
+<ellipse cx="56" cy="47" rx="40" ry="24" style="fill:var(--c,#222)" stroke="#555" stroke-width="1.6"/>
+<ellipse cx="92" cy="44" rx="20" ry="18" style="fill:var(--c,#222)" stroke="#555" stroke-width="1.6"/>
+<ellipse cx="84" cy="27" rx="8" ry="5" fill="#D8A39A" stroke="#555" stroke-width="1.2"/>
+<circle cx="100" cy="40" r="3.2" style="fill:var(--eye,#111)"/><ellipse cx="110" cy="48" rx="3" ry="2" fill="#C77"/>
+</symbol>
+<!-- ארנב -->
+<symbol id="rabbit" viewBox="0 -14 120 104">
+<ellipse cx="50" cy="62" rx="34" ry="22" style="fill:var(--c,#8B6B4A)" stroke="#555" stroke-width="1.6"/>
+<circle cx="18" cy="58" r="7" style="fill:var(--c,#8B6B4A)" stroke="#555" stroke-width="1.2"/>
+<ellipse cx="80" cy="18" rx="6" ry="20" style="fill:var(--c,#8B6B4A)" stroke="#555" stroke-width="1.4" transform="rotate(-12 80 18)"/>
+<ellipse cx="92" cy="20" rx="6" ry="20" style="fill:var(--c,#8B6B4A)" stroke="#555" stroke-width="1.4" transform="rotate(10 92 20)"/>
+<circle cx="88" cy="50" r="17" style="fill:var(--c,#8B6B4A)" stroke="#555" stroke-width="1.6"/>
+<circle cx="94" cy="46" r="3.2" style="fill:var(--eye,#111)"/><ellipse cx="104" cy="54" rx="2.5" ry="2" fill="#C77"/>
+</symbol>
+<!-- זבוב הפירות -->
+<symbol id="flyN" viewBox="0 0 120 80"><g fill="#DCE8F2" fill-opacity=".75" stroke="#7F98AD" stroke-width="1.2"><ellipse cx="36" cy="26" rx="34" ry="10" transform="rotate(-12 60 40)"/><ellipse cx="38" cy="36" rx="32" ry="9" transform="rotate(8 60 40)"/></g></symbol>
+<symbol id="flyV" viewBox="0 0 120 80"><g fill="#DCE8F2" stroke="#7F98AD" stroke-width="1.4"><path d="M64 36 q-4 -14 -14 -12 q3 5 -3 8 q6 6 17 4z"/><path d="M60 40 q-10 -4 -16 2 q5 2 1 6 q9 0 15 -8z"/></g></symbol>
+<symbol id="flyB" viewBox="0 0 120 80">
+<g stroke="#5A3A1A" stroke-width="1.6" fill="none"><path d="M58 50 l-8 18"/><path d="M64 51 l0 20"/><path d="M70 50 l8 18"/></g>
+<ellipse cx="42" cy="46" rx="20" ry="11" fill="#8B5A2B"/><g stroke="#5A3A1A" stroke-width="2"><path d="M30 37 v18"/><path d="M38 35 v22"/><path d="M46 35 v22"/></g>
+<ellipse cx="64" cy="44" rx="12" ry="10" fill="#A0703C"/><circle cx="82" cy="42" r="8" fill="#A0703C"/><circle cx="86" cy="40" r="5.5" fill="#C0392B"/>
+</symbol>
+<!-- בקר -->
+<symbol id="cow" viewBox="0 -8 142 100">
+<g fill="#4A4A4A"><rect x="28" y="60" width="8" height="28" rx="3"/><rect x="44" y="62" width="8" height="26" rx="3"/><rect x="80" y="62" width="8" height="26" rx="3"/><rect x="94" y="60" width="8" height="28" rx="3"/></g>
+<path d="M22 40 q-12 6 -10 22" stroke="#555" stroke-width="2.5" fill="none"/>
+<rect x="20" y="28" width="88" height="40" rx="15" style="fill:var(--c,#A9322B)" stroke="#555" stroke-width="1.6"/>
+<rect x="100" y="18" width="28" height="32" rx="10" style="fill:var(--c,#A9322B)" stroke="#555" stroke-width="1.6"/>
+<path d="M104 20 q-6 -10 -12 -8 M124 20 q6 -10 12 -8" stroke="#D9CFC0" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+<ellipse cx="114" cy="46" rx="11" ry="7" fill="#E8B4A8" stroke="#555" stroke-width="1.2"/><circle cx="108" cy="30" r="2.6" fill="#111"/><circle cx="122" cy="30" r="2.6" fill="#111"/>
+</symbol>
+<!-- עגבנייה -->
+<symbol id="tomT" viewBox="0 0 70 130"><path d="M35 128 V14" stroke="#3E7A2E" stroke-width="4"/><g fill="#5FA046"><ellipse cx="22" cy="40" rx="12" ry="6" transform="rotate(-25 22 40)"/><ellipse cx="48" cy="62" rx="12" ry="6" transform="rotate(25 48 62)"/><ellipse cx="22" cy="86" rx="12" ry="6" transform="rotate(-25 22 86)"/><ellipse cx="48" cy="22" rx="11" ry="5" transform="rotate(25 48 22)"/></g><g fill="#D93A2B"><circle cx="46" cy="44" r="7"/><circle cx="24" cy="66" r="7"/><circle cx="46" cy="96" r="7"/></g><rect x="20" y="122" width="30" height="8" rx="2" fill="#8B5E3C"/></symbol>
+<symbol id="tomD" viewBox="0 0 70 130"><path d="M35 128 V92" stroke="#3E7A2E" stroke-width="4"/><g fill="#5FA046"><ellipse cx="22" cy="104" rx="12" ry="6" transform="rotate(-25 22 104)"/><ellipse cx="48" cy="98" rx="12" ry="6" transform="rotate(25 48 98)"/></g><g fill="#D93A2B"><circle cx="46" cy="110" r="7"/><circle cx="26" cy="92" r="6"/></g><rect x="20" y="122" width="30" height="8" rx="2" fill="#8B5E3C"/></symbol>
+<!-- פרח אפונה -->
+<symbol id="peaflower" viewBox="0 0 90 90"><path d="M45 88 V66" stroke="#4E8A26" stroke-width="3"/><path d="M36 66 q9 -8 18 0 q-9 6 -18 0z" fill="#5FA046"/>
+<path d="M45 8 C22 6 8 22 14 40 C18 50 30 52 45 46 C60 52 72 50 76 40 C82 22 68 6 45 8z" style="fill:var(--c,#8E44AD)" stroke="#5E3F6E" stroke-width="1.4"/>
+<path d="M45 14 C44 24 44 34 45 44" stroke="#5E3F6E" stroke-width="1" fill="none" opacity=".5"/>
+<path d="M24 44 C14 50 16 64 30 62 C38 60 42 54 42 48z" style="fill:var(--c2,#B06AD0)" stroke="#5E3F6E" stroke-width="1.2"/>
+<path d="M66 44 C76 50 74 64 60 62 C52 60 48 54 48 48z" style="fill:var(--c2,#B06AD0)" stroke="#5E3F6E" stroke-width="1.2"/>
+<path d="M38 52 C40 62 50 62 52 52 C48 56 42 56 38 52z" style="fill:var(--c3,#E8D6F0)" stroke="#5E3F6E" stroke-width="1"/></symbol>
+<!-- זרע אפונה -->
+<symbol id="seed" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" style="fill:var(--c,#E9C536)" stroke="#8C7A2A" stroke-width="1.5"/><ellipse cx="14" cy="14" rx="5" ry="3" fill="#fff" fill-opacity=".45"/></symbol>
+<symbol id="seedW" viewBox="0 0 40 40"><path d="M20 4 C30 4 36 10 35 18 C38 22 35 30 30 32 C27 37 18 38 13 34 C6 33 3 26 6 20 C3 14 8 6 14 7 C16 5 18 4 20 4z" style="fill:var(--c,#D8C26A)" stroke="#8C7A2A" stroke-width="1.5"/><path d="M12 14 q6 4 2 10 M22 10 q-2 8 6 12 M16 28 q6 -2 10 2" stroke="#8C7A2A" stroke-width="1.2" fill="none"/></symbol>
+</defs></svg>
+<div class="gate" id="gate"><div class="gbox" role="dialog" aria-modal="true" aria-labelledby="gTitle"><h2 id="gTitle">לפני שמתחילים</h2><p>כתבו את השם והכיתה שלכם. הם יופיעו בקובץ שתעלו למשימה ב־Classroom.</p><label>שם מלא<input id="gName" autocomplete="name"></label><label>כיתה<input id="gClass"></label><p class="gerr" id="gErr"></p><button id="gGo">מתחילים</button></div></div><nav class="sitebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a></nav>
+<main class="page">
+<span class="note">מהיומן של מנדל · תרגיל הגשה</span>
+<h1 id="exTitle">תרגיל הגשה: גנטיקה מנדלית</h1>
+<div class="who"><span><b>שם:</b> <span data-fill="name">—</span></span><span><b>כיתה:</b> <span data-fill="class">—</span></span><span><b>תאריך:</b> <span id="today"></span></span></div>
+<section class="howto" aria-labelledby="howtoT"><h3 id="howtoT">הנחיות</h3>
+<p>לפניכם תרגיל הגשה בגנטיקה מנדלית: <span id="nQ"></span> שאלות ב-<span id="nP"></span> חלקים, ובסך הכול <span id="nI"></span> סעיפים. המחשב בודק את כל הסעיפים.</p>
+<p><b>עליכם:</b></p><ol>
+<li>לכתוב את השם והכיתה בחלון הפתיחה.</li>
+<li>לענות על כל הסעיפים. אפשר להיעזר בדף טיוטה, במצגת ובסימולציה "מעבדת הכלאות".</li>
+<li>כשסיימתם, ללחוץ "בדיקה ✓". אחרי הבדיקה אי אפשר לשנות תשובות.</li>
+<li>לעבור על הסימונים: ירוק = נכון, אדום = שגוי. ליד כל טעות מופיעה התשובה הנכונה, ובכל שאלה יש הסבר.</li>
+<li>ללחוץ "📄 הורדת PDF". יורד קובץ עם השם, הציון וכל התשובות הבדוקות.</li>
+<li>להעלות את קובץ ה-PDF הבדוק למשימה ב-Classroom וללחוץ "הגשה".</li></ol>
+<p class="hint">גנוטיפים כותבים באותיות לטיניות, למשל <span class="L">Aa</span>. הסתברות אפשר לכתוב כשבר (<span class="L">1/4</span>), כמספר עשרוני (<span class="L">0.25</span>) או באחוזים (<span class="L">25%</span>). התשובות נשמרות בדפדפן גם אם הדף נסגר בטעות.</p>
+</section>
+<div id="exIntro"></div><div id="qs"></div>
+<section class="end" aria-live="polite">
+<button class="btn" id="check">בדיקה ✓</button>
+<div id="confirm" hidden><p id="confMsg"></p><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="confYes">כן, לבדוק</button><button class="btn sec" id="confNo">חזרה לתרגיל</button></div></div>
+<div id="result" hidden><p class="score" id="scoreTxt"></p><p id="scoreDet"></p>
+<button class="btn" id="pdf">📄 הורדת PDF</button><p class="hint" id="pdfMsg">אחרי ההורדה: העלו את הקובץ הבדוק למשימה ב-Classroom ולחצו "הגשה".</p>
+<div id="repWrap"><p class="hint">תצוגה מקדימה של הקובץ שיורד:</p><div id="report"></div></div></div>
+</section>
+<footer>היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים. השאלות מבוססות על חומרי מט״ח ("תורשה מנדלית: מונחי יסוד"), על שאלות בגרות ועל נתוני מנדל (1866).</footer>
+</main>
+<script src="questions2.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const $=id=>document.getElementById(id);const CFG=Object.assign({title:'תרגיל הגשה: גנטיקה מנדלית',key:'genetika-mendel-hagasha',file:'גנטיקה-מנדלית'},window.EX||{});const KEY=CFG.key;
+$('exTitle').textContent=CFG.title;document.title=CFG.title;if(CFG.intro)$('exIntro').innerHTML=CFG.intro;
+const SUP={'1':'¹','2':'²','3':'³'};const strip=s=>String(s).replace(/<sup>(.*?)<\/sup>/g,(m,x)=>[...x].map(c=>SUP[c]||c).join('')).replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+let state={a:{},checked:false};try{state=Object.assign(state,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}};
+const ITEMS=[];let qn=0;
+function pics(p){return p?`<div class="qpics">${p.map(([n,st])=>`<svg style="${st}" aria-hidden="true">${n.split('|').map(x=>`<use href="#${x}"/>`).join('')}</svg>`).join('')}</div>`:''}
+function field(it,id){const v=state.a[id];
+ if(it.type==='mc')return `<div class="opts" role="radiogroup">${it.opts.map((o,k)=>`<label><input type="radio" name="${id}" value="${k}" ${v==k?'checked':''}> <span>${o}</span></label>`).join('')}</div>`;
+ if(it.type==='sel')return `<select id="${id}"><option value="">בחרו</option>${it.opts.map((o,k)=>`<option value="${k}" ${v==k?'selected':''}>${strip(o)}</option>`).join('')}</select>`;
+ if(it.type==='ratio')return `<div class="ratio">${Array.from({length:it.n},(_,k)=>`${k?'<b>:</b>':''}<input class="t sm" id="${id}_${k}" inputmode="numeric" value="${(v||[])[k]??''}" aria-label="חלק ${k+1} ביחס">`).join('')}</div>`;
+ const ph=it.type==='frac'?'1/4':it.type==='geno'?(it.co?'12':''):'';
+ return `<input class="t" id="${id}" value="${v??''}" placeholder="${ph}" ${it.type==='num'||it.type==='frac'?'inputmode="decimal"':''} autocomplete="off" aria-label="תשובה">`}
+let html='';QUESTIONS.forEach((P,pi)=>{html+=`<h2>${P.part}</h2>`;P.qs.forEach((Q,qi)=>{qn++;const qid=`q${qn}`;
+ html+=`<div class="q" id="${qid}"><div class="qn">שאלה ${qn}</div><p class="stem">${Q.stem}</p>${Q.photo?`<img class="qphoto" src="${Q.photo}" alt="כבשים לבנות וכבשים טלואות בעדר">`:''}${pics(Q.pics)}`;
+ Q.items.forEach((it,ii)=>{const id=`${qid}_${ii}`;ITEMS.push({it,id,qn,Q});
+  html+=`<div class="it" id="w_${id}">${it.label?`<span class="lbl">${Q.items.length>1?'אבגדהוזח'[ii]+'. ':''}${it.label}</span>`:''}${field(it,id)}<span class="fix" id="f_${id}" hidden></span></div>`});
+ html+=`<div class="exp"><b>הסבר:</b> ${Q.exp}</div></div>`})});
+$('qs').innerHTML=html;$('nQ').textContent=qn;$('nP').textContent=QUESTIONS.length;$('nI').textContent=ITEMS.length;$('today').textContent=new Date().toLocaleDateString('he-IL');
+/* קריאה ושמירה */
+function read(x){const{it,id}=x;if(it.type==='mc'){const r=document.querySelector(`[name="${id}"]:checked`);return r?r.value:''}
+ if(it.type==='ratio')return Array.from({length:it.n},(_,k)=>$(`${id}_${k}`).value.trim());return $(id).value.trim()}
+document.getElementById('qs').addEventListener('input',()=>{if(state.checked)return;ITEMS.forEach(x=>state.a[x.id]=read(x));save()});
+document.getElementById('qs').addEventListener('change',()=>{if(state.checked)return;ITEMS.forEach(x=>state.a[x.id]=read(x));save()});
+/* בדיקה */
+function parseFrac(s){s=(s||'').replace(',','.').replace(/\s/g,'');if(!s)return NaN;if(s.endsWith('%'))return parseFloat(s)/100;if(s.includes('/')){const[a,b]=s.split('/').map(Number);return b?a/b:NaN}return Number(s)}
+function normG(it,s){s=(s||'').replace(/\s/g,'');if(it.co){s=s.toUpperCase().replace(/A/g,'').replace(/\^/g,'');if(!/^[12]{2}$/.test(s))return null;return[...s].sort().join('')}
+ const D=it.L,r=D.toLowerCase();if(s.length!==2||![...s].every(c=>c===D||c===r))return null;return[...s].sort((a,b)=>a===D?-1:b===D?1:0).join('')}
+function isEmpty(x,v){return x.it.type==='ratio'?v.some(e=>e===''):v===''}
+function grade(x,v){const it=x.it;if(isEmpty(x,v))return false;
+ if(it.type==='mc'||it.type==='sel')return +v===it.ans;
+ if(it.type==='geno')return normG(it,v)===(it.co?[...it.ans].sort().join(''):it.ans);
+ if(it.type==='num'){const n=Number(String(v).replace(',','.'));return Math.abs(n-it.ans)<=(it.tol||0)+1e-9}
+ if(it.type==='frac')return Math.abs(parseFrac(v)-it.ans)<.0005;
+ if(it.type==='ratio'){const n=v.map(Number),s=n.reduce((a,b)=>a+b,0),t=it.ans.reduce((a,b)=>a+b,0);return s>0&&n.every((e,k)=>Math.abs(e/s-it.ans[k]/t)<1e-6)}}
+function frs(x){if(x===0)return'0';for(let q=1;q<=64;q++){const p=Math.round(x*q);if(Math.abs(p/q-x)<1e-9)return q===1?String(p):`${p}/${q}`}return String(x)}
+function correctTxt(it){if(it.type==='mc'||it.type==='sel')return strip(it.opts[it.ans]);if(it.type==='geno')return it.co?`A${SUP[it.ans[0]]}A${SUP[it.ans[1]]}`:it.ans;
+ if(it.type==='frac')return frs(it.ans);if(it.type==='ratio')return it.ans.join(' : ');return String(it.ans)}
+function givenTxt(x,v){const it=x.it;if(isEmpty(x,v))return '(לא נענה)';if(it.type==='mc'||it.type==='sel')return strip(it.opts[+v]);if(it.type==='ratio')return v.join(' : ');return v}
+$('check').onclick=()=>{const empty=ITEMS.filter(x=>isEmpty(x,read(x))).length;
+ $('confMsg').textContent=(empty?`יש ${empty} סעיפים בלי תשובה. `:'ענית על כל הסעיפים. ')+'אחרי הבדיקה אי אפשר לשנות תשובות. לבדוק עכשיו?';
+ $('confirm').hidden=false;$('check').hidden=true;$('confYes').focus()};
+$('confNo').onclick=()=>{$('confirm').hidden=true;$('check').hidden=false};
+$('confYes').onclick=()=>{ITEMS.forEach(x=>state.a[x.id]=read(x));state.checked=true;save();showResults()};
+function showResults(){let ok=0;
+ ITEMS.forEach(x=>{const v=state.a[x.id]??(x.it.type==='ratio'?Array(x.it.n).fill(''):'');const g=grade(x,v);x.ok=g;x.given=givenTxt(x,v);if(g)ok++;
+  const w=$('w_'+x.id);w.classList.add(g?'ok':'no');if(!g){const f=$('f_'+x.id);f.hidden=false;f.textContent='✘ התשובה הנכונה: '+correctTxt(x.it)}});
+ document.querySelectorAll('#qs input,#qs select').forEach(e=>e.disabled=true);document.querySelectorAll('.q').forEach(q=>q.classList.add('done'));
+ const sc=Math.round(ok/ITEMS.length*100);state.score=sc;state.ok=ok;save();
+ $('confirm').hidden=true;$('check').hidden=true;$('result').hidden=false;$('scoreTxt').textContent=`ציון: ${sc}`;
+ $('scoreDet').textContent=`${ok} סעיפים נכונים מתוך ${ITEMS.length}. עברו על התיקונים וההסברים, ואז הורידו את הקובץ.`;buildReport(sc,ok)}
+function buildReport(sc,ok){const st=window.STUDENT||{};const nm=st.name||document.querySelector('[data-fill="name"]').textContent,cl=st.cls||document.querySelector('[data-fill="class"]').textContent;
+ let h=`<div class="rh"><h1>${CFG.title}</h1><p>שם: <b>${nm}</b> · כיתה: <b>${cl}</b> · תאריך: ${$('today').textContent}</p><p style="font-size:20px">ציון: <b>${sc}</b> (${ok} מתוך ${ITEMS.length} סעיפים נכונים)</p></div>`;
+ let cur=0;ITEMS.forEach((x,k)=>{if(x.qn!==cur){if(cur)h+=`<div class="rx">הסבר: ${strip(ITEMS[k-1].Q.exp)}</div></div>`;cur=x.qn;h+=`<div class="rblk"><div class="rq">שאלה ${x.qn}: ${strip(x.Q.stem).slice(0,160)}${strip(x.Q.stem).length>160?'…':''}</div>`}
+  h+=`<div class="rr"><span>${strip(x.it.label||'תשובה')}</span><span>${x.given}</span><span class="${x.ok?'y':'n'}">${x.ok?'✔':'✘'}</span>${x.ok?'':`<span class="rc">התשובה הנכונה: ${correctTxt(x.it)}</span>`}</div>`});
+ h+=`<div class="rx">הסבר: ${strip(ITEMS[ITEMS.length-1].Q.exp)}</div></div><p class="rx" style="margin-top:12px">גנטיקה מנדלית · ביולוגיה י״ב · נבדק אוטומטית</p>`;$('report').innerHTML=h}
+$('pdf').onclick=async()=>{const b=$('pdf');buildReport(state.score,state.ok);b.disabled=true;const old=b.textContent;b.textContent='מכין קובץ…';
+ try{const el=$('report');const scale=2;const canvas=await htmlToImage.toCanvas(el,{pixelRatio:scale,backgroundColor:'#ffffff'});
+  const{jsPDF}=window.jspdf;const pdf=new jsPDF({unit:'mm',format:'a4'});const pw=190,ph=277,px=canvas.width/pw,pageH=Math.floor(ph*px);
+  const top=el.getBoundingClientRect().top;const cuts=[...el.querySelectorAll('.rh,.rblk')].map(e=>Math.round((e.getBoundingClientRect().bottom-top)*scale));
+  let y=0,first=true;while(y<canvas.height-2){let end=Math.min(y+pageH,canvas.height);const ok=cuts.filter(c=>c>y+20&&c<=end);if(end<canvas.height&&ok.length)end=Math.max(...ok);
+   const c=document.createElement('canvas');c.width=canvas.width;c.height=end-y;c.getContext('2d').drawImage(canvas,0,y,canvas.width,end-y,0,0,canvas.width,end-y);
+   if(!first)pdf.addPage();pdf.addImage(c.toDataURL('image/jpeg',.9),'JPEG',10,10,pw,(end-y)/px);first=false;y=end}
+  const nm=((window.STUDENT||{}).name||'תלמיד').replace(/[\\/:*?"<>|]/g,'');pdf.save(`${CFG.file}-${nm}.pdf`);$('pdfMsg').textContent='הקובץ ירד. העלו אותו למשימה ב-Classroom ולחצו "הגשה".'}
+ catch(e){console.error(e);$('pdfMsg').textContent='ההורדה הישירה לא הצליחה. נפתח חלון הדפסה: בחרו "שמירה כ-PDF" (Save as PDF).';window.print()}
+ b.disabled=false;b.textContent=old};
+if(state.checked)showResults();
+</script><script>(function(){const g=document.getElementById('gate'),n=document.getElementById('gName'),c=document.getElementById('gClass');
+try{const s=JSON.parse(localStorage.getItem('genetika-student')||'{}');n.value=s.name||'';c.value=s.cls||''}catch(e){}
+document.getElementById('gGo').onclick=()=>{const nm=n.value.trim(),cl=c.value.trim();
+ if(nm.length<2||!cl){document.getElementById('gErr').textContent='כתבו שם (לפחות 2 אותיות) וכיתה.';return}
+ try{localStorage.setItem('genetika-student',JSON.stringify({name:nm,cls:cl}))}catch(e){}
+ document.querySelectorAll('[data-fill="name"]').forEach(e=>{if('value' in e)e.value=nm;else e.textContent=nm});
+ document.querySelectorAll('[data-fill="class"]').forEach(e=>{if('value' in e)e.value=cl;else e.textContent=cl});
+ window.STUDENT={name:nm,cls:cl};g.hidden=true};n.focus()})();</script></body></html>

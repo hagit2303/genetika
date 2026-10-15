@@ -14,6 +14,7 @@ p,li,label{font-size:16px;line-height:1.6}
 .who{display:flex;flex-wrap:wrap;gap:6px 22px;margin:10px 0;font-size:16px}.who b{font-weight:700}
 .howto{background:#F4F8F5;border:2px solid var(--ink);padding:14px 18px;margin:14px 0}
 .howto ol{padding-inline-start:22px;display:flex;flex-direction:column;gap:4px}
+.gloss{border:2px solid var(--ink);padding:14px 18px;margin:14px 0}.gloss dt{font-weight:700;margin-top:8px}.gloss dd{margin-inline-start:0;font-size:15px;line-height:1.6}
 .howto .warn{color:var(--red);font-weight:500;margin-top:6px}
 .L{direction:ltr;unicode-bidi:isolate;display:inline-block}sup{font-size:.65em}
 .q{border:1px solid var(--grid);padding:14px 16px;margin:12px 0;break-inside:avoid}
@@ -121,10 +122,10 @@ footer{margin-top:28px;font-size:13px;color:var(--mut);border-top:1px solid var(
 <div class="gate" id="gate"><div class="gbox" role="dialog" aria-modal="true" aria-labelledby="gTitle"><h2 id="gTitle">לפני שמתחילים</h2><p>כתבו את השם והכיתה שלכם. הם יופיעו בקובץ שתעלו למשימה ב־Classroom.</p><label>שם מלא<input id="gName" autocomplete="name"></label><label>כיתה<input id="gClass"></label><p class="gerr" id="gErr"></p><button id="gGo">מתחילים</button></div></div><nav class="sitebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a></nav>
 <main class="page">
 <span class="note">מהיומן של מנדל · תרגיל הגשה</span>
-<h1>תרגיל הגשה: גנטיקה מנדלית</h1>
+<h1 id="exTitle">תרגיל הגשה: גנטיקה מנדלית</h1>
 <div class="who"><span><b>שם:</b> <span data-fill="name">—</span></span><span><b>כיתה:</b> <span data-fill="class">—</span></span><span><b>תאריך:</b> <span id="today"></span></span></div>
 <section class="howto" aria-labelledby="howtoT"><h3 id="howtoT">הנחיות</h3>
-<p>לפניכם תרגיל הגשה בגנטיקה מנדלית: <span id="nQ"></span> שאלות בשישה חלקים, ובסך הכול <span id="nI"></span> סעיפים. המחשב בודק את כל הסעיפים.</p>
+<p>לפניכם תרגיל הגשה בגנטיקה מנדלית: <span id="nQ"></span> שאלות ב-<span id="nP"></span> חלקים, ובסך הכול <span id="nI"></span> סעיפים. המחשב בודק את כל הסעיפים.</p>
 <p><b>עליכם:</b></p><ol>
 <li>לכתוב את השם והכיתה בחלון הפתיחה.</li>
 <li>לענות על כל הסעיפים. אפשר להיעזר בדף טיוטה, במצגת ובסימולציה "מעבדת הכלאות".</li>
@@ -134,7 +135,7 @@ footer{margin-top:28px;font-size:13px;color:var(--mut);border-top:1px solid var(
 <li>להעלות את קובץ ה-PDF הבדוק למשימה ב-Classroom וללחוץ "הגשה".</li></ol>
 <p class="hint">גנוטיפים כותבים באותיות לטיניות, למשל <span class="L">Aa</span>. הסתברות אפשר לכתוב כשבר (<span class="L">1/4</span>), כמספר עשרוני (<span class="L">0.25</span>) או באחוזים (<span class="L">25%</span>). התשובות נשמרות בדפדפן גם אם הדף נסגר בטעות.</p>
 </section>
-<div id="qs"></div>
+<div id="exIntro"></div><div id="qs"></div>
 <section class="end" aria-live="polite">
 <button class="btn" id="check">בדיקה ✓</button>
 <div id="confirm" hidden><p id="confMsg"></p><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="confYes">כן, לבדוק</button><button class="btn sec" id="confNo">חזרה לתרגיל</button></div></div>
@@ -148,7 +149,8 @@ footer{margin-top:28px;font-size:13px;color:var(--mut);border-top:1px solid var(
 <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-const $=id=>document.getElementById(id);const KEY='genetika-mendel-hagasha';
+const $=id=>document.getElementById(id);const CFG=Object.assign({title:'תרגיל הגשה: גנטיקה מנדלית',key:'genetika-mendel-hagasha',file:'גנטיקה-מנדלית'},window.EX||{});const KEY=CFG.key;
+$('exTitle').textContent=CFG.title;document.title=CFG.title;if(CFG.intro)$('exIntro').innerHTML=CFG.intro;
 const SUP={'1':'¹','2':'²','3':'³'};const strip=s=>String(s).replace(/<sup>(.*?)<\/sup>/g,(m,x)=>[...x].map(c=>SUP[c]||c).join('')).replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
 let state={a:{},checked:false};try{state=Object.assign(state,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}};
@@ -165,7 +167,7 @@ let html='';QUESTIONS.forEach((P,pi)=>{html+=`<h2>${P.part}</h2>`;P.qs.forEach((
  Q.items.forEach((it,ii)=>{const id=`${qid}_${ii}`;ITEMS.push({it,id,qn,Q});
   html+=`<div class="it" id="w_${id}">${it.label?`<span class="lbl">${Q.items.length>1?'אבגדהוזח'[ii]+'. ':''}${it.label}</span>`:''}${field(it,id)}<span class="fix" id="f_${id}" hidden></span></div>`});
  html+=`<div class="exp"><b>הסבר:</b> ${Q.exp}</div></div>`})});
-$('qs').innerHTML=html;$('nQ').textContent=qn;$('nI').textContent=ITEMS.length;$('today').textContent=new Date().toLocaleDateString('he-IL');
+$('qs').innerHTML=html;$('nQ').textContent=qn;$('nP').textContent=QUESTIONS.length;$('nI').textContent=ITEMS.length;$('today').textContent=new Date().toLocaleDateString('he-IL');
 /* קריאה ושמירה */
 function read(x){const{it,id}=x;if(it.type==='mc'){const r=document.querySelector(`[name="${id}"]:checked`);return r?r.value:''}
  if(it.type==='ratio')return Array.from({length:it.n},(_,k)=>$(`${id}_${k}`).value.trim());return $(id).value.trim()}
@@ -199,7 +201,7 @@ function showResults(){let ok=0;
  $('confirm').hidden=true;$('check').hidden=true;$('result').hidden=false;$('scoreTxt').textContent=`ציון: ${sc}`;
  $('scoreDet').textContent=`${ok} סעיפים נכונים מתוך ${ITEMS.length}. עברו על התיקונים וההסברים, ואז הורידו את הקובץ.`;buildReport(sc,ok)}
 function buildReport(sc,ok){const st=window.STUDENT||{};const nm=st.name||document.querySelector('[data-fill="name"]').textContent,cl=st.cls||document.querySelector('[data-fill="class"]').textContent;
- let h=`<div class="rh"><h1>תרגיל הגשה: גנטיקה מנדלית</h1><p>שם: <b>${nm}</b> · כיתה: <b>${cl}</b> · תאריך: ${$('today').textContent}</p><p style="font-size:20px">ציון: <b>${sc}</b> (${ok} מתוך ${ITEMS.length} סעיפים נכונים)</p></div>`;
+ let h=`<div class="rh"><h1>${CFG.title}</h1><p>שם: <b>${nm}</b> · כיתה: <b>${cl}</b> · תאריך: ${$('today').textContent}</p><p style="font-size:20px">ציון: <b>${sc}</b> (${ok} מתוך ${ITEMS.length} סעיפים נכונים)</p></div>`;
  let cur=0;ITEMS.forEach((x,k)=>{if(x.qn!==cur){if(cur)h+=`<div class="rx">הסבר: ${strip(ITEMS[k-1].Q.exp)}</div></div>`;cur=x.qn;h+=`<div class="rblk"><div class="rq">שאלה ${x.qn}: ${strip(x.Q.stem).slice(0,160)}${strip(x.Q.stem).length>160?'…':''}</div>`}
   h+=`<div class="rr"><span>${strip(x.it.label||'תשובה')}</span><span>${x.given}</span><span class="${x.ok?'y':'n'}">${x.ok?'✔':'✘'}</span>${x.ok?'':`<span class="rc">התשובה הנכונה: ${correctTxt(x.it)}</span>`}</div>`});
  h+=`<div class="rx">הסבר: ${strip(ITEMS[ITEMS.length-1].Q.exp)}</div></div><p class="rx" style="margin-top:12px">גנטיקה מנדלית · ביולוגיה י״ב · נבדק אוטומטית</p>`;$('report').innerHTML=h}
@@ -210,7 +212,7 @@ $('pdf').onclick=async()=>{const b=$('pdf');buildReport(state.score,state.ok);b.
   let y=0,first=true;while(y<canvas.height-2){let end=Math.min(y+pageH,canvas.height);const ok=cuts.filter(c=>c>y+20&&c<=end);if(end<canvas.height&&ok.length)end=Math.max(...ok);
    const c=document.createElement('canvas');c.width=canvas.width;c.height=end-y;c.getContext('2d').drawImage(canvas,0,y,canvas.width,end-y,0,0,canvas.width,end-y);
    if(!first)pdf.addPage();pdf.addImage(c.toDataURL('image/jpeg',.9),'JPEG',10,10,pw,(end-y)/px);first=false;y=end}
-  const nm=((window.STUDENT||{}).name||'תלמיד').replace(/[\\/:*?"<>|]/g,'');pdf.save(`גנטיקה-מנדלית-${nm}.pdf`);$('pdfMsg').textContent='הקובץ ירד. העלו אותו למשימה ב-Classroom ולחצו "הגשה".'}
+  const nm=((window.STUDENT||{}).name||'תלמיד').replace(/[\\/:*?"<>|]/g,'');pdf.save(`${CFG.file}-${nm}.pdf`);$('pdfMsg').textContent='הקובץ ירד. העלו אותו למשימה ב-Classroom ולחצו "הגשה".'}
  catch(e){console.error(e);$('pdfMsg').textContent='ההורדה הישירה לא הצליחה. נפתח חלון הדפסה: בחרו "שמירה כ-PDF" (Save as PDF).';window.print()}
  b.disabled=false;b.textContent=old};
 if(state.checked)showResults();
