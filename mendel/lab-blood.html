@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,">
+<title>מעבדה ותרגול 3: סוגי דם · גנטיקה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Rubik:wght@400;500;700&family=Amatic+SC:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="unit.css">
+<link rel="stylesheet" href="lab.css">
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+.qn{font-family:"Amatic SC",cursive;font-size:26px;color:var(--red);line-height:1}
+.scen{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:10px}
+.scen label{display:flex;flex-direction:column;gap:4px;border:2px solid var(--ink);padding:12px;cursor:pointer;background:#fff}
+.scen label:has(input:checked){background:#F4F8F5;outline:3px solid var(--hl)}
+.samples{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px}
+.sample{border:2px solid var(--ink);background:#fff;padding:10px;display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center}
+.wells{display:flex;gap:12px}
+.wells figure{display:flex;flex-direction:column;align-items:center;gap:4px;margin:0;font-size:14px}
+.slot.well{width:84px;height:84px;border-radius:50%;font:700 13px Rubik,Arial,sans-serif;font-style:normal;direction:rtl;background:#E9B3AC;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+.slot.well:empty::before{content:"טיפת דם";color:#7A2E27;text-shadow:none}
+.slot.well.smooth{background:#B8423A}
+.slot.well.agg{background:radial-gradient(circle at 30% 30%,#7A1F18 0 9%,transparent 10%),radial-gradient(circle at 65% 40%,#7A1F18 0 11%,transparent 12%),radial-gradient(circle at 45% 70%,#7A1F18 0 10%,transparent 11%),radial-gradient(circle at 75% 72%,#7A1F18 0 7%,transparent 8%),radial-gradient(circle at 25% 65%,#7A1F18 0 6%,transparent 7%),#F2D5D1}
+.people{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:10px}
+.person{border:2px solid var(--ink);background:#fff;padding:10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.chip sup,.slot sup{font-size:.6em;position:relative;top:-.6em;margin-inline-start:1px}
+.sitebar{position:fixed;top:10px;inset-inline-end:12px;z-index:50;display:flex;gap:6px}
+.sitebar a{font:700 14px Rubik,Arial,sans-serif;color:#1F4D3A;background:#fff;border:2px solid #1F4D3A;padding:5px 10px;text-decoration:none}
+.gate{position:fixed;inset:0;z-index:100;background:rgba(31,77,58,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.gate[hidden]{display:none}
+.gbox{background:#fff;border:3px solid #1F4D3A;max-width:420px;width:100%;padding:22px;display:flex;flex-direction:column;gap:12px;font-family:Rubik,Arial,sans-serif;color:#1F4D3A}
+.gbox h2{font-family:"Secular One",Rubik,sans-serif;font-weight:400;font-size:28px}.gbox label{display:flex;flex-direction:column;gap:4px;font-weight:500}
+.gbox input{font:inherit;font-size:18px;padding:8px;border:2px solid #1F4D3A}
+.gbox button{font:inherit;font-weight:700;font-size:18px;padding:10px;border:0;background:#1F4D3A;color:#fff;cursor:pointer}
+.gerr{color:#B8423A;font-weight:500;min-height:1.2em}
+@media print{.sitebar,.gate{display:none!important}}
+</style>
+</head>
+<body>
+<nav class="sitebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a></nav>
+<div class="gate" id="gate"><div class="gbox" role="dialog" aria-modal="true" aria-labelledby="gTitle"><h2 id="gTitle">לפני שמתחילים</h2><p>כתבו את השם והכיתה שלכם. הם יופיעו בקובץ שתעלו למשימה ב־Classroom.</p><label>שם מלא<input id="gName" autocomplete="name"></label><label>כיתה<input id="gClass"></label><p class="gerr" id="gErr"></p><button id="gGo">מתחילים</button></div></div>
+<main class="w">
+<span class="note">מעבדה ותרגול 3 · אחרי מצגת 3</span>
+<h1>מעבדת סוגי דם: מהבדיקה ועד התורשה</h1>
+<p class="lead">בודקים סוג דם בעזרת נוגדנים, קובעים גנוטיפים, בונים טבלת פאנט ומחשבים הסתברויות. בסוף: שאלות, התאמת מושגים והורדת קובץ.</p>
+<p class="src">סוגי דם, גן מרובה אללים וקו-דומיננטיות — לא בבגרות תשפ״ז</p>
+<label class="tmode" id="tmode"><input type="checkbox"> מצב מורה</label>
+<p class="tnote">בשלב 1 התלמידים מטפטפים כל נוגדן לבאר. אם טפטפו את שני הנוגדנים לאותה דגימה בסדר הפוך — זה בסדר, הבדיקה מתחשבת בנוגדן ולא במיקום.</p>
+
+<section class="card"><h2>בחרו משפחה</h2><div class="scen" id="scen"></div></section>
+<section class="card" id="data" hidden></section>
+
+<section class="step" data-n="1" hidden><span class="sn">שלב 1 · בדיקת סוג דם</span>
+<h3>טפטפו נוגדן נגד A לבאר אחת ונוגדן נגד B לבאר השנייה, בכל דגימה. אחר כך קבעו את סוג הדם.</h3>
+<div class="tray"><b>נוגדנים:</b><span class="chip t" tabindex="0" role="button" data-v="antiA">💧 נגד A</span><span class="chip t" tabindex="0" role="button" data-v="antiB">💧 נגד B</span></div>
+<div class="samples" id="s1"></div>
+<button id="s1c">בדיקה</button><div class="fb" id="s1f" role="status"></div></section>
+
+<section class="step" data-n="2" hidden><span class="sn">שלב 2 · גנוטיפים</span>
+<h3>גררו לכל אחד משלושת בני המשפחה את שני האללים שלו</h3>
+<p class="hint">התחילו ממי שהגנוטיפ שלו ודאי. אחר כך: מה כל הורה העביר לילד?</p>
+<div class="tray" id="s2t"></div>
+<div class="people" id="s2"></div>
+<button id="s2c">בדיקה</button><div class="fb" id="s2f" role="status"></div></section>
+
+<section class="step" data-n="3" hidden><span class="sn">שלב 3 · טבלת פאנט</span>
+<h3>גררו את הגמטות לכותרות, ואת האללים למשבצות</h3>
+<p class="hint">השורות: ביציות של האם ♀. העמודות: תאי זרע של האב ♂.</p>
+<div class="tray" id="s3t"></div>
+<div style="overflow-x:auto"><table class="pun2"><tr><th class="corner">♀ ביציות ↓<br>♂ זרע →</th><th><span class="slot" id="c0" tabindex="0" role="button" aria-label="גמטה 1 של האב"></span></th><th><span class="slot" id="c1" tabindex="0" role="button" aria-label="גמטה 2 של האב"></span></th></tr>
+<tr><th><span class="slot" id="r0" tabindex="0" role="button" aria-label="גמטה 1 של האם"></span></th><td id="x00"></td><td id="x01"></td></tr>
+<tr><th><span class="slot" id="r1" tabindex="0" role="button" aria-label="גמטה 2 של האם"></span></th><td id="x10"></td><td id="x11"></td></tr></table></div>
+<button id="s3c">בדיקה</button><div class="fb" id="s3f" role="status"></div></section>
+
+<section class="step" data-n="4" hidden><span class="sn">שלב 4 · הסתברות</span>
+<h3 id="s4q"></h3>
+<div class="row"><input class="t" id="s4in" inputmode="decimal" placeholder="1/4" style="width:7em;direction:ltr;text-align:center" aria-label="תשובה"><button id="s4c">בדיקה</button></div>
+<div class="fb" id="s4f" role="status"></div></section>
+
+<section class="card"><h2>שאלות תרגול</h2><p class="hint">משוב מיידי. כל ניסיון נרשם בדוח.</p></section>
+<div id="qs"></div>
+
+<section class="card"><h2>שאלות בסגנון בגרות</h2><p class="hint">כתבו תשובה מלאה, כמו בבחינה. אחר כך פתחו את המחוון וסמנו מה כלול בתשובה שלכם.</p></section>
+<div id="bq"></div>
+
+<section class="card"><h2>התאמת מושגים</h2><div class="match" id="match"></div><button id="mchk">בדיקה</button><div class="fb" id="mfb" role="status"></div></section>
+
+<section class="card"><h2>סיום: הורדת קובץ</h2><p>הקובץ כולל את השם, את השלבים, את התשובות ואת מספר הניסיונות.</p>
+<button class="dl" id="dl">⬇ הורדת קובץ PDF</button><p class="hint" id="dlmsg"></p></section>
+
+<p class="row"><a class="btn ghost" href="deck3.html">→ מצגת 3</a><a class="btn" href="index.html">לדף הפרק ←</a></p>
+<p class="credit">היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים.</p>
+</main>
+<div id="report" aria-hidden="true"></div>
+<script src="lab.js"></script>
+<script>
+(function(){const tm=$('tmode');let on=false;try{on=localStorage.getItem('genetika-teacher')==='1'}catch(e){}
+ const set=v=>{document.body.classList.toggle('teacher',v);tm.querySelector('input').checked=v};set(on);
+ tm.querySelector('input').onchange=e=>{set(e.target.checked);try{localStorage.setItem('genetika-teacher',e.target.checked?'1':'0')}catch(er){}}})();
+
+const AL = { A: 'I<sup>A</sup>', B: 'I<sup>B</sup>', o: 'i' };          // קודים פנימיים: A, B, o
+const gtxt = g => g.split('').sort((x, y) => 'ABo'.indexOf(x) - 'ABo'.indexOf(y)).map(a => AL[a]).join('');
+const typeOf = g => g.includes('A') && g.includes('B') ? 'AB' : g.includes('A') ? 'A' : g.includes('B') ? 'B' : 'O';
+const FAM = {
+ f1:{name:'👨‍👩‍👦 משפחה 1', sub:'אם A, אב B — ילד O?', m:'Ao', f:'Bo', c:'oo',
+  intro:'בבדיקת דם שגרתית התגלה שלילד סוג דם O, אף שלאמו סוג דם A ולאביו סוג דם B. האם ייתכן?',
+  why:'הילד ii קיבל i מכל הורה. לכן האם I<sup>A</sup>i והאב I<sup>B</sup>i.',
+  pq:'מה ההסתברות שילד נוסף של בני הזוג יהיה בעל סוג דם AB?', pa:.25, pok:'נכון. I<sup>A</sup>i × I<sup>B</sup>i ← AB : A : B : O = 1 : 1 : 1 : 1, ולכן 1/4.'},
+ f2:{name:'👩‍👧 משפחה 2', sub:'אם AB, אב O', m:'AB', f:'oo', c:'Bo',
+  intro:'לאם סוג דם AB, לאב סוג דם O, ולבת שלהם סוג דם B.',
+  why:'האם AB היא I<sup>A</sup>I<sup>B</sup> בוודאות, והאב O הוא ii. הבת קיבלה I<sup>B</sup> מהאם ו-i מהאב: I<sup>B</sup>i.',
+  pq:'מה ההסתברות שילד נוסף שלהם יהיה בעל סוג דם O?', pa:0, pok:'נכון: 0. לאם אין אלל i, ולכן כל ילד מקבל ממנה I<sup>A</sup> או I<sup>B</sup>. הילדים יהיו A או B בלבד.'}
+};
+let F = null;
+$('scen').innerHTML = Object.entries(FAM).map(([k, f]) => `<label><input type="radio" name="sc" value="${k}"> <b>${f.name}</b><span class="hint">${f.sub}</span></label>`).join('');
+$('scen').onchange = e => start(e.target.value);
+const P = () => [['m', '♀ אם', F.m], ['f', '♂ אב', F.f], ['c', 'ילד/ה', F.c]];
+
+function start(k) {
+ F = FAM[k]; Lab.reset(0); document.querySelectorAll('.fb').forEach(x => x.className = 'fb');
+ $('data').hidden = false; $('data').innerHTML = `<h2>${F.name.slice(F.name.indexOf(' ') + 1)}</h2><p>${F.intro}</p>`;
+ $('s1').innerHTML = P().map(([id, who]) => `<div class="sample"><b>${who}</b><div class="wells"><figure>${slot('w' + id + '0', 'well')}<figcaption>באר 1</figcaption></figure><figure>${slot('w' + id + '1', 'well')}<figcaption>באר 2</figcaption></figure></div>
+   <label>סוג דם: <select id="t${id}"><option value="">?</option><option>A</option><option>B</option><option>AB</option><option>O</option></select></label></div>`).join('');
+ document.querySelector('.step[data-n="1"]').hidden = false; setTimeout(() => $('data').scrollIntoView({ behavior: 'smooth' }), 100);
+}
+// תגובת הבאר לנוגדן
+document.addEventListener('lab:drop', e => {
+ const w = e.target; if (!w.classList || !w.classList.contains('well') || !F) return;
+ const id = w.id[1], g = P().find(p => p[0] === id)[2], t = typeOf(g), v = w.dataset.v;
+ w.classList.remove('agg', 'smooth'); if (!v) return;
+ const agg = (v === 'antiA' && t.includes('A')) || (v === 'antiB' && t.includes('B'));
+ w.classList.add(agg ? 'agg' : 'smooth'); w.innerHTML = (v === 'antiA' ? 'נגד A' : 'נגד B') + '<br>' + (agg ? 'התגבשות' : 'אין');
+});
+$('s1c').onclick = () => {
+ let msg = [], ok = true;
+ P().forEach(([id, who, g]) => { const v = [0, 1].map(i => $('w' + id + i).dataset.v || '');
+  if (!sameSet(v, ['antiA', 'antiB'])) { ok = false; msg.push(`${who}: צריך נוגדן נגד A בבאר אחת ונגד B בשנייה`); return }
+  const sel = $('t' + id).value; if (sel !== typeOf(g)) { ok = false; msg.push(`${who}: ${sel ? 'סוג הדם לא מתאים לתוצאות' : 'בחרו סוג דם'}`) } });
+ fb($('s1f'), ok, ok ? 'נכון! התגבשות עם נוגדן נגד A ← יש אנטיגן A. התגבשות עם נוגדן נגד B ← יש אנטיגן B. בלי התגבשות בכלל ← O.' : msg.join('<br>'));
+ Lab.rec('שלב 1: בדיקת סוג דם', ok, P().map(([id, w]) => `${w}: ${$('t' + id).value || '?'}`).join(' · ')); if (ok) Lab.solve(1);
+};
+document.querySelector('.step[data-n="2"]').addEventListener('open', () => {
+ $('s2t').innerHTML = '<b>אללים:</b>' + ['A', 'B', 'o'].map(a => chip(a, AL[a])).join('');
+ $('s2').innerHTML = P().map(([id, who, g]) => `<div class="person"><b>${who}</b><span>סוג דם ${typeOf(g)}</span><div class="row">${slot('a' + id + '0')}${slot('a' + id + '1')}</div></div>`).join('');
+});
+$('s2c').onclick = () => {
+ let bad = [], amb = [];
+ P().forEach(([id, who, g]) => { const v = [0, 1].map(i => $('a' + id + i).dataset.v || ''); if (v.some(x => !x)) { bad.push(who + ' (חסר אלל)'); return }
+  const ok = sameSet(v, g.split('')); [0, 1].forEach(i => $('a' + id + i).classList.add(ok ? 'ok' : 'no'));
+  if (!ok) { if (typeOf(v.join('')) === typeOf(g)) amb.push(who); else bad.push(who) } });
+ const ok = !bad.length && !amb.length;
+ let m = ok ? 'נכון! ' + F.why : '';
+ if (bad.length) m += `לא מתאים לסוג הדם: ${bad.join(', ')}. `;
+ if (amb.length) m += `${amb.join(', ')}: הגנוטיפ מתאים לסוג הדם, אבל בדקו מה עבר לילד. ${'הילד קיבל אלל אחד מכל הורה.'}`;
+ fb($('s2f'), ok, m); Lab.rec('שלב 2: גנוטיפים', ok, P().map(([id, w]) => `${w}: ${plain(gtxt([0, 1].map(i => $('a' + id + i).dataset.v || '').join('')) || '?')}`).join(' · ')); if (ok) Lab.solve(2);
+};
+document.querySelector('.step[data-n="3"]').addEventListener('open', () => {
+ $('s3t').innerHTML = '<b>♀ ביציות:</b>' + F.m.split('').map(a => chip(a, AL[a])).join('') + '<b style="margin-inline-start:12px">♂ זרע:</b>' + F.f.split('').map(a => chip(a, AL[a])).join('') + '<b style="margin-inline-start:12px">אללים:</b>' + ['A', 'B', 'o'].map(a => chip(a, AL[a])).join('');
+ ['c0', 'c1', 'r0', 'r1'].forEach(i => { const s = $(i); delete s.dataset.v; s.innerHTML = ''; s.className = 'slot' });
+ ['00', '01', '10', '11'].forEach(x => $('x' + x).innerHTML = slot('x' + x + 'a') + slot('x' + x + 'b'));
+});
+$('s3c').onclick = () => {
+ const R = slotVals('#r0,#r1'), Cc = slotVals('#c0,#c1');
+ if ([...R, ...Cc].some(v => !v)) return fb($('s3f'), false, 'השלימו את ארבע הכותרות.');
+ const okH = sameSet(R, F.m.split('')) && sameSet(Cc, F.f.split('')), sw = !okH && sameSet(R, F.f.split('')) && sameSet(Cc, F.m.split(''));
+ if (!okH && !sw) { Lab.rec('שלב 3: טבלת פאנט', false, 'כותרות'); return fb($('s3f'), false, 'הכותרות לא תואמות לגמטות של ההורים.') }
+ let wrong = 0, empty = 0;
+ ['00', '01', '10', '11'].forEach(x => { const v = slotVals(`#x${x}a,#x${x}b`); if (v.some(e => !e)) { empty++; return }
+  const ok = sameSet(v, [R[+x[0]], Cc[+x[1]]]); if (!ok) wrong++; [`x${x}a`, `x${x}b`].forEach(id => $(id).classList.add(ok ? 'ok' : 'no')) });
+ if (empty) return fb($('s3f'), false, (empty === 1 ? 'יש משבצת אחת לא מלאה.' : `יש ${empty} משבצות לא מלאות.`));
+ if (wrong) { Lab.rec('שלב 3: טבלת פאנט', false, `${wrong} שגויות`); return fb($('s3f'), false, `${wrong === 1 ? 'משבצת אחת לא נכונה' : wrong + ' משבצות לא נכונות'}.`) }
+ const types = {}; ['00', '01', '10', '11'].forEach(x => { const t = typeOf(slotVals(`#x${x}a,#x${x}b`).join('')); types[t] = (types[t] || 0) + 1 });
+ fb($('s3f'), true, (sw ? 'נכון (ההורים בכותרות הפוכות — בתוצאה זה לא משנה). ' : 'נכון! ') + 'סוגי הדם בצאצאים: ' + Object.entries(types).map(([t, n]) => `${t}: ${n}/4`).join(' · '));
+ Lab.rec('שלב 3: טבלת פאנט', true, Object.entries(types).map(([t, n]) => `${t}:${n}`).join(' ')); Lab.solve(3);
+};
+document.querySelector('.step[data-n="4"]').addEventListener('open', () => { $('s4q').textContent = F.pq; $('s4in').value = '' });
+$('s4c').onclick = () => { const raw = $('s4in').value, v = parseFrac(raw), ok = Math.abs(v - F.pa) < .005;
+ fb($('s4f'), ok, ok ? F.pok + '<br><b>סיימתם את המשפחה הזו. אפשר לבחור משפחה אחרת או להמשיך לשאלות.</b>' : 'עדיין לא. היעזרו בטבלת הפאנט: כמה משבצות מתוך 4?'); Lab.rec('שלב 4: הסתברות', ok, raw); if (ok) Lab.solve(4) };
+
+const QS = [
+ {src:'ברוח בגרות 2020 ומבחן רבעון ג (עליזה, עינה וחגית)', stem:'לאם סוג דם A, ולבנה סוג דם O. <b>מה הגנוטיפ של האם?</b>',
+  opts:[`${L('I<sup>A</sup>i')}`,`${L('I<sup>A</sup>I<sup>A</sup>')}`,`${L('I<sup>A</sup>I<sup>B</sup>')}`,'אי אפשר לדעת'], ans:0,
+  ok:'נכון. הבן ii קיבל i מאמו.', no:['','לאם I<sup>A</sup>I<sup>A</sup> אין i להעביר.','לאם I<sup>A</sup>I<sup>B</sup> סוג דם AB.','הבן O מכריע: האם נושאת i.']},
+ {src:'מצגת 3 · עירוי', stem:'לחולה סוג דם B. <b>מאילו תורמים אפשר לתת לו תאי דם?</b>',
+  opts:['B ו-O','B בלבד','B ו-AB','כל הסוגים'], ans:0,
+  ok:'נכון. בפלזמה שלו נוגדנים נגד A, ולכן אסור לתת תאים עם אנטיגן A (A או AB).', no:['','גם O מתאים: אין על תאיו אנטיגן A או B.','לתאי AB יש אנטיגן A, ונוגדני נגד A של החולה יגרמו להתגבשות.','לחולה B יש נוגדנים נגד A.']},
+ {src:'מצגת 3 · התאמת הורים', stem:'בבית חולים התחלפו שני תינוקות: אחד בסוג דם O ואחד בסוג דם AB. לזוג הראשון סוגי דם A ו-B, ולזוג השני סוגי דם O ו-O. <b>איזה תינוק שייך לזוג השני?</b>',
+  opts:['התינוק בסוג דם O','התינוק בסוג דם AB','אי אפשר לדעת','שניהם יכולים להיות שלהם'], ans:0,
+  ok:'נכון. זוג ii × ii יכול להוליד רק ii — סוג O. התינוק AB שייך לזוג A × B.', no:['','לזוג O × O אין אללים I<sup>A</sup> או I<sup>B</sup>.','זוג O × O מוליד רק O, וזה מכריע.','זוג O × O אינו יכול להוליד AB.']},
+ {src:'מצגת 3 · קו-דומיננטיות (בקר רואן)', type:'frac', stem:`בבקר, האללים לפרווה אדומה (${L('A<sup>1</sup>')}) ולבנה (${L('A<sup>2</sup>')}) קו-דומיננטיים: ${L('A<sup>1</sup>A<sup>2</sup>')} — "רואן" (שערות אדומות ושערות לבנות). <b>מה ההסתברות שצאצא של שני פרטים רואן יהיה רואן?</b>`,
+  ans:.5, ok:'נכון. A¹A² × A¹A² ← ‏1 A¹A¹ (אדום) : 2 A¹A² (רואן) : 1 A²A² (לבן). 2/4 = 1/2.', hint:'בנו טבלת פאנט. בקו-דומיננטיות לכל גנוטיפ פנוטיפ משלו.'},
+ {src:'מצגת 3 · התאמת הורים', stem:'לילד סוג דם AB. <b>איזה זוג הורים לא יכול להיות זוג ההורים שלו?</b>',
+  opts:['A ו-O','A ו-B','AB ו-A','AB ו-AB'], ans:0,
+  ok:'נכון. לילד I<sup>A</sup>I<sup>B</sup>: הוא קיבל I<sup>A</sup> מהורה אחד ו-I<sup>B</sup> מהאחר. לזוג A ו-O אין אלל I<sup>B</sup>.', no:['','זוג I<sup>A</sup>_ × I<sup>B</sup>_ יכול להעביר I<sup>A</sup> ו-I<sup>B</sup>.','ההורה AB יכול להעביר I<sup>B</sup>, וההורה A יכול להעביר I<sup>A</sup>.','שני הורים AB יכולים להוליד ילד AB.']}
+];
+renderQuestions($('qs'), QS, 'q');
+renderMatch($('match'), [
+ ['אנטיגן','מולקולה על קרום התא שנוגדן מסוים נקשר אליה'], ['נוגדן','חלבון בפלזמה שנקשר לאנטיגן מסוים'],
+ ['גן מרובה אללים','גן שיש לו באוכלוסייה יותר משני אללים'], ['קו-דומיננטיות','שני האללים מתבטאים בפנוטיפ של ההטרוזיגוט'],
+ ['התגבשות (הצמתה)','היצמדות תאי דם זה לזה בעקבות קישור נוגדנים לאנטיגנים'], ['סוג דם O','בלי אנטיגנים A ו-B על תאי הדם האדומים'],
+ ['סוג דם AB','גנוטיפ IᴬIᴮ: שני האללים מתבטאים']
+], $('mchk'), $('mfb'));
+renderBagrut($('bq'), [
+ {src:'בסגנון בגרות · סוגי דם — לא במיקוד תשפ״ז', title:'ילד בסוג דם O', stem:`<p>לאם סוג דם A ולאב סוג דם B. לבני הזוג נולד ילד בעל סוג דם O.</p>`,
+  parts:[{n:'', task:'הַסבירו כיצד ייתכן שלהורים אלה נולד ילד בעל סוג דם O. היעזרו בתרשים הכלאה, וציינו את הגנוטיפים של שלושתם.', pts:5,
+    rubric:[[`לילד גנוטיפ ${L('ii')}: הוא קיבל ${L('i')} מכל הורה`,40],[`האם ${L('I<sup>A</sup>i')} והאב ${L('I<sup>B</sup>i')}`,30],['תרשים/טבלת הכלאה: AB, A, B, O ביחס 1 : 1 : 1 : 1',30]],
+    model:'סוג O הוא ii, ולכן הילד קיבל i מכל הורה. לכן האם I<sup>A</sup>i והאב I<sup>B</sup>i. בהכלאה I<sup>A</sup>i × I<sup>B</sup>i מתקבלים I<sup>A</sup>I<sup>B</sup> (AB), I<sup>A</sup>i (A), I<sup>B</sup>i (B) ו-ii (O), כל אחד ב-1/4.'}]}
+], 'b');
+$('dl').onclick = () => labPdf('מעבדה ותרגול 3: סוגי דם', 'מעבדה3-סוגי-דם');
+</script>
+<script>async function downloadPdf(el,fname,filter){const scale=2;const canvas=await htmlToImage.toCanvas(el,{pixelRatio:scale,backgroundColor:'#ffffff',filter});
+ const{jsPDF}=window.jspdf;const pdf=new jsPDF({unit:'mm',format:'a4'});const pw=190,ph=277,px=canvas.width/pw,pageH=Math.floor(ph*px);let y=0,first=true;
+ while(y<canvas.height-2){const end=Math.min(y+pageH,canvas.height);const c=document.createElement('canvas');c.width=canvas.width;c.height=end-y;c.getContext('2d').drawImage(canvas,0,y,canvas.width,end-y,0,0,canvas.width,end-y);
+  if(!first)pdf.addPage();pdf.addImage(c.toDataURL('image/jpeg',.9),'JPEG',10,10,pw,(end-y)/px);first=false;y=end}pdf.save(fname)}</script><script>(function(){const g=document.getElementById('gate'),n=document.getElementById('gName'),c=document.getElementById('gClass');
+try{const s=JSON.parse(localStorage.getItem('genetika-student')||'{}');n.value=s.name||'';c.value=s.cls||''}catch(e){}
+document.getElementById('gGo').onclick=()=>{const nm=n.value.trim(),cl=c.value.trim();
+ if(nm.length<2||!cl){document.getElementById('gErr').textContent='כתבו שם (לפחות 2 אותיות) וכיתה.';return}
+ try{localStorage.setItem('genetika-student',JSON.stringify({name:nm,cls:cl}))}catch(e){}
+ document.querySelectorAll('[data-fill="name"]').forEach(e=>{if('value' in e)e.value=nm;else e.textContent=nm});
+ document.querySelectorAll('[data-fill="class"]').forEach(e=>{if('value' in e)e.value=cl;else e.textContent=cl});
+ window.STUDENT={name:nm,cls:cl};g.hidden=true};n.focus()})();</script>
+</body>
+</html>

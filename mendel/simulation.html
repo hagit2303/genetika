@@ -147,8 +147,8 @@ footer{margin-top:24px;font-size:13px;color:var(--mut)}
 <p class="hint">קראו את הנתונים. את הכול בונים לבד: מקרא, הורים, גמטות, משבצות ויחס. כתבו גנוטיפים באותיות לטיניות, למשל <span class="L">Bb</span>.</p>
 <div class="scen" id="bScen"></div>
 <div class="step" id="b1"><h3>שלב א: מקרא</h3><div class="row" id="bLegend"></div><button class="btn" data-chk="b1" style="margin-top:8px">בדיקה</button><div class="fb"></div></div>
-<div class="step" id="b2" hidden><h3>שלב ב: מה הגנוטיפים של ההורים?</h3><div class="row"><label>הורה 1: <input class="g" id="bp1"></label><label>הורה 2: <input class="g" id="bp2"></label></div><button class="btn" data-chk="b2" style="margin-top:8px">בדיקה</button><div class="fb"></div></div>
-<div class="step" id="b3" hidden><h3>שלב ג: בנו את טבלת הפאנט</h3><p class="hint">בשורה העליונה: הגמטות של הורה 2. בעמודה הימנית: הגמטות של הורה 1. כל גמטה מכילה אלל אחד. אחר כך מלאו את המשבצות.</p>
+<div class="step" id="b2" hidden><h3>שלב ב: מה הגנוטיפים של ההורים?</h3><p class="hint">כתבו קודם את הגנוטיפ של הנקבה ♀, ואחר כך של הזכר ♂. בצמחים: ♀ — הצמח שמקבל את האבקה ובו מתפתחים הזרעים, ♂ — הצמח שתורם את האבקה.</p><div class="row"><label>♀ נקבה: <input class="g" id="bp1"></label><label>♂ זכר: <input class="g" id="bp2"></label></div><button class="btn" data-chk="b2" style="margin-top:8px">בדיקה</button><div class="fb"></div></div>
+<div class="step" id="b3" hidden><h3>שלב ג: בנו את טבלת הפאנט</h3><p class="hint">בשורה העליונה: הגמטות של הזכר ♂. בעמודה הימנית: הגמטות של הנקבה ♀. כל גמטה מכילה אלל אחד. אחר כך מלאו את המשבצות.</p>
 <div style="overflow-x:auto"><table class="pun" id="bPun"></table></div><button class="btn" data-chk="b3" style="margin-top:8px">בדיקה</button><div class="fb"></div></div>
 <div class="step" id="b4" hidden><h3>שלב ד: סכמו את התוצאות</h3><div id="bSum"></div><button class="btn" data-chk="b4" style="margin-top:8px">בדיקה</button><div class="fb"></div></div>
 <div class="step" id="b5" hidden><h3>שלב ה: שאלת חישוב</h3><p id="bQ"></p><div class="row"><input class="n" id="bAns"></div><button class="btn" data-chk="b5" style="margin-top:8px">בדיקה</button><div class="fb"></div></div>
@@ -169,7 +169,7 @@ footer{margin-top:24px;font-size:13px;color:var(--mut)}
 <section class="panel" id="grow"><div class="box">
 <h2>גידול צאצאים</h2><p>בכל צאצא, כל הורה תורם גמטה אקראית. כמה קרוב היחס המתקבל ליחס הצפוי?</p>
 <div class="row" id="gOrg" style="margin:8px 0"></div>
-<div class="row"><b>הורה 1:</b><span class="row" id="gp1"></span></div><div class="row" style="margin-top:6px"><b>הורה 2:</b><span class="row" id="gp2"></span></div>
+<div class="row"><b>♀ נקבה:</b><span class="row" id="gp1"></span></div><div class="row" style="margin-top:6px"><b>♂ זכר:</b><span class="row" id="gp2"></span></div>
 <div class="row" style="margin:12px 0"><button class="btn" data-n="10">10 צאצאים</button><button class="btn" data-n="100">100 צאצאים</button><button class="btn" data-n="1000">1,000 צאצאים</button></div>
 <div class="dots" id="dots"></div><div style="overflow-x:auto"><table class="res" id="gRes"></table></div>
 <p class="hint">הקו האדום בכל פס מסמן את השכיחות הצפויה.</p>
@@ -226,17 +226,17 @@ let B=null;
 function newBuild(){
  const o=Math.random()<.16?CO:rnd(DOMS);const N=rnd([80,120,160,200,240,320,400]);let s;
  if(o.co){const k=rnd(['RWxRR','RWxRW','RWxWW']);
-  if(k==='RWxRR')s={p1:'12',p2:'11',txt:`פרט בעל ${o.PH} הוכלא עם פרט בעל ${o.PX}.`,ask:{p:o.PH}};
-  if(k==='RWxRW')s={p1:'12',p2:'12',txt:`שני פרטים בעלי ${o.PH} הוכלאו זה עם זה.`,ask:{p:o.PY}};
-  if(k==='RWxWW')s={p1:'12',p2:'22',txt:`פרט בעל ${o.PH} הוכלא עם פרט בעל ${o.PY}.`,ask:{p:o.PY}};
+  if(k==='RWxRR')s={p1:'12',p2:'11',txt:`נקבה ♀ בעלת ${o.PH} הוכלאה עם זכר ♂ בעל ${o.PX}.`,ask:{p:o.PH}};
+  if(k==='RWxRW')s={p1:'12',p2:'12',txt:`נקבה ♀ וזכר ♂, שניהם בעלי ${o.PH}, הוכלאו זה עם זה.`,ask:{p:o.PY}};
+  if(k==='RWxWW')s={p1:'12',p2:'22',txt:`נקבה ♀ בעלת ${o.PH} הוכלאה עם זכר ♂ בעל ${o.PY}.`,ask:{p:o.PY}};
   s.intro='בבקר שורטהורן צבע הפרווה מורש בקו-דומיננטיות (העשרה). בהטרוזיגוט שני האללים מתבטאים: פרווה רואן, שערות אדומות ושערות לבנות מעורבות. סמנו את שני האללים באות A, ומעל כל אחד מספר: A¹ לפרווה אדומה ו-A² לפרווה לבנה. בתיבות כתבו רק את המספרים, למשל 12 (עבור A¹A²).'}
  else{const D=o.L,r=D.toLowerCase(),AA=D+D,Aa=D+r,aa=r+r;const k=rnd(['F1xF1','het_rec','pure_het','sibs','rec_pure','carrier']);
-  if(k==='F1xF1')s={p1:Aa,p2:Aa,txt:`הכליאו ${o.n} מזן טהור בעל ${o.D} עם ${o.n} מזן טהור בעל ${o.R}. שני צאצאים מ-F₁ הוכלאו זה עם זה. בנו טבלת פאנט להכלאה בין שני צאצאי F₁.`,ask:{p:o.R}};
-  if(k==='het_rec')s={p1:Aa,p2:aa,txt:`${o.n} בעל ${o.D}, שאחד מהוריו היה בעל ${o.R}, הוכלא עם ${o.n} בעל ${o.R}.`,ask:{p:rnd([o.D,o.R])}};
-  if(k==='pure_het')s={p1:AA,p2:Aa,txt:`${o.n} מזן טהור בעל ${o.D} הוכלא עם ${o.n} בעל ${o.D} שאחד מהוריו היה בעל ${o.R}.`,ask:{g:AA}};
-  if(k==='sibs')s={p1:Aa,p2:Aa,txt:`לשני ${o.np} בעלי ${o.D} נולד צאצא בעל ${o.R}. ההורים הוכלאו שוב.`,ask:{g:Aa}};
-  if(k==='rec_pure')s={p1:aa,p2:AA,txt:`${o.n} בעל ${o.R} הוכלא עם ${o.n} מזן טהור בעל ${o.D}.`,ask:{p:o.R}};
-  if(k==='carrier')s={p1:Aa,p2:Aa,txt:`${o.n} בעל ${o.D}, שאחד מהוריו היה בעל ${o.R}, הוכלא עם ${o.n} בעל ${o.D} שגם אחד מהוריו היה בעל ${o.R}.`,ask:{g2:Aa}};
+  if(k==='F1xF1')s={p1:Aa,p2:Aa,txt:`הכליאו ${o.n} מזן טהור בעל ${o.D} עם ${o.n} מזן טהור בעל ${o.R}. שני צאצאים מ-F₁, נקבה ♀ וזכר ♂, הוכלאו זה עם זה. בנו טבלת פאנט להכלאה בין שני צאצאי F₁.`,ask:{p:o.R}};
+  if(k==='het_rec')s={p1:Aa,p2:aa,txt:`נקבה ♀ (${o.n}) בעלת ${o.D}, שאחד מהוריה היה בעל ${o.R}, הוכלאה עם זכר ♂ (${o.n}) בעל ${o.R}.`,ask:{p:rnd([o.D,o.R])}};
+  if(k==='pure_het')s={p1:AA,p2:Aa,txt:`נקבה ♀ (${o.n}) מזן טהור בעלת ${o.D} הוכלאה עם זכר ♂ (${o.n}) בעל ${o.D}, שאחד מהוריו היה בעל ${o.R}.`,ask:{g:AA}};
+  if(k==='sibs')s={p1:Aa,p2:Aa,txt:`לנקבה ♀ ולזכר ♂, שניהם ${o.np} בעלי ${o.D}, נולד צאצא בעל ${o.R}. ההורים הוכלאו שוב.`,ask:{g:Aa}};
+  if(k==='rec_pure')s={p1:aa,p2:AA,txt:`נקבה ♀ (${o.n}) בעלת ${o.R} הוכלאה עם זכר ♂ (${o.n}) מזן טהור בעל ${o.D}.`,ask:{p:o.R}};
+  if(k==='carrier')s={p1:Aa,p2:Aa,txt:`נקבה ♀ (${o.n}) בעלת ${o.D}, שאחד מהוריה היה בעל ${o.R}, הוכלאה עם זכר ♂ (${o.n}) בעל ${o.D}, שגם אחד מהוריו היה בעל ${o.R}.`,ask:{g2:Aa}};
   s.intro=`${o.sp}, האלל ל${o.D} דומיננטי לעומת האלל ל${o.R}. השתמשו באות ${D}.`;if(o.id==='sheep')s.intro='בעדר של יעקב (בראשית ל): נניח שצבע הצמר נקבע על ידי גן אחד. '+s.intro}
  s.o=o;s.N=N;B=s;
  const e=expect(o,s.p1,s.p2),gf=genoFrac(o,s.p1,s.p2);
@@ -250,24 +250,24 @@ function newBuild(){
  $('bp1').value=$('bp2').value='';$('bp1').className=$('bp2').className='g';$('bAns').value='';$('bAns').className='n';$('bSol').innerHTML='';
  for(const k in tried)if(k[0]==='b')delete tried[k];
  $('bQ').innerHTML=s.qtxt;
- $('bPun').innerHTML=`<tr><th class="corner">גמטות</th><th><input class="g" data-h="c0" aria-label="גמטה של הורה 2"></th><th><input class="g" data-h="c1" aria-label="גמטה של הורה 2"></th></tr>`+
-  [0,1].map(i=>`<tr><th><input class="g" data-h="r${i}" aria-label="גמטה של הורה 1"></th>`+[0,1].map(j=>`<td><input class="g" data-c="${i}${j}" aria-label="גנוטיפ"></td>`).join('')+'</tr>').join('');
+ $('bPun').innerHTML=`<tr><th class="corner">גמטות</th><th><input class="g" data-h="c0" aria-label="גמטה של הזכר"></th><th><input class="g" data-h="c1" aria-label="גמטה של הזכר"></th></tr>`+
+  [0,1].map(i=>`<tr><th><input class="g" data-h="r${i}" aria-label="גמטה של הנקבה"></th>`+[0,1].map(j=>`<td><input class="g" data-c="${i}${j}" aria-label="גנוטיפ"></td>`).join('')+'</tr>').join('');
  const G=(()=>{const[a,b]=al(o);return[a+a,a+b,b+b]})();
  $('bSum').innerHTML=`<table class="res"><tr><th>גנוטיפ</th><th>מספר משבצות (מתוך 4)</th><th>פנוטיפ</th></tr>`+G.map(g=>`<tr><td>${fg(o,g)}</td><td><input class="n" style="width:70px" data-gc="${g}"></td><td><select data-gp="${g}"><option value="">בחרו</option>${phs(o).map(p=>`<option>${p}</option>`).join('')}</select></td></tr>`).join('')+`</table>
- <div class="row" style="margin-top:8px"><label>יחס הפנוטיפים בצאצאים: <input class="n" id="bRatio" style="width:140px" placeholder="למשל 3:1"></label></div><p class="hint">כתבו את היחס לפי הסדר: ${phs(o).join(' : ')}. אם פנוטיפ לא מופיע בצאצאים, כתבו בשבילו 0.</p>`;
+ <div class="row" style="margin-top:8px"><label>יחס הפנוטיפים בצאצאים: <input class="n" id="bRatio" style="width:140px" placeholder="למשל 3:1"></label></div><p class="hint">כתבו את היחס לפי הסדר: ${phs(o).join(' : ')}. אם פנוטיפ לא מופיע בצאצאים, כתבו במקומו 0.</p>`;
 }
 function chkBuild(step){const o=B.o;tried[step]=(tried[step]||0)+1;
  if(step==='b1'){let ok=true;$('bLegend').querySelectorAll('input').forEach(i=>{const v=i.value.trim();const want=o.co?(i.dataset.ph==='X'?o.X:o.Y):(i.dataset.ph==='D'?o.L:o.L.toLowerCase());const g=o.co?v.toUpperCase()===want:v===want;mark(i,g);if(!g)ok=false});
   if(ok){fb(step,true,'נכון. אות אחת לגן: '+(o.co?'בקו-דומיננטיות: אותה אות לשני האללים, ומעל כל אחד מספר.':'גדולה לאלל הדומיננטי, קטנה לאלל הרצסיבי.'));pts(step,1,0);$('b2').hidden=false}
   else fb(step,false,o.co?'בקו-דומיננטיות: A<sup>1</sup> לפרווה אדומה, A<sup>2</sup> לפרווה לבנה. כתבו רק 1 או 2.':`השתמשו באות ${o.L}: אות גדולה לאלל הדומיננטי ואות קטנה לאלל הרצסיבי.`)}
- if(step==='b2'){const r1=readG(o,$('bp1').value),r2=readG(o,$('bp2').value);const ok1=!!r1&&r1.g===B.p1,ok2=!!r2&&r2.g===B.p2;mark($('bp1'),ok1);mark($('bp2'),ok2);
-  if(ok1&&ok2){fb(step,true,'נכון. '+(r1.order&&r2.order?'':'שימו לב: נהוג לכתוב קודם את האות הגדולה. ')+`הורה 1: ${fg(o,B.p1)}, הורה 2: ${fg(o,B.p2)}.`);pts(step,2,1);$('b3').hidden=false}
+ if(step==='b2'){const r1=readG(o,$('bp1').value),r2=readG(o,$('bp2').value);const sw=!!r1&&!!r2&&B.p1!==B.p2&&r1.g===B.p2&&r2.g===B.p1;const ok1=!!r1&&r1.g===B.p1||sw,ok2=!!r2&&r2.g===B.p2||sw;mark($('bp1'),ok1);mark($('bp2'),ok2);
+  if(ok1&&ok2){fb(step,true,'נכון. '+(sw?'הגנוטיפים נכונים, רק שימו לב לסדר: הראשון הוא של הנקבה ♀ והשני של הזכר ♂. ':'')+(r1.order&&r2.order?'':'שימו לב: נהוג לכתוב קודם את האות הגדולה. ')+`♀ נקבה: ${fg(o,B.p1)}, ♂ זכר: ${fg(o,B.p2)}.`);pts(step,2,1);$('b3').hidden=false}
   else fb(step,false,'לא מדויק. היעזרו בנתונים: "זן טהור" = הומוזיגוט. פרט בעל פנוטיפ רצסיבי = הומוזיגוט רצסיבי. אם להורה של פרט היה פנוטיפ רצסיבי, הפרט קיבל ממנו אלל רצסיבי.')}
  if(step==='b3'){const h=k=>readA(o,$('bPun').querySelector(`[data-h="${k}"]`).value);const rows=[h('r0'),h('r1')],cols=[h('c0'),h('c1')];
-  const okR=rows.every(x=>x)&&[...rows].sort().join()===[...B.p1].sort().join(),okC=cols.every(x=>x)&&[...cols].sort().join()===[...B.p2].sort().join();
+  const sR=x=>[...x].sort().join();let okR=rows.every(x=>x)&&sR(rows)===sR(B.p1),okC=cols.every(x=>x)&&sR(cols)===sR(B.p2);if(!(okR&&okC)&&rows.every(x=>x)&&cols.every(x=>x)&&sR(rows)===sR(B.p2)&&sR(cols)===sR(B.p1)){okR=okC=true}
   ['r0','r1'].forEach(k=>mark($('bPun').querySelector(`[data-h="${k}"]`),okR));['c0','c1'].forEach(k=>mark($('bPun').querySelector(`[data-h="${k}"]`),okC));
   let bad=0;$('bPun').querySelectorAll('[data-c]').forEach(inp=>{const[i,j]=inp.dataset.c.split('').map(Number);const r=readG(o,inp.value);const ok=okR&&okC&&!!r&&r.g===norm(o,rows[i]+cols[j]);mark(inp,ok);if(!ok)bad++});
-  if(okR&&okC&&!bad){fb(step,true,'נכון. כל משבצת היא צירוף של גמטה מהורה 1 וגמטה מהורה 2, וההסתברות לכל משבצת היא 1/4.');pts(step,3,1);$('b4').hidden=false}
+  if(okR&&okC&&!bad){fb(step,true,'נכון. כל משבצת היא צירוף של גמטה מהנקבה וגמטה מהזכר, וההסתברות לכל משבצת היא 1/4.');pts(step,3,1);$('b4').hidden=false}
   else fb(step,false,!(okR&&okC)?'בדקו את הגמטות: כל גמטה מכילה אלל אחד של ההורה. להומוזיגוט שני האללים זהים, ולכן כותבים את אותו אלל בשתי התיבות.':`${bad} משבצות שגויות. בכל משבצת: האלל מהשורה + האלל מהעמודה.`)}
  if(step==='b4'){const gf=genoFrac(o,B.p1,B.p2),e=expect(o,B.p1,B.p2);let ok=true;
   $('bSum').querySelectorAll('[data-gc]').forEach(i=>{const want=Math.round((gf[i.dataset.gc]||0)*4);const v=i.value.trim()===''?NaN:+i.value;const k=v===want;mark(i,k);if(!k)ok=false});
@@ -281,7 +281,7 @@ function chkBuild(step){const o=B.o;tried[step]=(tried[step]||0)+1;
   else fb(step,false,'לא מדויק. חשבו קודם את ההסתברות לצאצא כזה לפי הטבלה, ואז הכפילו במספר הצאצאים.'+(B.ask.g||B.ask.g2?' שימו לב: השאלה מתייחסת לגנוטיפ.':''))}
 }
 function solBuild(){const o=B.o,gf=genoFrac(o,B.p1,B.p2),e=expect(o,B.p1,B.p2);
- $('bSol').innerHTML=`<div class="sol"><b>פתרון:</b> מקרא: ${o.co?`A<sup>${o.X}</sup> = ${o.PX}, A<sup>${o.Y}</sup> = ${o.PY}`:`${o.L} = ${o.D}, ${o.L.toLowerCase()} = ${o.R}`}. הורה 1: ${fg(o,B.p1)}, הורה 2: ${fg(o,B.p2)}.<br>גמטות הורה 1: ${[...new Set(B.p1)].map(x=>fa(o,x)).join(', ')}; גמטות הורה 2: ${[...new Set(B.p2)].map(x=>fa(o,x)).join(', ')}.<br>גנוטיפים: ${Object.entries(gf).map(([g,f])=>`${fg(o,g)} ${f*100}%`).join(', ')}.<br>פנוטיפים: ${Object.entries(e).filter(([,f])=>f>0).map(([p,f])=>`${p} ${f*100}%`).join(', ')}.<br>${B.qtxt} ${B.ans}.</div>`}
+ $('bSol').innerHTML=`<div class="sol"><b>פתרון:</b> מקרא: ${o.co?`A<sup>${o.X}</sup> = ${o.PX}, A<sup>${o.Y}</sup> = ${o.PY}`:`${o.L} = ${o.D}, ${o.L.toLowerCase()} = ${o.R}`}. ♀ נקבה: ${fg(o,B.p1)}, ♂ זכר: ${fg(o,B.p2)}.<br>גמטות הנקבה ♀: ${[...new Set(B.p1)].map(x=>fa(o,x)).join(', ')}; גמטות הזכר ♂: ${[...new Set(B.p2)].map(x=>fa(o,x)).join(', ')}.<br>גנוטיפים: ${Object.entries(gf).map(([g,f])=>`${fg(o,g)} ${f*100}%`).join(', ')}.<br>פנוטיפים: ${Object.entries(e).filter(([,f])=>f>0).map(([p,f])=>`${p} ${f*100}%`).join(', ')}.<br>${B.qtxt} ${B.ans}.</div>`}
 
 /* ===== מצב 2: מסיקים ===== */
 let I=null;
@@ -311,7 +311,7 @@ function newInfer(){const o=Math.random()<.18?CO:rnd(DOMS);const s={o};
   if(k==='same'){const rr=sampleNZ(o,Aa,Aa,ri(40,140));
    s.html=`<div class="data">${crossBox(o,'הכלאה',`${o.n} בעל ${o.D}`,`${o.n} בעל ${o.D}`,rr)}</div>`;
    s.why=[[`לשני הורים בעלי ${o.D} נולדו צאצאים בעלי ${o.R}: האלל ל${o.R} היה בהורים ולא התבטא בפנוטיפ שלהם`,1],[`רוב הצאצאים בעלי ${o.D}`,0],[`ההורים בעלי ${o.D}, ולכן כל האללים שלהם דומיננטיים`,0],[`הצאצאים בעלי ${o.R} נוצרו ממוטציה`,0]];
-   s.ind=[['הורה 1',Aa],['הורה 2',Aa],[`צאצא בעל ${o.R}`,aa]];
+   s.ind=[['♀ נקבה',Aa],['♂ זכר',Aa],[`צאצא בעל ${o.R}`,aa]];
    s.pred=`מבין הצאצאים בעלי ${o.D}, איזה חלק צפוי להיות הטרוזיגוט?`;s.ans=2/3;
    s.sol=`${o.D}: אלל דומיננטי. ההורים ${fg(o,Aa)} × ${fg(o,Aa)}, הצאצא בעל ${o.R} ${fg(o,aa)}. מבין בעלי ${o.D} (‏1 ${fg(o,AA)} : 2 ${fg(o,Aa)}), ‏2/3 הטרוזיגוטים.`}
   if(k==='two'){const rb=sampleNZ(o,Aa,aa,ri(60,200));

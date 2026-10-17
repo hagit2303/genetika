@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מצגת 2 · הורשה באדם</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Rubik:wght@400;500;700&family=Amatic+SC:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#FBFCFA;--grid:#DDE7EE;--ink:#1F4D3A;--mut:#5C6F66;--hl:#F4D35E;--red:#B8423A;--card:#fff;--ok:#1E7B4D;--okbg:#E3F2E6}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{overflow:hidden;color:var(--ink);font-family:Rubik,Arial,sans-serif;background:var(--paper);
+ background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
+.deck{position:relative;height:100%}
+.s{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;gap:14px;padding:clamp(18px,4vh,48px) clamp(16px,7vw,110px) 80px clamp(16px,5vw,80px);overflow-y:auto;border-inline-start:3px double var(--red);margin-inline-start:clamp(10px,4vw,56px)}
+.s.on{display:flex}
+h1,h2,h3{font-family:"Secular One",Rubik,sans-serif;font-weight:400}
+h1{font-size:clamp(40px,6.5vw,84px);line-height:1.05}
+h2{font-size:clamp(26px,3.6vw,46px);line-height:1.15;text-wrap:balance}
+h3{font-size:clamp(19px,2vw,24px);margin-bottom:6px}
+p,li,td,th{font-size:clamp(15px,1.6vw,20px);line-height:1.5}
+.note{font-family:"Amatic SC",cursive;font-size:clamp(26px,3vw,40px);color:var(--red);line-height:1.05}
+.date{font-family:"Amatic SC",cursive;font-size:28px;color:var(--mut)}
+mark{background:linear-gradient(transparent 45%,var(--hl) 45% 90%,transparent 90%);color:inherit;padding:0 2px}
+.L{direction:ltr;unicode-bidi:isolate;display:inline-block}
+table{border-collapse:collapse;width:100%;background:var(--card);border:2px solid var(--ink)}
+th,td{border:1px solid var(--grid);padding:6px 10px;text-align:start}
+th{background:var(--ink);color:#fff;font-weight:500}
+td.n{text-align:center;font-variant-numeric:tabular-nums}
+td.r{font-weight:700;color:var(--red)}
+.tw{overflow-x:auto}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,3vw,40px);align-items:start}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(10px,2vw,24px)}
+.box{background:var(--card);border:2px solid var(--ink);padding:14px;position:relative}
+.box.soft{border-color:var(--grid)}
+ol,ul{padding-inline-start:22px;display:flex;flex-direction:column;gap:4px}
+.cross{direction:ltr;font-size:clamp(22px,3vw,36px);font-weight:700;letter-spacing:.04em}
+.pun{border:2px solid var(--ink);width:auto;direction:ltr;margin:6px 0}
+.pun td,.pun th{width:clamp(64px,9vw,110px);height:clamp(54px,8vw,90px);text-align:center;font-size:clamp(20px,2.8vw,34px);font-weight:700}
+.pun th{background:#EEF3F0;color:var(--ink)}
+.pun td.rec{background:#FFF6D6}.pun td.het{background:#F1F7F3}
+sup{font-size:.6em}
+.stamp{position:absolute;top:-14px;inset-inline-end:-10px;transform:rotate(-6deg);border:3px solid var(--red);color:var(--red);font-weight:700;padding:2px 10px;background:var(--paper);font-size:14px;z-index:1}
+.photo{position:relative;background:#fff;padding:10px 10px 34px;box-shadow:0 4px 14px rgba(31,77,58,.18);transform:rotate(2deg);max-width:min(380px,80vw)}
+.photo img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover}
+.photo::before{content:"";position:absolute;top:-12px;left:40%;width:90px;height:24px;background:rgba(244,211,94,.7);transform:rotate(-4deg)}
+.photo span{position:absolute;bottom:6px;inset-inline:0;text-align:center;font-family:"Amatic SC";font-size:24px;color:var(--mut)}
+/* מהלך הכלאה כתוב */
+.wk{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;align-items:center;background:var(--card);border:2px solid var(--ink);padding:14px 18px}
+.wk b{font-family:"Secular One";font-weight:400;color:var(--mut);font-size:clamp(15px,1.6vw,20px)}
+.wk span{direction:ltr;text-align:right;font-size:clamp(18px,2.2vw,28px);font-weight:700;letter-spacing:.03em}
+.wk small{font-weight:400;font-size:.7em;color:var(--mut)}
+.circ{display:inline-grid;place-items:center;width:1.7em;height:1.7em;border:2px solid var(--ink);border-radius:50%;margin-inline:3px}
+/* מיוזה */
+.mei{display:flex;align-items:center;gap:clamp(8px,2vw,24px);flex-wrap:wrap;direction:ltr;justify-content:center}
+.cell{width:clamp(90px,12vw,150px);aspect-ratio:1;border:3px solid var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--card);font-weight:700;font-size:clamp(20px,2.4vw,30px)}
+.cell.g{width:clamp(64px,8vw,100px)}
+.chr{display:flex;flex-direction:column;align-items:center;gap:2px}
+.chr i{width:12px;height:clamp(40px,5vw,64px);border-radius:6px;background:var(--ink)}
+.chr.r i{background:var(--red)}
+.ar{font-size:32px;color:var(--mut)}
+.rev{align-self:flex-start;cursor:pointer;font:inherit;font-weight:700;background:var(--ink);color:#fff;border:0;padding:8px 18px}
+.ans{visibility:hidden}.ans.show{visibility:visible}
+.opts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.opts.t2{grid-template-columns:1fr 1fr}
+.op{font:inherit;font-weight:700;cursor:pointer;background:var(--card);border:2px solid var(--ink);padding:12px;font-size:clamp(16px,1.8vw,22px);text-align:start}
+.op.ltr{direction:ltr;text-align:center}
+.op.ok{background:var(--okbg);border-color:var(--ok)}.op.no{opacity:.45;text-decoration:line-through}
+.why{visibility:hidden;color:var(--ok);font-weight:500}.why.show{visibility:visible}
+.qtag{font-family:"Amatic SC";font-size:32px;color:var(--red)}
+.btn{align-self:flex-start;background:var(--ink);color:#fff;text-decoration:none;padding:10px 20px;font-weight:700}
+.credit{font-size:13px;color:var(--mut)}
+.nav{position:fixed;bottom:14px;inset-inline-start:16px;display:flex;gap:8px;align-items:center;z-index:5}
+.nav button{width:42px;height:42px;cursor:pointer;font-size:20px;border:2px solid var(--ink);background:var(--card);color:var(--ink)}
+.nav span{min-width:56px;text-align:center;direction:ltr;font-family:"Amatic SC";font-size:28px}
+.prog{position:fixed;bottom:0;inset-inline:0;height:5px}.prog::after{content:"";position:absolute;inset-block:0;inset-inline-start:0;width:var(--p,0);background:var(--ink);transition:width .4s}
+@media (max-width:760px){.s{justify-content:flex-start;margin-inline-start:6px}.cols,.cols3{grid-template-columns:1fr}.opts{grid-template-columns:1fr 1fr}.photo{max-width:60vw}}
+@media print{body{overflow:visible;background:#fff}.s{position:relative;display:flex!important;page-break-after:always;height:100vh}.nav,.prog,.rev{display:none}.ans,.why{visibility:visible}}
+
+.def{background:var(--card);border:2px solid var(--ink);border-inline-start:10px solid var(--ink);padding:12px 16px;display:flex;flex-direction:column;gap:4px}
+.term{font-family:"Secular One",Rubik;font-size:clamp(22px,2.6vw,30px);line-height:1.1}
+.dd{font-size:clamp(17px,1.9vw,23px);font-weight:500}
+.ex{color:var(--mut)}
+ol.toc{display:flex;flex-direction:column;gap:8px;padding-inline-start:28px}ol.toc li{font-size:clamp(17px,2vw,24px);border-bottom:1px dashed var(--grid);padding-bottom:6px}
+.tagsm{font-size:13px;border:2px solid var(--red);color:var(--red);padding:0 6px;vertical-align:middle}
+.sw{display:inline-block;width:16px;height:16px;border-radius:50%;border:1px solid rgba(0,0,0,.25);vertical-align:middle;margin-inline-end:6px}
+.wk span.r{direction:rtl;text-align:start}
+.chrfig{display:flex;justify-content:center;margin:0}
+.ic{width:64px;height:48px;vertical-align:middle;flex:none}
+.ic.lg{width:130px;height:96px}.ic.md{width:88px;height:66px}
+.icrow{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap}
+.icrow figure{display:flex;flex-direction:column;align-items:center;gap:2px;margin:0;font-size:15px;color:var(--mut)}
+td .ic{margin-inline-end:8px}
+.wide{width:100%;max-height:30vh;object-fit:cover;border:2px solid var(--ink)}
+.pun td .ic{width:46px;height:34px;display:block;margin:0 auto 2px}
+.pun.sheep td{font-size:clamp(16px,2vw,24px)}
+.gal td{padding:3px 10px}
+.tight .box{padding:10px 12px}.tight p{font-size:clamp(14px,1.45vw,18px)}.tight h2{font-size:clamp(24px,3vw,38px)}.gal .ic{width:46px;height:30px}
+.s>.stamp.nm{top:14px;inset-inline-end:clamp(16px,5vw,60px);transform:rotate(-4deg);font-size:15px}
+.sitebar{position:fixed;top:10px;inset-inline-end:12px;z-index:50;display:flex;gap:6px}
+.sitebar a{font:700 14px Rubik,Arial,sans-serif;color:#1F4D3A;background:#fff;border:2px solid #1F4D3A;padding:5px 10px;text-decoration:none}
+.gate{position:fixed;inset:0;z-index:100;background:rgba(31,77,58,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.gate[hidden]{display:none}
+.gbox{background:#fff;border:3px solid #1F4D3A;max-width:420px;width:100%;padding:22px;display:flex;flex-direction:column;gap:12px;font-family:Rubik,Arial,sans-serif;color:#1F4D3A}
+.gbox h2{font-family:"Secular One",Rubik,sans-serif;font-weight:400;font-size:28px}.gbox label{display:flex;flex-direction:column;gap:4px;font-weight:500}
+.gbox input{font:inherit;font-size:18px;padding:8px;border:2px solid #1F4D3A}
+.gbox button{font:inherit;font-weight:700;font-size:18px;padding:10px;border:0;background:#1F4D3A;color:#fff;cursor:pointer}
+.gerr{color:#B8423A;font-weight:500;min-height:1.2em}
+@media print{.sitebar,.gate{display:none!important}}
+.sitebar{top:auto;bottom:14px;inset-inline-end:16px}
+</style></head><body><svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<pattern id="roan" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#A9322B"/><rect width="2.4" height="6" fill="#FFFFFF"/></pattern>
+<!-- כבשה: צבע הצמר דרך --c -->
+<symbol id="sheep" viewBox="0 0 120 84">
+<g fill="#5A4A3A"><rect x="30" y="56" width="7" height="24" rx="3"/><rect x="45" y="58" width="7" height="22" rx="3"/><rect x="70" y="58" width="7" height="22" rx="3"/><rect x="84" y="56" width="7" height="24" rx="3"/></g>
+<g style="fill:var(--c,#FFFFFF)" stroke="#8C8273" stroke-width="1.6"><circle cx="30" cy="44" r="15"/><circle cx="44" cy="30" r="15"/><circle cx="62" cy="27" r="15"/><circle cx="80" cy="31" r="14"/><circle cx="88" cy="46" r="13"/><circle cx="70" cy="56" r="14"/><circle cx="46" cy="57" r="14"/></g>
+<ellipse cx="60" cy="44" rx="30" ry="17" style="fill:var(--c,#FFFFFF)"/>
+<ellipse cx="102" cy="36" rx="11" ry="14" fill="#F2E9DC" stroke="#8C8273" stroke-width="1.6"/>
+<ellipse cx="94" cy="27" rx="7" ry="3.5" fill="#E7CDBF" stroke="#8C8273" stroke-width="1.2" transform="rotate(-25 94 27)"/>
+<circle cx="105" cy="33" r="2.2" fill="#222"/><ellipse cx="108" cy="45" rx="3" ry="2" fill="#C99"/>
+</symbol>
+<symbol id="spots" viewBox="0 0 120 84"><g fill="#6B3E1F"><circle cx="40" cy="36" r="8"/><circle cx="64" cy="48" r="9"/><circle cx="80" cy="30" r="6"/><circle cx="28" cy="52" r="5"/><circle cx="55" cy="26" r="5"/></g><path d="M96 26 q8 -6 15 4 q-4 6 -9 4 z" fill="#6B3E1F"/></symbol>
+<!-- שרקן -->
+<symbol id="guinea" viewBox="0 0 120 80">
+<g fill="#D8A39A"><ellipse cx="40" cy="70" rx="7" ry="4"/><ellipse cx="80" cy="70" rx="7" ry="4"/></g>
+<ellipse cx="56" cy="47" rx="40" ry="24" style="fill:var(--c,#222)" stroke="#555" stroke-width="1.6"/>
+<ellipse cx="92" cy="44" rx="20" ry="18" style="fill:var(--c,#222)" stroke="#555" stroke-width="1.6"/>
+<ellipse cx="84" cy="27" rx="8" ry="5" fill="#D8A39A" stroke="#555" stroke-width="1.2"/>
+<circle cx="100" cy="40" r="3.2" style="fill:var(--eye,#111)"/><ellipse cx="110" cy="48" rx="3" ry="2" fill="#C77"/>
+</symbol>
+<!-- ארנב -->
+<symbol id="rabbit" viewBox="0 -14 120 104">
+<ellipse cx="50" cy="62" rx="34" ry="22" style="fill:var(--c,#8B6B4A)" stroke="#555" stroke-width="1.6"/>
+<circle cx="18" cy="58" r="7" style="fill:var(--c,#8B6B4A)" stroke="#555" stroke-width="1.2"/>
+<ellipse cx="80" cy="18" rx="6" ry="20" style="fill:var(--c,#8B6B4A)" stroke="#555" stroke-width="1.4" transform="rotate(-12 80 18)"/>
+<ellipse cx="92" cy="20" rx="6" ry="20" style="fill:var(--c,#8B6B4A)" stroke="#555" stroke-width="1.4" transform="rotate(10 92 20)"/>
+<circle cx="88" cy="50" r="17" style="fill:var(--c,#8B6B4A)" stroke="#555" stroke-width="1.6"/>
+<circle cx="94" cy="46" r="3.2" style="fill:var(--eye,#111)"/><ellipse cx="104" cy="54" rx="2.5" ry="2" fill="#C77"/>
+</symbol>
+<!-- זבוב הפירות -->
+<symbol id="flyN" viewBox="0 0 120 80"><g fill="#DCE8F2" fill-opacity=".75" stroke="#7F98AD" stroke-width="1.2"><ellipse cx="36" cy="26" rx="34" ry="10" transform="rotate(-12 60 40)"/><ellipse cx="38" cy="36" rx="32" ry="9" transform="rotate(8 60 40)"/></g></symbol>
+<symbol id="flyV" viewBox="0 0 120 80"><g fill="#DCE8F2" stroke="#7F98AD" stroke-width="1.4"><path d="M64 36 q-4 -14 -14 -12 q3 5 -3 8 q6 6 17 4z"/><path d="M60 40 q-10 -4 -16 2 q5 2 1 6 q9 0 15 -8z"/></g></symbol>
+<symbol id="flyB" viewBox="0 0 120 80">
+<g stroke="#5A3A1A" stroke-width="1.6" fill="none"><path d="M58 50 l-8 18"/><path d="M64 51 l0 20"/><path d="M70 50 l8 18"/></g>
+<ellipse cx="42" cy="46" rx="20" ry="11" fill="#8B5A2B"/><g stroke="#5A3A1A" stroke-width="2"><path d="M30 37 v18"/><path d="M38 35 v22"/><path d="M46 35 v22"/></g>
+<ellipse cx="64" cy="44" rx="12" ry="10" fill="#A0703C"/><circle cx="82" cy="42" r="8" fill="#A0703C"/><circle cx="86" cy="40" r="5.5" fill="#C0392B"/>
+</symbol>
+<!-- בקר -->
+<symbol id="cow" viewBox="0 -8 142 100">
+<g fill="#4A4A4A"><rect x="28" y="60" width="8" height="28" rx="3"/><rect x="44" y="62" width="8" height="26" rx="3"/><rect x="80" y="62" width="8" height="26" rx="3"/><rect x="94" y="60" width="8" height="28" rx="3"/></g>
+<path d="M22 40 q-12 6 -10 22" stroke="#555" stroke-width="2.5" fill="none"/>
+<rect x="20" y="28" width="88" height="40" rx="15" style="fill:var(--c,#A9322B)" stroke="#555" stroke-width="1.6"/>
+<rect x="100" y="18" width="28" height="32" rx="10" style="fill:var(--c,#A9322B)" stroke="#555" stroke-width="1.6"/>
+<path d="M104 20 q-6 -10 -12 -8 M124 20 q6 -10 12 -8" stroke="#D9CFC0" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+<ellipse cx="114" cy="46" rx="11" ry="7" fill="#E8B4A8" stroke="#555" stroke-width="1.2"/><circle cx="108" cy="30" r="2.6" fill="#111"/><circle cx="122" cy="30" r="2.6" fill="#111"/>
+</symbol>
+<!-- עגבנייה -->
+<symbol id="tomT" viewBox="0 0 70 130"><path d="M35 128 V14" stroke="#3E7A2E" stroke-width="4"/><g fill="#5FA046"><ellipse cx="22" cy="40" rx="12" ry="6" transform="rotate(-25 22 40)"/><ellipse cx="48" cy="62" rx="12" ry="6" transform="rotate(25 48 62)"/><ellipse cx="22" cy="86" rx="12" ry="6" transform="rotate(-25 22 86)"/><ellipse cx="48" cy="22" rx="11" ry="5" transform="rotate(25 48 22)"/></g><g fill="#D93A2B"><circle cx="46" cy="44" r="7"/><circle cx="24" cy="66" r="7"/><circle cx="46" cy="96" r="7"/></g><rect x="20" y="122" width="30" height="8" rx="2" fill="#8B5E3C"/></symbol>
+<symbol id="tomD" viewBox="0 0 70 130"><path d="M35 128 V92" stroke="#3E7A2E" stroke-width="4"/><g fill="#5FA046"><ellipse cx="22" cy="104" rx="12" ry="6" transform="rotate(-25 22 104)"/><ellipse cx="48" cy="98" rx="12" ry="6" transform="rotate(25 48 98)"/></g><g fill="#D93A2B"><circle cx="46" cy="110" r="7"/><circle cx="26" cy="92" r="6"/></g><rect x="20" y="122" width="30" height="8" rx="2" fill="#8B5E3C"/></symbol>
+<!-- פרח אפונה -->
+<symbol id="peaflower" viewBox="0 0 90 90"><path d="M45 88 V66" stroke="#4E8A26" stroke-width="3"/><path d="M36 66 q9 -8 18 0 q-9 6 -18 0z" fill="#5FA046"/>
+<path d="M45 8 C22 6 8 22 14 40 C18 50 30 52 45 46 C60 52 72 50 76 40 C82 22 68 6 45 8z" style="fill:var(--c,#8E44AD)" stroke="#5E3F6E" stroke-width="1.4"/>
+<path d="M45 14 C44 24 44 34 45 44" stroke="#5E3F6E" stroke-width="1" fill="none" opacity=".5"/>
+<path d="M24 44 C14 50 16 64 30 62 C38 60 42 54 42 48z" style="fill:var(--c2,#B06AD0)" stroke="#5E3F6E" stroke-width="1.2"/>
+<path d="M66 44 C76 50 74 64 60 62 C52 60 48 54 48 48z" style="fill:var(--c2,#B06AD0)" stroke="#5E3F6E" stroke-width="1.2"/>
+<path d="M38 52 C40 62 50 62 52 52 C48 56 42 56 38 52z" style="fill:var(--c3,#E8D6F0)" stroke="#5E3F6E" stroke-width="1"/></symbol>
+<!-- זרע אפונה -->
+<symbol id="seed" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" style="fill:var(--c,#E9C536)" stroke="#8C7A2A" stroke-width="1.5"/><ellipse cx="14" cy="14" rx="5" ry="3" fill="#fff" fill-opacity=".45"/></symbol>
+<symbol id="seedW" viewBox="0 0 40 40"><path d="M20 4 C30 4 36 10 35 18 C38 22 35 30 30 32 C27 37 18 38 13 34 C6 33 3 26 6 20 C3 14 8 6 14 7 C16 5 18 4 20 4z" style="fill:var(--c,#D8C26A)" stroke="#8C7A2A" stroke-width="1.5"/><path d="M12 14 q6 4 2 10 M22 10 q-2 8 6 12 M16 28 q6 -2 10 2" stroke="#8C7A2A" stroke-width="1.2" fill="none"/></symbol>
+</defs></svg>
+<nav class="sitebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a></nav><div class="deck">
+
+
+<section class="s"><span class="date">מצגת 2 מתוך 3 · עמוד 1</span>
+<style>svg.ped{width:min(100%,430px);height:auto;background:#fff;border:2px solid var(--ink);display:block}
+.dz{display:grid;grid-template-columns:auto 1fr;gap:10px 18px;align-items:start}.dz b{font-family:"Secular One",Rubik;font-weight:400}</style>
+<h1>מצגת 2: הורשה באדם<br>שושלות ומחלות</h1>
+<p class="note">מה המחלה ← איך מגלים ← איך היא עוברת במשפחה ← מה קורה בתא</p>
+<div class="box"><span class="stamp">חלקית בבגרות תשפ״ז</span>
+<p><b>במיקוד:</b> דרך ההורשה של תכונה אחת והיחסים בין הפנוטיפים — כל המחלות במצגת הן דוגמאות לכך.</p>
+<p><b>לא בבגרות תשפ״ז:</b> שושלות (קריאה וניתוח של אילן יוחסין) וגנטיקה במשפחת האדם כנושא נפרד. לומדים אותם כי הם מסבירים איך יודעים את דרך ההורשה באדם.</p></div>
+</section>
+
+<section class="s"><span class="date">פתיחה · עמוד 2</span>
+<h2>בבני אדם אין הכלאות מבוקרות. אז איך יודעים איך עוברת מחלה?</h2>
+<div class="cols"><div class="box"><h3>אצל מנדל</h3><p>בוחרים הורים מזן טהור, מכליאים, וסופרים מאות צאצאים.</p></div>
+<div class="box"><h3>אצל בני אדם</h3><p>אי אפשר לבחור מי יוליד עם מי, ובכל משפחה יש מעט ילדים. במקום זה אוספים מידע על <mark>כמה דורות של משפחה</mark> ומציירים <b>שושלת</b> (אילן יוחסין).</p></div></div>
+</section>
+
+<section data-nm class="s"><span class="stamp nm">לא במיקוד תשפ״ז</span><span class="date">איך מסמנים · עמוד 3</span>
+<h2>הסימנים בשושלת</h2>
+<div class="cols"><div>
+<svg class="ped" aria-label="מקרא סימני שושלת" data-ped='{"w":420,"rows":[["",[{"id":"זכר","s":"m","x":385},{"id":"נקבה","s":"f","x":300},{"id":"זכר חולה","s":"m","a":1,"x":205},{"id":"נקבה חולה","s":"f","a":1,"x":110},{"id":"נשאית","s":"f","c":1,"x":30}]]]}'></svg>
+<svg class="ped" aria-label="דוגמה לשושלת" data-ped='{"w":420,"rows":[["I",[{"id":"1","s":"m","x":260},{"id":"2","s":"f","x":160}]],["II",[{"id":"3","s":"f","x":300},{"id":"4","s":"m","a":1,"x":210},{"id":"5","s":"m","x":120}]]],"m":[["1","2"]],"k":[[["1","2"],["3","4","5"]]]}'></svg></div>
+<div class="box"><ul>
+<li><b>ריבוע</b> — זכר. <b>עיגול</b> — נקבה.</li>
+<li><b>צורה מלאה</b> — פרט בעל התכונה (למשל חולה). <b>צורה ריקה</b> — פרט בלי התכונה.</li>
+<li><b>קו אופקי בין שני פרטים</b> — בני זוג.</li>
+<li><b>קו אנכי מבני הזוג</b>, וממנו קו אופקי — הילדים שלהם, מהגדול לצעיר.</li>
+<li><b>ספרות רומיות</b> (I, II, III) — דורות. <b>מספרים</b> — הפרטים.</li>
+<li>נקודה באמצע הצורה — נשא ידוע (לא בכל שושלת מסמנים).</li></ul>
+<p class="ex">בשושלת לדוגמה: בני הזוג 1 ו-2 בריאים. יש להם שלושה ילדים, והבן 4 חולה.</p></div></div>
+</section>
+
+<section class="s"><span class="date">מחלה 1 · סיסטיק פיברוזיס · עמוד 4</span>
+<h2>סיסטיק פיברוזיס (CF): מה המחלה?</h2>
+<div class="cols"><div class="box"><h3>מה קורה בגוף</h3><ul>
+<li>ריר סמיך ודביק בדרכי הנשימה: קושי בנשימה, שיעול, ודלקות ריאה חוזרות.</li>
+<li>הריר חוסם את צינורות הלבלב: אנזימי העיכול לא מגיעים למעי, והמזון לא מתעכל ונספג היטב.</li>
+<li>זיעה מלוחה מאוד.</li></ul></div>
+<div class="box soft"><h3>טיפול</h3><p>פיזיותרפיה נשימתית יומיומית, אנזימי עיכול בכל ארוחה, ותרופות חדשות שמשפרות את פעולת החלבון הפגום. המחלה כרונית, והטיפול נמשך כל החיים.</p></div></div>
+</section>
+
+<section class="s"><span class="date">מחלה 1 · איך מגלים · עמוד 5</span>
+<h2>סיסטיק פיברוזיס: איך מגלים?</h2>
+<div class="cols3"><div class="box"><h3>בדיקת זיעה</h3><p>מודדים את ריכוז יוני הכלור בזיעה. אצל חולים הריכוז גבוה.</p></div>
+<div class="box"><h3>בדיקה גנטית</h3><p>מזהים את האללים הפגומים בגן של חלבון CFTR.</p></div>
+<div class="box"><h3>בדיקת נשאות</h3><p>בישראל מוצעת לבני זוג בדיקת נשאות לסיסטיק פיברוזיס, לפני הריון או בתחילתו.</p></div></div>
+<p class="note">למה בודקים נשאות אצל אנשים בריאים? נבין מהשושלת</p>
+</section>
+
+<section data-nm class="s"><span class="stamp nm">לא במיקוד תשפ״ז</span><span class="date">מחלה 1 · דרך ההורשה · עמוד 6</span>
+<h2>סיסטיק פיברוזיס: איך המחלה עוברת במשפחה?</h2>
+<div class="cols"><svg class="ped" aria-label="שושלת סיסטיק פיברוזיס" data-ped='{"w":380,"rows":[["I",[{"id":"1","s":"m","x":230},{"id":"2","s":"f","x":140}]],["II",[{"id":"3","s":"f","x":280},{"id":"4","s":"m","a":1,"x":185},{"id":"5","s":"f","x":90}]]],"m":[["1","2"]],"k":[[["1","2"],["3","4","5"]]]}'></svg>
+<div class="box"><ul>
+<li>ההורים 1 ו-2 בריאים, והבן 4 חולה. ← <b>האלל למחלה רצסיבי</b>, ושני ההורים נשאים: <span class="L">Aa</span>.</li>
+<li>במשפחות רבות המחלה מופיעה בבנים ובבנות באותה שכיחות ← הגן נמצא על כרומוזום שאינו כרומוזום מין (<b>אוטוזומלי</b>).</li>
+<li><span class="L">Aa × Aa</span>: ההסתברות לילד חולה היא <b>1/4</b> בכל הריון.</li></ul>
+<p class="ex">מקרא: <span class="L">A</span> = תעלה תקינה, <span class="L">a</span> = תעלה פגומה. החולה: <span class="L">aa</span>.</p>
+<button class="rev">ומה הגנוטיפ של הבת 3?</button><p class="ans"><span class="L">AA</span> או <span class="L">Aa</span>. היא בריאה, ולכן אינה <span class="L">aa</span>. ההסתברות שהיא נשאית: 2/3.</p></div></div>
+</section>
+
+<section class="s"><span class="date">מחלה 1 · ברמת התא · עמוד 7</span>
+<h2>סיסטיק פיברוזיס: מה קורה בתא?</h2>
+<div class="cols"><div class="box"><ul>
+<li>הגן מקודד לחלבון <b>CFTR</b>: תעלה ליוני כלור בקרום תאי האפיתל (בדרכי הנשימה, בלבלב ובבלוטות הזיעה).</li>
+<li>תעלה תקינה: יוני כלור יוצאים מהתא, ומים עוברים בעקבותיהם באוסמוזה ← הריר דליל.</li>
+<li>תעלה פגומה: פחות יונים ופחות מים יוצאים ← <b>הריר סמיך</b>.</li></ul></div>
+<div class="box soft"><table><thead><tr><th>גנוטיפ</th><th>בקרום התא</th><th>פנוטיפ</th></tr></thead><tbody>
+<tr><td><span class="L">AA</span></td><td>תעלות תקינות</td><td>בריא</td></tr><tr><td><span class="L">Aa</span></td><td>מספיק תעלות תקינות (מאלל אחד)</td><td>בריא, נשא</td></tr><tr><td><span class="L">aa</span></td><td>תעלות פגומות בלבד</td><td class="r">חולה</td></tr></tbody></table></div></div>
+</section>
+
+<section class="s"><span class="date">מחלה 2 · פנילקטונוריה · עמוד 8</span>
+<h2>פנילקטונוריה (PKU): מה המחלה?</h2>
+<div class="cols"><div class="box"><h3>מה קורה בגוף</h3><p>חומצת האמינו <b>פנילאלנין</b>, שנמצאת בחלבונים במזון, מצטברת בדם. ללא טיפול, הריכוז הגבוה פוגע בהתפתחות מערכת העצבים ובהתפתחות השכלית.</p></div>
+<div class="box soft"><h3>טיפול</h3><p>תזונה דלת פנילאלנין מגיל ינקות. מי שמתחיל טיפול מוקדם מתפתח באופן תקין. לכן על משקאות דיאט כתוב: "מכיל מקור לפנילאלנין" — הממתיק אספרטיים מכיל פנילאלנין.</p></div></div>
+</section>
+
+<section class="s"><span class="date">מחלה 2 · איך מגלים · עמוד 9</span>
+<h2>PKU: איך מגלים?</h2>
+<div class="cols"><div class="box"><h3>בדיקת סקר ביילודים</h3><p>בימים הראשונים אחרי הלידה לוקחים מכל תינוק בישראל כמה טיפות דם מהעקב, ובודקים בהן, בין השאר, את ריכוז הפנילאלנין. ריכוז גבוה ← בדיקות נוספות והתחלת טיפול.</p></div>
+<div class="box soft"><h3>למה בודקים כל תינוק?</h3><p>התינוק נראה בריא בלידה, והנזק מתפתח בהדרגה. גילוי מוקדם מאפשר להתחיל בתזונה המתאימה לפני שנגרם נזק.</p></div></div>
+</section>
+
+<section data-nm class="s"><span class="stamp nm">לא במיקוד תשפ״ז</span><span class="date">מחלה 2 · דרך ההורשה · עמוד 10</span>
+<h2>PKU: שלושה דורות</h2>
+<div class="cols"><svg class="ped" aria-label="שושלת פנילקטונוריה" data-ped='{"w":380,"rows":[["I",[{"id":"1","s":"m","x":200},{"id":"2","s":"f","x":120}]],["II",[{"id":"3","s":"m","x":220},{"id":"4","s":"f","x":310},{"id":"5","s":"f","x":110}]],["III",[{"id":"6","s":"f","a":1,"x":235},{"id":"7","s":"m","x":300}]]],"m":[["1","2"],["3","4"]],"k":[[["1","2"],["3","5"]],[["3","4"],["6","7"]]]}'></svg>
+<div class="box"><ul>
+<li>הבת 6 חולה, והוריה 3 ו-4 בריאים ← האלל למחלה <b>רצסיבי</b>, ו-3 ו-4 נשאים.</li>
+<li>4 נכנסה למשפחה מבחוץ. גם היא נשאית — אחרת הבת 6 לא הייתה חולה.</li>
+<li>אחד מההורים 1 או 2 נשא לפחות. אי אפשר לדעת מי.</li></ul>
+<button class="rev">מה ההסתברות שלזוג 3–4 ייוולד ילד חולה נוסף?</button><p class="ans">1/4 בכל הריון. כל הפריה בלתי תלויה בקודמות.</p></div></div>
+</section>
+
+<section class="s"><span class="date">מחלה 2 · ברמת התא · עמוד 11</span>
+<h2>PKU: מה קורה בתא?</h2>
+<div class="box"><table><thead><tr><th>גנוטיפ</th><th>בתאי הכבד</th><th>בדם</th><th>פנוטיפ</th></tr></thead><tbody>
+<tr><td><span class="L">AA</span></td><td>אנזים פנילאלנין הידרוקסילאז פעיל: הופך פנילאלנין לטירוזין</td><td>ריכוז תקין</td><td>בריא</td></tr>
+<tr><td><span class="L">Aa</span></td><td>אנזים פעיל מאלל אחד — הכמות מספיקה</td><td>ריכוז תקין</td><td>בריא, נשא</td></tr>
+<tr><td><span class="L">aa</span></td><td>אנזים לא פעיל: פנילאלנין אינו הופך לטירוזין</td><td>פנילאלנין מצטבר</td><td class="r">חולה</td></tr></tbody></table></div>
+</section>
+
+<section class="s"><span class="date">מחלה 3 · לבקנות · עמוד 12</span>
+<h2>לבקנות: מה המחלה ואיך מגלים?</h2>
+<div class="cols"><div class="box"><h3>מה קורה בגוף</h3><ul><li>אין צבען <b>מלנין</b>, או שיש מעט מאוד: עור ושיער בהירים מאוד, וקשתית עין בהירה.</li><li>רגישות גבוהה לקרינת UV מהשמש, וסיכון לכוויות ולסרטן עור.</li><li>ליקויי ראייה: ראייה מטושטשת ורגישות לאור.</li></ul></div>
+<div class="box soft"><h3>איך מגלים</h3><p>לפי המראה כבר בלידה, ובבדיקת עיניים. בדיקה גנטית מזהה את הגן ואת האללים.</p><h3>התמודדות</h3><p>הגנה מהשמש, משקפיים ועזרי ראייה.</p></div></div>
+</section>
+
+<section data-nm class="s"><span class="stamp nm">לא במיקוד תשפ״ז</span><span class="date">מחלה 3 · דרך ההורשה · עמוד 13</span>
+<h2>לבקנות: שושלת</h2>
+<p class="ex">על בסיס בגרות 2025, שאלה 23ב</p>
+<div class="cols"><svg class="ped" aria-label="שושלת לבקנות" data-ped='{"w":380,"rows":[["I",[{"id":"1","s":"m","a":1,"x":210},{"id":"2","s":"f","x":130}]],["II",[{"id":"3","s":"f","x":170},{"id":"4","s":"m","x":290}]],["III",[{"id":"5","s":"m","a":1,"x":200},{"id":"6","s":"f","x":270}]]],"m":[["1","2"],["4","3"]],"k":[[["1","2"],["3"]],[["4","3"],["5","6"]]]}'></svg>
+<div class="box"><ul>
+<li>האב 1 לבקן: <span class="L">aa</span>. הבת 3 בעלת צבע תקין, וקיבלה ממנו <span class="L">a</span> ← היא <span class="L">Aa</span>.</li>
+<li>לזוג 3–4 נולד בן לבקן (5) ← גם 4 נשא, <span class="L">Aa</span>.</li>
+<li>הבת 6: <span class="L">AA</span> או <span class="L">Aa</span>.</li></ul>
+<p class="ex">מקרא: <span class="L">A</span> = היווצרות מלנין, <span class="L">a</span> = אי-היווצרות מלנין.</p></div></div>
+</section>
+
+<section class="s"><span class="date">מחלה 3 · ברמת התא · עמוד 14</span>
+<h2>לבקנות: מה קורה בתא?</h2>
+<div class="cols"><div class="box"><p>בתאי העור, השיער והעין (מלנוציטים) האנזים <b>טירוזינאז</b> מזרז את השלב הראשון ביצירת מלנין מחומצת האמינו טירוזין.</p>
+<p><span class="L">A</span> מקודד לטירוזינאז פעיל. <span class="L">a</span> מקודד לטירוזינאז לא פעיל.</p></div>
+<div class="box soft"><p><b>למה <span class="L">Aa</span> בעל צבע תקין?</b> בתאיו נוצר טירוזינאז פעיל מהאלל <span class="L">A</span>, והכמות מספיקה ליצירת מלנין.</p><p class="ex">יש כמה סוגים של לבקנות, ובכל אחד פגוע גן אחר במסלול יצירת המלנין.</p></div></div>
+</section>
+
+<section data-nm class="s"><span class="stamp nm">לא במיקוד תשפ״ז</span><span class="date">איך קובעים · עמוד 15</span>
+<h2>מהשושלת לדרך ההורשה: שני כללים</h2>
+<div class="cols"><div class="box"><h3>אלל רצסיבי</h3><p>לשני הורים <b>בלי</b> התכונה נולד ילד <b>עם</b> התכונה ← האלל לתכונה רצסיבי, ושני ההורים נשאים.</p><p class="ex">CF, PKU, לבקנות</p></div>
+<div class="box"><h3>אלל דומיננטי</h3><p>לשני הורים <b>עם</b> התכונה נולד ילד <b>בלי</b> התכונה ← האלל לתכונה דומיננטי, ושני ההורים הטרוזיגוטים.</p><p class="ex">אכונדרופלזיה</p></div></div>
+<p class="note">תכונה דומיננטית לא "מדלגת" על דור: לכל פרט בעל התכונה יש הורה בעל התכונה (פרט למוטציה חדשה)</p>
+</section>
+
+<section class="s"><span class="date">מחלה 4 · אכונדרופלזיה · עמוד 16</span>
+<h2>אכונדרופלזיה (גמדות): מה המחלה?</h2>
+<div class="cols"><div class="box"><h3>מה רואים</h3><ul>
+<li>הצורה הנפוצה ביותר של גמדות עם גפיים קצרות.</li>
+<li>הזרועות והירכיים קצרות במיוחד, אורך הגו כמעט תקין.</li>
+<li>ראש גדול ומצח בולט, אצבעות קצרות.</li>
+<li>גובה ממוצע במבוגרים: כ-131 ס"מ בגברים וכ-124 ס"מ בנשים.</li>
+<li><b>המשכל תקין.</b></li></ul></div>
+<div class="box soft"><h3>מה קורה בתא</h3><p>הגן FGFR3 מקודד ל<b>קולטן</b> בתאי הסחוס. באלל למחלה הקולטן <b>פעיל מדי</b>, ומעכב את הפיכת הסחוס לעצם בלוחיות הגדילה של העצמות הארוכות.</p>
+<p class="ex">שכיחות: בערך 1 מכל 15,000–40,000 לידות.</p></div></div>
+</section>
+
+<section data-nm class="s"><span class="stamp nm">לא במיקוד תשפ״ז</span><span class="date">מחלה 4 · דרך ההורשה · עמוד 17</span>
+<h2>אכונדרופלזיה: אין הומוזיגוטים דומיננטיים</h2>
+<div class="cols"><svg class="ped" aria-label="שושלת אכונדרופלזיה" data-ped='{"w":380,"rows":[["I",[{"id":"1","s":"m","a":1,"x":230},{"id":"2","s":"f","a":1,"x":150}]],["II",[{"id":"3","s":"f","a":1,"x":290},{"id":"4","s":"m","x":200},{"id":"5","s":"m","a":1,"x":110}]]],"m":[["1","2"]],"k":[[["1","2"],["3","4","5"]]]}'></svg>
+<div class="box"><ul>
+<li>להורים 1 ו-2, שניהם חולים, נולד בן בריא (4) ← <b>האלל למחלה דומיננטי</b>. מקרא: <span class="L">A</span> = אכונדרופלזיה, <span class="L">a</span> = גובה תקין.</li>
+<li><b>עובר <span class="L">AA</span> אינו שורד:</b> העצמות קצרות מאוד ובית החזה קטן. הוא נולד מת או מת זמן קצר אחרי הלידה מכשל נשימתי.</li>
+<li>לכן <b>כל אדם עם אכונדרופלזיה הוא <span class="L">Aa</span></b>.</li></ul></div></div>
+<div class="cols"><table class="pun"><tr><th></th><th>A</th><th>a</th></tr><tr><th>A</th><td class="rec" style="text-decoration:line-through">AA</td><td>Aa</td></tr><tr><th>a</th><td>Aa</td><td>aa</td></tr></table>
+<div class="box soft"><p><span class="L">Aa × Aa</span>: ‏<span class="L">AA</span> לא שורד. מבין הילדים שנולדים ושורדים: <b>2/3 חולים, 1/3 בגובה תקין</b> — יחס 2 : 1 במקום 3 : 1.</p>
+<p class="ex">כ-80% מהחולים נולדים להורים בגובה ממוצע: מוטציה חדשה בתא הזרע או בתא הביצה.</p></div></div>
+</section>
+
+<section class="s"><span class="date">מחלה 5 · אנמיה חרמשית · עמוד 18</span>
+<h2>אנמיה חרמשית: מה המחלה?</h2>
+<div class="cols"><div class="box"><h3>מה קורה בגוף</h3><ul>
+<li><b>אנמיה:</b> עייפות, קוצר נשימה ועיכוב בגדילה.</li>
+<li><b>התקפי כאב:</b> תאי דם בצורת חרמש נתקעים בנימים וחוסמים את זרימת הדם.</li>
+<li>נפיחות בכפות הידיים והרגליים, זיהומים חוזרים וצהבת.</li>
+<li>נזק לאיברים: ריאות, כליות, טחול ומוח.</li></ul><p class="ex">התסמינים מתחילים בגיל הינקות.</p></div>
+<div class="box soft"><h3>מה קורה בתא</h3><p>הגן מקודד לשרשרת β של <b>המוגלובין</b>. באלל למחלה חומצת אמינו אחת מוחלפת, ונוצר <b>המוגלובין S</b>.</p>
+<p>בריכוז חמצן נמוך מולקולות המוגלובין S מתחברות לסיבים ארוכים ← תא הדם האדום מקבל <b>צורת חרמש</b>, נעשה נוקשה, נתקע בנימים ומתפרק מוקדם.</p></div></div>
+</section>
+
+<section data-nm class="s"><span class="stamp nm">לא במיקוד תשפ״ז</span><span class="date">מחלה 5 · דרך ההורשה · עמוד 19</span>
+<h2>אנמיה חרמשית: מחלה רצסיבית</h2>
+<div class="cols"><svg class="ped" aria-label="שושלת אנמיה חרמשית" data-ped='{"w":380,"rows":[["I",[{"id":"1","s":"m","x":230},{"id":"2","s":"f","x":150}]],["II",[{"id":"3","s":"m","x":290},{"id":"4","s":"f","a":1,"x":200},{"id":"5","s":"f","x":110}]]],"m":[["1","2"]],"k":[[["1","2"],["3","4","5"]]]}'></svg>
+<div class="box"><ul>
+<li>ההורים 1 ו-2 בריאים, והבת 4 חולה ← <b>האלל למחלה רצסיבי</b>, ושני ההורים נשאים.</li>
+<li>מקרא: <span class="L">A</span> = המוגלובין תקין, <span class="L">a</span> = המוגלובין S.</li>
+<li><span class="L">AA</span> — בריא · <span class="L">Aa</span> — <b>נשא</b>, בדרך כלל בלי תסמינים · <span class="L">aa</span> — חולה.</li>
+<li><span class="L">Aa × Aa</span>: ההסתברות לילד חולה 1/4 בכל הריון.</li></ul>
+<p class="ex">העשרה: בתאי הדם של נשא נוצרים גם המוגלובין תקין וגם המוגלובין S. ברמת המחלה — האלל רצסיבי.</p></div></div>
+</section>
+
+<section class="s"><span class="date">מחלה 5 · אנמיה חרמשית ומלריה · עמוד 20</span>
+<h2>למה האלל למחלה כל כך נפוץ באפריקה?</h2>
+<div class="cols"><div class="box"><h3>מלריה</h3><p>מחלה שגורם טפיל (פלסמודיום) המועבר בעקיצת יתוש. הטפיל חודר לתאי הדם האדומים ומתרבה בהם.</p>
+<h3>הנשאים מוגנים חלקית</h3><p>לנשאים (<span class="L">Aa</span>) יש <b>הגנה חלקית</b> מפני מלריה קשה: הטפיל מתרבה בתאי הדם שלהם פחות טוב. הם חולים פחות במלריה קשה ומתים ממנה פחות. <b>זו לא חסינות מלאה.</b></p></div>
+<div class="box soft"><h3>התוצאה באוכלוסייה</h3><ul>
+<li>באזורים שבהם מלריה נפוצה, נשאים שורדים ומולידים יותר צאצאים מאשר <span class="L">AA</span> (רגישים למלריה) ו-<span class="L">aa</span> (חולים באנמיה).</li>
+<li>לכן האלל נשמר באוכלוסייה בשכיחות גבוהה: <b>באפריקה המשוונית 10%–40% מהאנשים נשאים.</b></li>
+<li>מפת השכיחות של האלל כמעט חופפת למפת המלריה: אפריקה שמדרום לסהרה, חלקים מהודו, המזרח התיכון ואגן הים התיכון.</li></ul></div></div>
+<p class="credit">היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים. מקורות: MedlinePlus Genetics; Wikipedia, "Sickle cell trait".</p>
+</section>
+
+<section class="s"><span class="date">עכשיו תורכם · עמוד 21</span>
+<h2>מעבדה ותרגול 2: שושלות</h2>
+<p>במעבדה תקראו שושלות של משפחות, תקבעו את דרך ההורשה, תגררו גנוטיפים לכל פרט ותחשבו הסתברויות — בסיסטיק פיברוזיס, PKU, לבקנות, אכונדרופלזיה ואנמיה חרמשית. בסוף: הורדת קובץ.</p>
+<a class="btn" href="lab-pedigree.html">למעבדה ותרגול 2 ←</a>
+</section>
+
+<section class="s"><span class="date">סיכום · עמוד 22</span>
+<h2>מה רשמנו ביומן</h2>
+<div class="cols"><div class="box"><ul>
+<li>באדם לומדים את דרך ההורשה משושלות: ריבוע זכר, עיגול נקבה, צורה מלאה — בעל התכונה.</li>
+<li>שני הורים בלי התכונה ← ילד עם התכונה: רצסיבי.</li>
+<li>שני הורים עם התכונה ← ילד בלי התכונה: דומיננטי.</li>
+<li>במחלות רצסיביות הנשא בריא: אלל אחד מקודד לחלבון פעיל בכמות מספיקה.</li>
+<li>אלל לטלי משנה את היחס בצאצאים ששורדים: 2 : 1 במקום 3 : 1 (אכונדרופלזיה).</li>
+<li>נשאים של אנמיה חרמשית מוגנים חלקית ממלריה, ולכן האלל נפוץ באזורי מלריה.</li></ul></div>
+<div class="box soft"><h3>מושגים לחזרה</h3><p>שושלת · נשא · אוטוזומלי · בדיקת סקר · בדיקת נשאות · אלל לטלי · מוטציה חדשה · המוגלובין S · מלריה</p><p class="note">הבא בתור: מצגת 3, סוגי דם</p></div></div>
+<p class="credit">על בסיס: מט״ח, "קביעת דרך ההורשה של תכונות"; בגרות 2025 שאלה 23ב.</p>
+</section>
+<script src="ped.js"></script>
+
+</div>
+
+<div class="prog" id="prog"></div>
+<div class="nav"><button id="prev" aria-label="עמוד קודם">→</button><span id="cnt"></span><button id="next" aria-label="עמוד הבא">←</button></div>
+<script src="nav.js"></script></body></html>

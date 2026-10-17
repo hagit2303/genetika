@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,">
+<title>מעבדה ותרגול 2: שושלות · גנטיקה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Rubik:wght@400;500;700&family=Amatic+SC:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="unit.css">
+<link rel="stylesheet" href="lab.css">
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+.qn{font-family:"Amatic SC",cursive;font-size:26px;color:var(--red);line-height:1}
+.scen{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:10px}
+.scen label{display:flex;flex-direction:column;gap:4px;border:2px solid var(--ink);padding:12px;cursor:pointer;background:#fff}
+.scen label:has(input:checked){background:#F4F8F5;outline:3px solid var(--hl)}
+svg.ped{width:min(100%,440px);height:auto;background:#fff;border:2px solid var(--ink);display:block;margin-inline:auto}
+.inds{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.ind{border:1.5px solid var(--grid);background:#fff;padding:8px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;font-size:15px}
+.ind .slot{min-width:64px}
+.idl{display:flex;flex-wrap:wrap;gap:8px}.idl label{border:1.5px solid var(--grid);padding:4px 10px;background:#fff;cursor:pointer}
+.sitebar{position:fixed;top:10px;inset-inline-end:12px;z-index:50;display:flex;gap:6px}
+.sitebar a{font:700 14px Rubik,Arial,sans-serif;color:#1F4D3A;background:#fff;border:2px solid #1F4D3A;padding:5px 10px;text-decoration:none}
+.gate{position:fixed;inset:0;z-index:100;background:rgba(31,77,58,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.gate[hidden]{display:none}
+.gbox{background:#fff;border:3px solid #1F4D3A;max-width:420px;width:100%;padding:22px;display:flex;flex-direction:column;gap:12px;font-family:Rubik,Arial,sans-serif;color:#1F4D3A}
+.gbox h2{font-family:"Secular One",Rubik,sans-serif;font-weight:400;font-size:28px}.gbox label{display:flex;flex-direction:column;gap:4px;font-weight:500}
+.gbox input{font:inherit;font-size:18px;padding:8px;border:2px solid #1F4D3A}
+.gbox button{font:inherit;font-weight:700;font-size:18px;padding:10px;border:0;background:#1F4D3A;color:#fff;cursor:pointer}
+.gerr{color:#B8423A;font-weight:500;min-height:1.2em}
+@media print{.sitebar,.gate{display:none!important}}
+</style>
+</head>
+<body>
+<nav class="sitebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a></nav>
+<div class="gate" id="gate"><div class="gbox" role="dialog" aria-modal="true" aria-labelledby="gTitle"><h2 id="gTitle">לפני שמתחילים</h2><p>כתבו את השם והכיתה שלכם. הם יופיעו בקובץ שתעלו למשימה ב־Classroom.</p><label>שם מלא<input id="gName" autocomplete="name"></label><label>כיתה<input id="gClass"></label><p class="gerr" id="gErr"></p><button id="gGo">מתחילים</button></div></div>
+<main class="w">
+<span class="note">מעבדה ותרגול 2 · אחרי מצגת 2</span>
+<h1>מעבדת שושלות: איך מחלה עוברת במשפחה</h1>
+<p class="lead">קוראים שושלת, קובעים אם האלל למחלה דומיננטי או רצסיבי, גוררים גנוטיפ לכל פרט ומחשבים הסתברויות. בסוף: שאלות, התאמת מושגים והורדת קובץ.</p>
+<p class="src">שושלות והורשה באדם — לא בבגרות תשפ״ז · דרך ההורשה של תכונה אחת — בבגרות ✓</p>
+<label class="tmode" id="tmode"><input type="checkbox"> מצב מורה</label>
+<p class="tnote">סדר מומלץ: סיסטיק פיברוזיס (שני דורות) ← PKU (שלושה דורות, פרט שנכנס למשפחה) ← לבקנות (בגרות 2025) ← אנמיה חרמשית (נשאים ומלריה) ← אכונדרופלזיה (דומיננטי ואלל לטלי). בפרטים שאי אפשר לקבוע את הגנוטיפ שלהם בוודאות, הנכון הוא <span class="L">A_</span>.</p>
+
+<section class="card"><h2>בחרו משפחה</h2><div class="scen" id="scen"></div></section>
+<section class="card" id="data" hidden></section>
+
+<section class="step" data-n="1" hidden><span class="sn">שלב 1 · קוראים את השושלת</span>
+<h3>סמנו את כל הפרטים החולים</h3><div class="idl" id="s1o"></div>
+<button id="s1c">בדיקה</button><div class="fb" id="s1f" role="status"></div></section>
+
+<section class="step" data-n="2" hidden><span class="sn">שלב 2 · דרך ההורשה</span>
+<h3>האלל למחלה הוא:</h3><div class="opts" id="s2a"></div>
+<h3>על סמך מה?</h3><div class="opts" id="s2b"></div>
+<button id="s2c">בדיקה</button><div class="fb" id="s2f" role="status"></div></section>
+
+<section class="step" data-n="3" hidden><span class="sn">שלב 3 · גנוטיפ לכל פרט</span>
+<h3>גררו לכל פרט את הגנוטיפ שלו</h3>
+<p class="hint">אם אי אפשר לדעת אם הפרט הומוזיגוט או הטרוזיגוט, גררו <span class="L">A_</span> (הקו התחתון: אלל שלא ידוע).</p>
+<p class="legend" id="s3l"></p>
+<div class="tray" id="s3t"></div>
+<div class="inds" id="s3i"></div>
+<button id="s3c">בדיקה</button><div class="fb" id="s3f" role="status"></div></section>
+
+<section class="step" data-n="4" hidden><span class="sn">שלב 4 · הסתברות</span>
+<h3 id="s4q"></h3>
+<div class="row"><input class="t" id="s4in" inputmode="decimal" placeholder="1/4" style="width:7em;direction:ltr;text-align:center" aria-label="תשובה"><button id="s4c">בדיקה</button></div>
+<div class="fb" id="s4f" role="status"></div></section>
+
+<section class="card"><h2>שאלות תרגול: מחלות נוספות</h2><p class="hint">משוב מיידי. כל ניסיון נרשם בדוח.</p></section>
+<div id="qs"></div>
+
+<section class="card"><h2>שאלות בסגנון בגרות</h2><p class="hint">כתבו תשובה מלאה, כמו בבחינה. אחר כך פתחו את המחוון וסמנו מה כלול בתשובה שלכם.</p></section>
+<div id="bq"></div>
+
+<section class="card"><h2>התאמת מושגים</h2><div class="match" id="match"></div><button id="mchk">בדיקה</button><div class="fb" id="mfb" role="status"></div></section>
+
+<section class="card"><h2>סיום: הורדת קובץ</h2><p>הקובץ כולל את השם, את המשפחות שפתרתם, את התשובות ואת מספר הניסיונות.</p>
+<button class="dl" id="dl">⬇ הורדת קובץ PDF</button><p class="hint" id="dlmsg"></p></section>
+
+<p class="row"><a class="btn ghost" href="deck2.html">→ מצגת 2</a><a class="btn" href="deck3.html">למצגת 3: סוגי דם ←</a></p>
+<p class="credit">היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים.</p>
+</main>
+<div id="report" aria-hidden="true"></div>
+<script src="lab.js"></script>
+<script src="ped.js"></script>
+<script>
+(function(){const tm=$('tmode');let on=false;try{on=localStorage.getItem('genetika-teacher')==='1'}catch(e){}
+ const set=v=>{document.body.classList.toggle('teacher',v);tm.querySelector('input').checked=v};set(on);
+ tm.querySelector('input').onchange=e=>{set(e.target.checked);try{localStorage.setItem('genetika-teacher',e.target.checked?'1':'0')}catch(er){}}})();
+
+// g: D = הומוזיגוט לאלל הגדול, H = הטרוזיגוט, R = הומוזיגוט לאלל הקטן, U = לא ידוע (גדול + ?)
+const F = {
+ cf:{name:'🫁 סיסטיק פיברוזיס', dom:false, dis:'סיסטיק פיברוזיס',
+  intro:'משפחה שבה נולד ילד עם סיסטיק פיברוזיס.',
+  ped:{w:380,rows:[["I",[{id:"1",s:"m",x:230},{id:"2",s:"f",x:140}]],["II",[{id:"3",s:"f",x:290},{id:"4",s:"m",a:1,x:200},{id:"5",s:"f",x:110}]]],m:[["1","2"]],k:[[["1","2"],["3","4","5"]]]},
+  g:{1:'H',2:'H',3:'U',4:'R',5:'U'},
+  why:['ההורים 1 ו-2 בריאים, והבן 4 חולה','רק בן אחד מתוך שלושה ילדים חולה','הבן 4 הוא זכר'], whyNo:['','מספר החולים לא קובע אם האלל דומיננטי.','המין של החולה לא קובע אם האלל דומיננטי.'],
+  pq:'מה ההסתברות שהבת 3 נשאית של האלל למחלה?', pa:2/3, pok:'נכון. 3 בריאה, ולכן מבין 4 המשבצות של Aa × Aa נשארות AA, Aa, Aa: ‏2/3.', phint:'3 בריאה: מוציאים מהטבלה את המשבצת aa.'},
+ pku:{name:'🥤 פנילקטונוריה', dom:false, dis:'PKU',
+  intro:'שלושה דורות. 4 נכנסה למשפחה מבחוץ.',
+  ped:{w:380,rows:[["I",[{id:"1",s:"m",x:200},{id:"2",s:"f",x:120}]],["II",[{id:"3",s:"m",x:220},{id:"4",s:"f",x:310},{id:"5",s:"f",x:110}]],["III",[{id:"6",s:"f",a:1,x:235},{id:"7",s:"m",x:300}]]],m:[["1","2"],["3","4"]],k:[[["1","2"],["3","5"]],[["3","4"],["6","7"]]]},
+  g:{1:'U',2:'U',3:'H',4:'H',5:'U',6:'R',7:'U'},
+  why:['ההורים 3 ו-4 בריאים, והבת 6 חולה','רק פרט אחד במשפחה חולה','המחלה מופיעה רק בדור III'], whyNo:['','מספר החולים לא קובע.','הדור שבו מופיעה המחלה לא קובע לבדו.'],
+  pq:'מה ההסתברות שלזוג 3–4 ייוולד ילד חולה נוסף?', pa:.25, pok:'נכון. 3 ו-4 נשאים: Aa × Aa ← 1/4 בכל הריון.', phint:'מה הגנוטיפים של 3 ו-4? בנו טבלת פאנט.'},
+ albino:{name:'☀️ לבקנות', dom:false, dis:'לבקנות',
+  intro:'על בסיס בגרות 2025, שאלה 23ב.',
+  ped:{w:380,rows:[["I",[{id:"1",s:"m",a:1,x:210},{id:"2",s:"f",x:130}]],["II",[{id:"3",s:"f",x:170},{id:"4",s:"m",x:290}]],["III",[{id:"5",s:"m",a:1,x:200},{id:"6",s:"f",x:270}]]],m:[["1","2"],["4","3"]],k:[[["1","2"],["3"]],[["4","3"],["5","6"]]]},
+  g:{1:'R',2:'U',3:'H',4:'H',5:'R',6:'U'},
+  why:['ההורים 3 ו-4 בעלי צבע תקין, והבן 5 לבקן','האב 1 לבקן','גם בדור I וגם בדור III יש לבקן'], whyNo:['','פרט אחד חולה אינו מספיק לקביעה.','הופעה בכמה דורות לא קובעת לבדה.'],
+  pq:'מה ההסתברות שלזוג 3–4 ייוולד ילד לבקן נוסף?', pa:.25, pok:'נכון. 3 קיבלה a מאביה הלבקן, ו-4 נשא (נולד לו בן לבקן): Aa × Aa ← 1/4.', phint:'3 קיבלה אלל מאביה 1. מה הוא העביר לה?'},
+ sickle:{name:'🩸 אנמיה חרמשית', dom:false, dis:'אנמיה חרמשית',
+  intro:'משפחה שבה נולדה בת עם אנמיה חרמשית. מקרא: A = המוגלובין תקין, a = המוגלובין S.',
+  ped:{w:380,rows:[["I",[{id:"1",s:"m",x:230},{id:"2",s:"f",x:150}]],["II",[{id:"3",s:"m",x:290},{id:"4",s:"f",a:1,x:200},{id:"5",s:"f",x:110}]]],m:[["1","2"]],k:[[["1","2"],["3","4","5"]]]},
+  g:{1:'H',2:'H',3:'U',4:'R',5:'U'},
+  why:['ההורים 1 ו-2 בריאים, והבת 4 חולה','רק בת אחת חולה','החולה היא נקבה'], whyNo:['','מספר החולים לא קובע.','המין של החולה לא קובע אם האלל דומיננטי.'],
+  pq:'מה ההסתברות שילד נוסף של 1–2 יהיה נשא (Aa)?', pa:.5, pok:'נכון. Aa × Aa ← ‏1 AA : 2 Aa : 1 aa. נשא: 2/4 = 1/2. באזור מלריה, לנשא יש הגנה חלקית מפני מלריה קשה.', phint:'בנו טבלת פאנט ל-Aa × Aa וספרו את משבצות ה-Aa.'},
+ achon:{name:'🦴 אכונדרופלזיה', dom:true, dis:'אכונדרופלזיה',
+  intro:'מחלה שבה האלל הומוזיגוטי לטלי: עובר עם שני אללים למחלה מת בדרך כלל סמוך ללידה.',
+  ped:{w:380,rows:[["I",[{id:"1",s:"m",a:1,x:230},{id:"2",s:"f",a:1,x:150}]],["II",[{id:"3",s:"f",a:1,x:290},{id:"4",s:"m",x:200},{id:"5",s:"m",a:1,x:110}]]],m:[["1","2"]],k:[[["1","2"],["3","4","5"]]]},
+  g:{1:'H',2:'H',3:'H',4:'R',5:'H'},
+  why:['ההורים 1 ו-2 חולים, והבן 4 בריא','רוב הילדים חולים','גם האב וגם האם חולים'], whyNo:['','רוב החולים לא קובע אם האלל דומיננטי.','שני הורים חולים לבדם לא מספיקים — צריך ילד בפנוטיפ אחר.'],
+  pq:'מה ההסתברות שילד שנולד ושרד לזוג 1–2 יהיה חולה?', pa:2/3, pok:'נכון. Aa × Aa: ‏1 AA (לטלי) : 2 Aa : 1 aa. מבין הילדים ששורדים — 2/3 חולים.', phint:'אחת מארבע המשבצות לטלית. ספרו רק את הילדים ששורדים.',
+  tnote:'כל חולה בשושלת הוא Aa: הגנוטיפ AA לטלי. זו הסיבה שאין כאן A_ אצל החולים.'}
+};
+let C = null, key = '';
+const U = 'A', l = 'a';
+$('scen').innerHTML = Object.entries(F).map(([k, f]) => `<label><input type="radio" name="sc" value="${k}"> <b>${f.name}</b><span class="hint">${f.dom ? 'דומיננטי' : 'משפחה'} · ${Object.keys(f.g).length} פרטים</span></label>`).join('');
+$('scen').onchange = e => start(e.target.value);
+function radios(box, name, opts) { box.innerHTML = shuffle(opts.map((o, k) => [o, k])).map(([o, k]) => `<label><input type="radio" name="${name}" value="${k}"> <span>${o}</span></label>`).join('') }
+const picked = n => { const r = document.querySelector(`input[name="${n}"]:checked`); return r ? +r.value : -1 };
+const inds = () => C.ped.rows.flatMap(r => r[1]);
+
+function start(k) {
+ C = F[k]; key = k; Lab.reset(0); document.querySelectorAll('.fb').forEach(f => f.className = 'fb');
+ $('data').hidden = false;
+ $('data').innerHTML = `<h2>${C.name.slice(2)}</h2><p>${C.intro}</p><svg class="ped" id="pedsvg"></svg>${C.tnote ? `<p class="tnote">${C.tnote}</p>` : ''}`;
+ drawPed($('pedsvg'), C.ped);
+ $('s1o').innerHTML = inds().map(d => `<label><input type="checkbox" value="${d.id}"> ${d.s === 'm' ? '♂' : '♀'} ${d.id}</label>`).join('');
+ radios($('s2a'), 's2a', ['רצסיבי', 'דומיננטי']); radios($('s2b'), 's2b', C.why);
+ document.querySelector('.step[data-n="1"]').hidden = false; setTimeout(() => $('data').scrollIntoView({ behavior: 'smooth' }), 100);
+}
+$('s1c').onclick = () => { const v = [...$('s1o').querySelectorAll('input:checked')].map(i => i.value), want = inds().filter(d => d.a).map(d => d.id), ok = sameSet(v, want);
+ fb($('s1f'), ok, ok ? `נכון. החולים: ${want.join(', ')} (צורה מלאה).` : 'פרט חולה מסומן בצורה מלאה: ריבוע מלא (זכר) או עיגול מלא (נקבה).');
+ Lab.rec(`${C.dis} — שלב 1: חולים`, ok, v.join(',')); if (ok) Lab.solve(1) };
+$('s2c').onclick = () => { const a = picked('s2a'), b = picked('s2b'), wantA = C.dom ? 1 : 0;
+ if (a < 0 || b < 0) return fb($('s2f'), false, 'ענו על שתי השאלות.');
+ if (a !== wantA) { Lab.rec(`${C.dis} — שלב 2: דרך ההורשה`, false, a ? 'דומיננטי' : 'רצסיבי'); return fb($('s2f'), false, 'לא. חפשו בשושלת זוג הורים בפנוטיפ אחד שנולד להם ילד בפנוטיפ האחר.') }
+ if (b !== 0) { Lab.rec(`${C.dis} — שלב 2: דרך ההורשה`, false, C.why[b]); return fb($('s2f'), false, C.whyNo[b]) }
+ fb($('s2f'), true, C.dom ? 'נכון. לשני הורים חולים נולד ילד בריא: ההורים נושאים אלל לפנוטיפ התקין שלא מתבטא בהם. לכן האלל למחלה דומיננטי.' : 'נכון. לשני הורים בריאים נולד ילד חולה: שני ההורים נושאים את האלל למחלה בלי שהוא מתבטא בהם. לכן האלל למחלה רצסיבי.');
+ Lab.rec(`${C.dis} — שלב 2: דרך ההורשה`, true, C.dom ? 'דומיננטי' : 'רצסיבי'); Lab.solve(2) };
+document.querySelector('.step[data-n="3"]').addEventListener('open', () => {
+ $('s3l').innerHTML = C.dom ? `מקרא: ${L(U)} = אלל ל${C.dis} (דומיננטי) · ${L(l)} = אלל לפנוטיפ תקין` : `מקרא: ${L(U)} = אלל לפנוטיפ תקין (דומיננטי) · ${L(l)} = אלל ל${C.dis} (רצסיבי)`;
+ $('s3t').innerHTML = '<b>גנוטיפים:</b>' + ['AA', 'Aa', 'aa', 'A_'].map(g => chip(g, g)).join('');
+ $('s3i').innerHTML = inds().map(d => `<div class="ind"><b>${d.s === 'm' ? '♂ זכר' : '♀ נקבה'} ${d.id}</b><span>${d.a ? (C.dom ? 'חולה' : 'חולה') : 'בריא' + (d.s === 'f' ? 'ה' : '')}</span>${slot('g' + d.id)}</div>`).join('');
+});
+const G = { D: 'AA', H: 'Aa', R: 'aa', U: 'A_' };
+$('s3c').onclick = () => {
+ let wrong = [], empty = 0, close = [];
+ inds().forEach(d => { const s = $('g' + d.id), v = s.dataset.v || ''; if (!v) { empty++; return }
+  const want = G[C.g[d.id]], ok = v === want; s.classList.remove('ok', 'no'); s.classList.add(ok ? 'ok' : 'no');
+  if (!ok) { wrong.push(d.id); if (want === 'A_' && (v === 'AA' || v === 'Aa')) close.push(d.id) } });
+ if (empty) return fb($('s3f'), false, empty === 1 ? 'יש פרט אחד בלי גנוטיפ.' : `יש ${empty} פרטים בלי גנוטיפ.`);
+ const txt = inds().map(d => `${d.id}:${$('g' + d.id).dataset.v}`).join(' ');
+ if (!wrong.length) { fb($('s3f'), true, 'נכון! כל הגנוטיפים במקום.' + (C.dom ? ' שימו לב: כל החולים Aa, כי AA לטלי.' : '')); Lab.rec(`${C.dis} — שלב 3: גנוטיפים`, true, txt); Lab.solve(3); return }
+ let msg = wrong.length === 1 ? `פרט אחד לא נכון (${wrong[0]}).` : `${wrong.length} פרטים לא נכונים (${wrong.join(', ')}).`;
+ if (close.length) msg += ` ${close.length === 1 ? 'בפרט' : 'בפרטים'} ${close.join(', ')} אי אפשר לדעת בוודאות אם הם הומוזיגוטים או הטרוזיגוטים — כתבו ${L('A_')}.`;
+ else msg += ' רמז: התחילו מהחולים, ואחר כך בדקו מה כל הורה העביר לילדיו.';
+ fb($('s3f'), false, msg); Lab.rec(`${C.dis} — שלב 3: גנוטיפים`, false, txt);
+};
+document.querySelector('.step[data-n="4"]').addEventListener('open', () => { $('s4q').textContent = C.pq; $('s4in').value = '' });
+$('s4c').onclick = () => { const raw = $('s4in').value, v = parseFrac(raw), ok = Math.abs(v - C.pa) < .005;
+ fb($('s4f'), ok, ok ? C.pok : 'עדיין לא. ' + C.phint); Lab.rec(`${C.dis} — שלב 4: הסתברות`, ok, raw);
+ if (ok) { $('s4f').innerHTML += '<br><b>סיימתם את המשפחה הזו. בחרו משפחה אחרת למעלה, או המשיכו לשאלות.</b>'; Lab.solve(4) } };
+
+const QS = [
+ {src:'חוברת שאלות ממוינות 4א, שאלה 11', stem:'כשמתגלה שאב הוא נשא של מחלת טיי-זקס (מחלה רצסיבית), ממליצים לבדוק גם את האם. <b>מדוע?</b>',
+  opts:['ילד יהיה חולה רק אם יקבל אלל למחלה משני ההורים. אם האם אינה נשאית, הסיכוי לילד חולה הוא 0','כי האם מעבירה יותר אללים לילדים','כי מחלה רצסיבית עוברת רק מהאם','כי נשאות של האב מספיקה לילד חולה'], ans:0,
+  ok:'נכון. במחלה רצסיבית הילד חולה רק כ-aa. אם שני ההורים נשאים, הסיכוי בכל הריון 1/4.', no:['','כל הורה מעביר אלל אחד לכל גן.','הגן נמצא על כרומוזום שאינו כרומוזום מין: עובר משני ההורים באותה מידה.','במחלה רצסיבית אלל אחד אינו מספיק למחלה.']},
+ {src:'מצגת 2 · מחלת הנטינגטון', stem:'מחלת הנטינגטון היא מחלה ניוונית של מערכת העצבים, שנגרמת על ידי אלל דומיננטי. התסמינים מופיעים בדרך כלל בגיל 30–50. <b>מה ההסתברות שילד של אב חולה (הטרוזיגוט) ואם בריאה יירש את האלל?</b>',
+  opts:['1/2','1/4','3/4','0'], ans:0, ok:'נכון. Aa × aa ← ‏1 Aa : 1 aa. ההסתברות 1/2 בכל הריון.', no:['','1/4 מתקבל מהכלאת שני הטרוזיגוטים.','3/4 הוא שיעור הפנוטיפ הדומיננטי בהכלאת Aa × Aa.','האב מעביר את האלל ב-1/2 מהגמטות.'],
+  t:'אפשר לדון: למה מחלה דומיננטית קטלנית לא נעלמה מהאוכלוסייה? (התסמינים מופיעים בדרך כלל אחרי גיל הפוריות.)'},
+ {src:'ברוח מבחן רבעון ב (עליזה, עינה וחגית) · שושלות', stem:'בשושלת, לשני הורים חולים נולדה בת בריאה. <b>מה אפשר להסיק?</b>',
+  opts:['האלל למחלה דומיננטי, ושני ההורים הטרוזיגוטים','האלל למחלה רצסיבי','הבת נשאית','אי אפשר להסיק דבר'], ans:0,
+  ok:'נכון. הבת קיבלה מכל הורה אלל לפנוטיפ התקין, ולכן ההורים נושאים אותו בלי שהוא מתבטא בהם.', no:['','אילו היה רצסיבי, שני ההורים החולים היו aa, וכל ילדיהם חולים.','במחלה דומיננטית בריא הוא aa: אין לו אלל למחלה.','יש מספיק מידע: ילד בפנוטיפ שונה משני ההורים מכריע.']},
+ {src:'מצגת 2 · אכונדרופלזיה', type:'frac', stem:'אכונדרופלזיה: <b>A</b> דומיננטי למחלה, <b>AA</b> לטלי. אישה חולה נישאה לגבר בגובה ממוצע. <b>מה ההסתברות שילדם יהיה חולה?</b>',
+  ans:.5, ok:'נכון. האישה חולה ושרדה ← Aa. ‏Aa × aa ← ‏1 Aa : 1 aa, כלומר 1/2. אין כאן צירוף לטלי.', hint:'האישה חולה ובחיים. מה הגנוטיפ שלה, אם AA לטלי?'},
+ {src:'מצגת 2 · סיסטיק פיברוזיס', type:'frac', stem:'שני בני זוג בריאים עשו בדיקת נשאות לסיסטיק פיברוזיס, ושניהם נמצאו נשאים. <b>מה ההסתברות ששני ילדיהם הראשונים יהיו חולים?</b>',
+  ans:1/16, ok:'נכון. 1/4 × 1/4 = 1/16: "וגם" — כופלים, כי כל הריון בלתי תלוי.', hint:'ההסתברות לכל ילד 1/4. "וגם" כופלים.'}
+,
+ {src:'מצגת 2 · אנמיה חרמשית ומלריה', stem:'באזורים מסוימים באפריקה, כ-25% מהאנשים נשאים של האלל לאנמיה חרמשית — הרבה יותר מבאירופה. <b>מה ההסבר?</b>',
+  opts:['לנשאים הגנה חלקית מפני מלריה קשה. באזורי מלריה הם שורדים ומולידים יותר צאצאים, ולכן האלל נשמר בשכיחות גבוהה','האלל נוצר באפריקה כדי להגן מפני מלריה','הנשאים חסינים לגמרי למלריה','בגלל האקלים החם נוצרות יותר מוטציות'], ans:0,
+  ok:'נכון. זו הגנה חלקית, לא חסינות. ההבדל בהישרדות ובהולדת צאצאים שומר על האלל באוכלוסייה.', no:['','ניסוח טלאולוגי: אלל לא נוצר "כדי" משהו. מוטציות מתרחשות באקראי, והשכיחות נקבעת לפי הישרדות והתרבות.','ההגנה חלקית: גם נשאים יכולים לחלות במלריה, אבל פחות במלריה קשה.','שכיחות האלל קשורה לפיזור המלריה, לא לחום.']},
+ {src:'מצגת 2 · אכונדרופלזיה', stem:'<b>למה כל אדם עם אכונדרופלזיה הוא הטרוזיגוט (Aa), ואין מבוגרים בגנוטיפ AA?</b>',
+  opts:['עובר AA אינו שורד: העצמות קצרות מאוד ובית החזה קטן, והוא מת לפני הלידה או זמן קצר אחריה','כי האלל A רצסיבי','כי אכונדרופלזיה נגרמת רק ממוטציה חדשה','כי פרטי AA בגובה תקין'], ans:0,
+  ok:'נכון. הגנוטיפ AA לטלי. לכן מזוג Aa × Aa, מבין הילדים ששורדים — 2/3 חולים ו-1/3 בגובה תקין.', no:['','האלל לאכונדרופלזיה דומיננטי: אלל אחד מספיק.','כ-80% מהמקרים ממוטציה חדשה, אבל חולה מעביר את האלל ל-1/2 מילדיו.','פרט AA סובל מהצורה הקשה ביותר, ואינו שורד.']}];
+renderQuestions($('qs'), QS, 'q');
+renderMatch($('match'), [
+ ['שושלת','תרשים של משפחה לאורך כמה דורות, שבו מסומנים בעלי התכונה'], ['נשא','הטרוזיגוט לאלל רצסיבי של מחלה, בעל פנוטיפ תקין'],
+ ['אלל לטלי','אלל שבגנוטיפ מסוים גורם למוות לפני הבגרות'], ['בדיקת סקר','בדיקה לכל האוכלוסייה, כמו בדיקת PKU לכל יילוד'],
+ ['אוטוזומלי','גן שנמצא על כרומוזום שאינו כרומוזום מין'], ['ריבוע בשושלת','זכר'], ['עיגול מלא בשושלת','נקבה בעלת התכונה'],
+ ['מוטציה חדשה','שינוי ב-DNA שלא היה אצל ההורים, כמו ברוב מקרי האכונדרופלזיה']
+], $('mchk'), $('mfb'));
+renderBagrut($('bq'), [
+ {src:'בסגנון בגרות · שושלות — לא במיקוד תשפ״ז', title:'אנמיה חרמשית ומלריה', stem:`<p>לפניכם שושלת של משפחה שבה יש אנמיה חרמשית. צורה מלאה — חולה.</p><svg class="ped" data-ped='{"w":380,"rows":[["I",[{"id":"1","s":"m","x":230},{"id":"2","s":"f","x":150}]],["II",[{"id":"3","s":"m","x":290},{"id":"4","s":"f","a":1,"x":200},{"id":"5","s":"f","x":110}]]],"m":[["1","2"]],"k":[[["1","2"],["3","4","5"]]]}'></svg>`,
+  parts:[
+   {n:'א', task:'קִבעו אם האלל לאנמיה חרמשית דומיננטי או רצסיבי. נַמקו על פי השושלת.', pts:3,
+    rubric:[['האלל למחלה רצסיבי',30],['נימוק: להורים 1 ו-2, שאינם חולים, נולדה בת חולה (4). ההורים נושאים את האלל בלי שהוא מתבטא בהם',70]],
+    model:'האלל רצסיבי. ההורים 1 ו-2 בריאים, ולבתם 4 יש אנמיה חרמשית: היא קיבלה אלל למחלה משני ההורים, שבהם האלל לא התבטא. לכן 1 ו-2 נשאים (Aa) והאלל רצסיבי.'},
+   {n:'ב', task:'באזורים באפריקה שבהם מלריה נפוצה, שכיחות הנשאים לאנמיה חרמשית גבוהה מאוד. הַסבירו את הממצא.', pts:4,
+    rubric:[['לנשאים (Aa) יש הגנה חלקית מפני מלריה קשה',40],['באזורי מלריה נשאים שורדים ומולידים יותר צאצאים מאשר פרטים AA',40],['לכן האלל עובר לדורות הבאים ונשמר באוכלוסייה בשכיחות גבוהה',20]],
+    model:'לנשאים יש הגנה חלקית מפני מלריה קשה, ופרטי AA רגישים יותר למלריה. באזורי מלריה הנשאים שורדים ומולידים יותר צאצאים, ולכן האלל עובר לדורות הבאים ונשמר באוכלוסייה בשכיחות גבוהה.'}]},
+ {src:'בסגנון בגרות · אלל לטלי — לא בתוכנית, העשרה', title:'אכונדרופלזיה', stem:`<p>אכונדרופלזיה נגרמת על ידי אלל דומיננטי (${L('A')}). עובר ${L('AA')} אינו שורד. ♀ אישה ו-♂ גבר, שניהם עם אכונדרופלזיה, הם בני זוג.</p>`,
+  parts:[{n:'', task:'הַסבירו מדוע מבין ילדיהם ששורדים צפוי יחס של 2 חולים : 1 בריא, ולא 3 : 1. היעזרו בתרשים הכלאה.', pts:5,
+    rubric:[['שני ההורים Aa (כל חולה הוא Aa, כי AA לא שורד)',25],['תרשים/טבלה: AA, Aa, Aa, aa',25],['הצאצא AA אינו שורד',30],['מבין השורדים: 2 Aa (חולים) : 1 aa (בריא)',20]],
+    model:'ההורים חולים ושרדו, ולכן שניהם Aa. Aa × Aa ← AA : Aa : Aa : aa. העובר AA אינו שורד. מבין השורדים: 2 Aa חולים ו-1 aa בריא — יחס 2 : 1.'}]}
+], 'b');
+document.querySelectorAll('#bq svg.ped[data-ped]').forEach(s => drawPed(s, JSON.parse(s.dataset.ped)));
+$('dl').onclick = () => labPdf('מעבדה ותרגול 2: שושלות', 'מעבדה2-שושלות');
+</script>
+<script>async function downloadPdf(el,fname,filter){const scale=2;const canvas=await htmlToImage.toCanvas(el,{pixelRatio:scale,backgroundColor:'#ffffff',filter});
+ const{jsPDF}=window.jspdf;const pdf=new jsPDF({unit:'mm',format:'a4'});const pw=190,ph=277,px=canvas.width/pw,pageH=Math.floor(ph*px);let y=0,first=true;
+ while(y<canvas.height-2){const end=Math.min(y+pageH,canvas.height);const c=document.createElement('canvas');c.width=canvas.width;c.height=end-y;c.getContext('2d').drawImage(canvas,0,y,canvas.width,end-y,0,0,canvas.width,end-y);
+  if(!first)pdf.addPage();pdf.addImage(c.toDataURL('image/jpeg',.9),'JPEG',10,10,pw,(end-y)/px);first=false;y=end}pdf.save(fname)}</script><script>(function(){const g=document.getElementById('gate'),n=document.getElementById('gName'),c=document.getElementById('gClass');
+try{const s=JSON.parse(localStorage.getItem('genetika-student')||'{}');n.value=s.name||'';c.value=s.cls||''}catch(e){}
+document.getElementById('gGo').onclick=()=>{const nm=n.value.trim(),cl=c.value.trim();
+ if(nm.length<2||!cl){document.getElementById('gErr').textContent='כתבו שם (לפחות 2 אותיות) וכיתה.';return}
+ try{localStorage.setItem('genetika-student',JSON.stringify({name:nm,cls:cl}))}catch(e){}
+ document.querySelectorAll('[data-fill="name"]').forEach(e=>{if('value' in e)e.value=nm;else e.textContent=nm});
+ document.querySelectorAll('[data-fill="class"]').forEach(e=>{if('value' in e)e.value=cl;else e.textContent=cl});
+ window.STUDENT={name:nm,cls:cl};g.hidden=true};n.focus()})();</script>
+</body>
+</html>

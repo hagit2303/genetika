@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,">
+<title>מעבדה ותרגול 1: הכלאות · גנטיקה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Rubik:wght@400;500;700&family=Amatic+SC:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="unit.css">
+<link rel="stylesheet" href="lab.css">
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+.qn{font-family:"Amatic SC",cursive;font-size:26px;color:var(--red);line-height:1}
+.scen{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:10px}
+.scen label{display:flex;flex-direction:column;gap:4px;border:2px solid var(--ink);padding:12px;cursor:pointer;background:#fff}
+.scen label:has(input:checked){background:#F4F8F5;outline:3px solid var(--hl)}
+.cnt{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.cnt input{width:4em;text-align:center}
+.dots{display:flex;flex-wrap:wrap;gap:3px;margin:6px 0}.dots i{width:14px;height:14px;border-radius:50%;border:1.5px solid #1F4D3A;display:block}
+.gam{display:flex;flex-wrap:wrap;gap:6px}.gam span{border:1.5px solid var(--grid);background:#fff;padding:3px 8px;font-size:14px;direction:rtl}
+.cmp{width:auto}.cmp td,.cmp th{padding:4px 10px}
+.sitebar{position:fixed;top:10px;inset-inline-end:12px;z-index:50;display:flex;gap:6px}
+.sitebar a{font:700 14px Rubik,Arial,sans-serif;color:#1F4D3A;background:#fff;border:2px solid #1F4D3A;padding:5px 10px;text-decoration:none}
+.gate{position:fixed;inset:0;z-index:100;background:rgba(31,77,58,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.gate[hidden]{display:none}
+.gbox{background:#fff;border:3px solid #1F4D3A;max-width:420px;width:100%;padding:22px;display:flex;flex-direction:column;gap:12px;font-family:Rubik,Arial,sans-serif;color:#1F4D3A}
+.gbox h2{font-family:"Secular One",Rubik,sans-serif;font-weight:400;font-size:28px}.gbox label{display:flex;flex-direction:column;gap:4px;font-weight:500}
+.gbox input{font:inherit;font-size:18px;padding:8px;border:2px solid #1F4D3A}
+.gbox button{font:inherit;font-weight:700;font-size:18px;padding:10px;border:0;background:#1F4D3A;color:#fff;cursor:pointer}
+.gerr{color:#B8423A;font-weight:500;min-height:1.2em}
+@media print{.sitebar,.gate{display:none!important}}
+</style>
+</head>
+<body>
+<nav class="sitebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a></nav>
+<div class="gate" id="gate"><div class="gbox" role="dialog" aria-modal="true" aria-labelledby="gTitle"><h2 id="gTitle">לפני שמתחילים</h2><p>כתבו את השם והכיתה שלכם. הם יופיעו בקובץ שתעלו למשימה ב־Classroom.</p><label>שם מלא<input id="gName" autocomplete="name"></label><label>כיתה<input id="gClass"></label><p class="gerr" id="gErr"></p><button id="gGo">מתחילים</button></div></div>
+<main class="w">
+<span class="note">מעבדה ותרגול 1 · אחרי מצגת 1</span>
+<h1>מעבדת הכלאות: מהתכונה ועד הצאצאים</h1>
+<p class="lead">עובדים כמו מנדל, צעד אחרי צעד. כל שלב נפתח אחרי שהקודם נכון. גוררים פריטים בעכבר או באצבע, או לוחצים על פריט ואחר כך על המקום שלו. בסוף: שאלות בגרות, התאמת מושגים והורדת קובץ להגשה.</p>
+<p class="src">בבגרות תשפ״ז ✓ · מושגים: תכונה, פנוטיפ, אלל דומיננטי ורצסיבי, גנוטיפ, הומוזיגוט, הטרוזיגוט, מיוזה, גמטה, הפריה, P, F₁, F₂, הכלאת מבחן</p>
+<label class="tmode" id="tmode"><input type="checkbox"> מצב מורה</label>
+<p class="tnote">אפשר לעבור על תרחיש אחד יחד בכיתה (מומלץ: כלניות, שאלת הבגרות), ולתת את השניים האחרים לעבודה עצמית. הדוח בסוף מתעד כל שלב, את מספר הניסיונות ואת התשובה.</p>
+
+<section class="card">
+<h2>בחרו תרחיש</h2>
+<div class="scen" id="scen"></div>
+</section>
+
+<section class="card" id="data" hidden></section>
+
+<section class="step" data-n="1" hidden><span class="sn">שלב 1 · התכונה</span>
+<h3>איזו תכונה נבדקת כאן?</h3>
+<p class="hint">תכונה היא מאפיין (למשל "צבע הפרח"). הצורות השונות שלה הן הפנוטיפים.</p>
+<div class="opts" id="s1o"></div><button id="s1c">בדיקה</button><div class="fb" id="s1f" role="status"></div></section>
+
+<section class="step" data-n="2" hidden><span class="sn">שלב 2 · הפנוטיפים</span>
+<h3>מהם שני הפנוטיפים של התכונה?</h3>
+<div class="opts" id="s2o"></div><button id="s2c">בדיקה</button><div class="fb" id="s2f" role="status"></div></section>
+
+<section class="step" data-n="3" hidden><span class="sn">שלב 3 · אלל דומיננטי ואלל רצסיבי</span>
+<h3>איזה פנוטיפ נקבע על ידי האלל הדומיננטי?</h3>
+<div class="opts" id="s3a"></div>
+<h3>על סמך מה?</h3>
+<div class="opts" id="s3b"></div>
+<h3>בחרו אות לסימון הגן</h3>
+<p class="hint">אות אחת לגן: גדולה לאלל הדומיננטי, קטנה לאלל הרצסיבי. כדאי לבחור אות שהגדולה והקטנה שלה נראות שונות (לא O, C, S, W).</p>
+<div class="row"><input class="t" id="s3l" maxlength="1" value="A" style="width:3em;text-align:center;direction:ltr" aria-label="אות לסימון"><button id="s3c">בדיקה</button></div>
+<div class="fb" id="s3f" role="status"></div></section>
+
+<section class="step" data-n="4" hidden><span class="sn">שלב 4 · ההורים</span>
+<h3>גררו לכל הורה את שני האללים שלו</h3>
+<p class="hint" id="s4h"></p>
+<div class="tray" id="s4t"></div>
+<div class="cellbox">
+<div class="pcell"><span class="sex">♀</span><b>נקבה</b><span id="s4mp"></span><div class="circle"><span class="slot" id="m0" tabindex="0" role="button" aria-label="אלל 1 של הנקבה"></span><span class="slot" id="m1" tabindex="0" role="button" aria-label="אלל 2 של הנקבה"></span></div></div>
+<div class="pcell"><span class="sex">♂</span><b>זכר</b><span id="s4fp"></span><div class="circle"><span class="slot" id="f0" tabindex="0" role="button" aria-label="אלל 1 של הזכר"></span><span class="slot" id="f1" tabindex="0" role="button" aria-label="אלל 2 של הזכר"></span></div></div>
+</div>
+<button id="s4c">בדיקה</button><div class="fb" id="s4f" role="status"></div></section>
+
+<section class="step" data-n="5" hidden><span class="sn">שלב 5 · מיוזה</span>
+<h3>הפרידו בעצמכם את הכרומוזומים ההומולוגיים</h3>
+<p class="hint">בכל תא של הורה יש זוג כרומוזומים הומולוגיים, ועל כל אחד מהם אלל אחד. גררו כל כרומוזום לתא רבייה אחר. כך קורה בחלוקה הראשונה של המיוזה.</p>
+<div class="cellbox" id="s5"></div>
+<button id="s5c">בדיקה</button><div class="fb" id="s5f" role="status"></div></section>
+
+<section class="step" data-n="6" hidden><span class="sn">שלב 6 · טבלת פאנט</span>
+<h3>גררו את הגמטות לכותרות, ואחר כך את האללים לכל משבצת</h3>
+<p class="hint">השורות: הביציות של הנקבה ♀. העמודות: תאי הזרע של הזכר ♂. בכל משבצת: אלל אחד מהשורה ואלל אחד מהעמודה.</p>
+<div class="tray" id="s6t"></div>
+<div class="tw" style="overflow-x:auto"><table class="pun2"><tr><th class="corner">♀ ביציות ↓<br>♂ זרע →</th><th><span class="slot" id="c0" tabindex="0" role="button" aria-label="גמטה 1 של הזכר"></span></th><th><span class="slot" id="c1" tabindex="0" role="button" aria-label="גמטה 2 של הזכר"></span></th></tr>
+<tr><th><span class="slot" id="r0" tabindex="0" role="button" aria-label="גמטה 1 של הנקבה"></span></th><td id="x00"></td><td id="x01"></td></tr>
+<tr><th><span class="slot" id="r1" tabindex="0" role="button" aria-label="גמטה 2 של הנקבה"></span></th><td id="x10"></td><td id="x11"></td></tr></table></div>
+<button id="s6c">בדיקה</button><div class="fb" id="s6f" role="status"></div></section>
+
+<section class="step" data-n="7" hidden><span class="sn">שלב 7 · הצאצאים</span>
+<h3>מה יחסי הצאצאים?</h3>
+<p>יחס גנוטיפי (כמה משבצות מכל גנוטיפ):</p>
+<div class="cnt" id="s7g"></div>
+<p>יחס פנוטיפי:</p>
+<div class="cnt" id="s7p"></div>
+<button id="s7c">בדיקה</button><div class="fb" id="s7f" role="status"></div>
+<div id="s7grow" hidden>
+<h3>גדלו צאצאים וראו מה מתקבל</h3>
+<div class="row"><button class="ghost" data-g="10">10 צאצאים</button><button class="ghost" data-g="100">100</button><button class="ghost" data-g="1000">1,000</button></div>
+<p id="s7r" aria-live="polite"></p>
+<p class="tnote">כדאי ללחוץ "10 צאצאים" כמה פעמים ולראות שהיחס משתנה בין ריצה לריצה. רק כשסופרים הרבה צאצאים היחס מתקרב ליחס הצפוי.</p>
+</div></section>
+
+<section class="card" id="farm"><h2>חממת הכלאות: דור אחרי דור</h2>
+<p class="hint">כמו מנדל: מתחילים מזנים טהורים (P), מקבלים F₁, מכליאים צאצאי F₁ ומקבלים F₂. כל צאצא נוצר מביצית אקראית ומתא זרע אקראי. בחרו קודם תרחיש למעלה.</p>
+<div id="farmP" class="row"></div>
+<div class="row"><button id="fP">הכליאו את דור P</button><button id="fF1" disabled>הכליאו ♀ F₁ × ♂ F₁</button><button id="fTC" disabled>הכלאת מבחן: ♀ F₁ × ♂ רצסיבי</button>
+<label>מספר צאצאים: <select id="fN"><option>20</option><option selected>100</option><option>400</option></select></label></div>
+<div id="farmOut" aria-live="polite"></div>
+<p class="tnote">כדאי להריץ F₂ עם 20 צאצאים כמה פעמים, ולהשוות לתוצאות של 400. זו בדיוק הנקודה של מנדל: היחס 3 : 1 מתקבל רק כשסופרים הרבה צאצאים.</p>
+</section>
+
+<section class="card"><h2>שאלות בגרות</h2><p class="hint">משוב מיידי. כל ניסיון נרשם בדוח.</p></section>
+<div id="qs"></div>
+
+<section class="card"><h2>שאלות בסגנון בגרות</h2><p class="hint">כתבו תשובה מלאה, כמו בבחינה. אחר כך פתחו את המחוון וסמנו מה כלול בתשובה שלכם.</p></section>
+<div id="bq"></div>
+
+<section class="card"><h2>התאמת מושגים</h2><p class="hint">לכל הגדרה בחרו את המושג המתאים.</p>
+<div class="match" id="match"></div><button id="mchk">בדיקה</button><div class="fb" id="mfb" role="status"></div></section>
+
+<section class="card"><h2>סיום: הורדת קובץ</h2>
+<p>הקובץ כולל את השם, את השלבים שהשלמתם, את התשובות ואת מספר הניסיונות. העלו אותו למשימה ב-Classroom.</p>
+<button class="dl" id="dl">⬇ הורדת קובץ PDF</button><p class="hint" id="dlmsg"></p></section>
+
+<p class="row"><a class="btn ghost" href="deck1.html">→ מצגת 1</a><a class="btn" href="deck2.html">למצגת 2: הורשה באדם ←</a></p>
+<p class="credit">היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים.</p>
+</main>
+<div id="report" aria-hidden="true"></div>
+<script src="lab.js"></script>
+<script>
+// מצב מורה
+(function(){const tm=$('tmode');let on=false;try{on=localStorage.getItem('genetika-teacher')==='1'}catch(e){}
+ const set=v=>{document.body.classList.toggle('teacher',v);tm.querySelector('input').checked=v};set(on);
+ tm.querySelector('input').onchange=e=>{set(e.target.checked);try{localStorage.setItem('genetika-teacher',e.target.checked?'1':'0')}catch(er){}}})();
+
+const SC = {
+ kalanit:{name:'🌺 כלניות', sub:'שאלת בגרות 2022 ו-2026', src:'בגרות 2022 שאלה 26 · בגרות 2026 שאלה 24',
+  data:`<p>צבע הפרחים בכלניות הוא תכונה תורשתית, הנקבעת על ידי גן אחד עם שני אללים. בטבלה תוצאות של הכלאות:</p>
+   <table><thead><tr><th>הורים</th><th>צאצאים אדומים</th><th>צאצאים לבנים</th></tr></thead><tbody><tr><td>לבן × לבן</td><td>5</td><td>17</td></tr><tr><td>אדום × לבן</td><td>14</td><td>12</td></tr><tr><td>אדום × אדום</td><td>23</td><td>0</td></tr></tbody></table>
+   <p>במעבדה נכליא <b>נקבה לבנה וזכר לבן</b> מההכלאה הראשונה (לבן × לבן).</p>`,
+  trait:'צבע הפרח', traitOpts:['צבע הפרח','פרח אדום','כלנית','חלבון A'], phen:['לבן','אדום'], phenAll:['לבן','אדום','ורוד','גבוה','עלי כותרת'],
+  why:['בהכלאה לבן × לבן נולדו גם צאצאים אדומים — פנוטיפ שלא הופיע בהורים','בהכלאה אדום × אדום כל הצאצאים אדומים','בהכלאה אדום × לבן נולדו יותר צאצאים אדומים מלבנים'],
+  whyNo:['','אדום × אדום לא מכריעה: כל הצאצאים יהיו אדומים גם אם האדום רצסיבי. זו הטעות הנפוצה בבגרות 2026.','מספר הצאצאים מכל סוג בהכלאה אחת לא קובע מי רצסיבי.'],
+  m:{ph:'לבנה', d:1}, f:{ph:'לבן', d:1},
+  pHint:'ההורים לקוחים מההכלאה לבן × לבן, שבה נולדו גם צאצאים אדומים.',
+  pWhy:'בהכלאה לבן × לבן נולדו צאצאים אדומים. צאצא אדום קיבל אלל רצסיבי מכל הורה, ולכן לכל הורה לבן יש אלל רצסיבי: שניהם הטרוזיגוטים.',
+  obs:'בטבלת הבגרות, מהכלאת לבן × לבן נולדו 17 לבנים ו-5 אדומים — קרוב ל-3 : 1.'},
+ pea:{name:'🫛 אפונה', sub:'הניסוי של מנדל', src:'Mendel, 1866 · מצגת 1',
+  data:`<p>מנדל הכליא זן טהור בעל זרעים צהובים עם זן טהור בעל זרעים ירוקים (דור P). כל הזרעים בדור F₁ היו צהובים.</p><p>במעבדה נכליא <b>שני צמחי F₁</b>: נקבה (צמח שבו התפתחו הזרעים) וזכר (הצמח שתרם את האבקה).</p>`,
+  trait:'צבע הזרע', traitOpts:['צבע הזרע','זרע צהוב','אפונה','תרמיל'], phen:['צהוב','ירוק'], phenAll:['צהוב','ירוק','חלק','סגול','מקומט'],
+  why:['ב-F₁ כל הזרעים צהובים, אף שאחד ההורים היה ירוק','בטבע יש יותר זרעים צהובים','הצבע הצהוב בולט יותר'],
+  whyNo:['','דומיננטיות אינה שכיחות בטבע.','דומיננטיות נקבעת לפי תוצאות הכלאות, לא לפי מראה.'],
+  m:{ph:'צהוב (F₁)', d:1}, f:{ph:'צהוב (F₁)', d:1},
+  pHint:'צמחי F₁ נולדו מזן טהור צהוב ומזן טהור ירוק.',
+  pWhy:'כל צמח F₁ קיבל אלל אחד מההורה הצהוב (דומיננטי) ואלל אחד מההורה הירוק (רצסיבי), ולכן הוא הטרוזיגוט.',
+  obs:'מנדל ספר בדור F₂: ‏6,022 זרעים צהובים ו-2,001 ירוקים — קרוב ל-3 : 1.'},
+ guinea:{name:'🐹 שרקנים', sub:'הכלאת מבחן', src:'חוברת שאלות ממוינות 4א · מצגת 1',
+  data:`<p>בהכלאה בין שרקנים מזן טהור, שחור × לבן, כל הצאצאים היו שחורים.</p><p>עכשיו <b>זכר שחור</b>, שהגנוטיפ שלו לא ידוע, הוכלא עם <b>נקבה לבנה</b>. נולדו 6 גורים: 3 שחורים ו-3 לבנים.</p>`,
+  trait:'צבע הפרווה', traitOpts:['צבע הפרווה','פרווה שחורה','שרקן','גור לבן'], phen:['שחור','לבן'], phenAll:['שחור','לבן','אפור','ארוך','חום'],
+  why:['בהכלאת זנים טהורים שחור × לבן כל הצאצאים שחורים','נולדו 3 גורים שחורים ו-3 לבנים','הזכר שחור'],
+  whyNo:['','התוצאה 3 : 3 לא אומרת מי דומיננטי.','הפנוטיפ של פרט אחד לא אומר מי דומיננטי.'],
+  m:{ph:'לבנה', d:0}, f:{ph:'שחור, גנוטיפ לא ידוע', d:1},
+  pHint:'הסתכלו על הגורים: נולדו גם גורים לבנים.',
+  pWhy:'גור לבן הוא הומוזיגוט רצסיבי. הוא קיבל אלל רצסיבי מהאב, ולכן האב השחור הטרוזיגוט. הנקבה הלבנה בעלת פנוטיפ רצסיבי, ולכן הומוזיגוטית.',
+  obs:'בפועל נולדו 3 שחורים ו-3 לבנים — 1 : 1, כמו בהכלאת מבחן של הטרוזיגוט.'}
+};
+let S = null, U = 'A', l = 'a';
+const al = d => d === 2 ? [U, U] : d === 1 ? [U, l] : [l, l];
+const gn = (x, y) => (x === U || y === l) ? x + y : y + x;   // אות גדולה קודם
+const dom = () => S.phen.find(p => p === S._dom), rec = () => S.phen.find(p => p !== S._dom);
+
+$('scen').innerHTML = Object.entries(SC).map(([k, s]) => `<label><input type="radio" name="sc" value="${k}"> <b>${s.name}</b><span class="hint">${s.sub}</span></label>`).join('');
+$('scen').onchange = e => start(e.target.value);
+
+function radios(box, name, opts) { box.innerHTML = shuffle(opts.map((o, k) => [o, k])).map(([o, k]) => `<label><input type="radio" name="${name}" value="${k}"> <span>${o}</span></label>`).join('') }
+const picked = name => { const r = document.querySelector(`input[name="${name}"]:checked`); return r ? +r.value : -1 };
+
+function start(k) {
+ S = SC[k]; S._dom = S.phen[0]; Lab.log = {}; Lab.reset(0);
+ document.querySelectorAll('.fb').forEach(f => f.className = 'fb');
+ $('data').hidden = false; $('data').innerHTML = `<h2>${S.name.slice(2)}: הנתונים</h2>${S.data}<p class="src">מקור: ${S.src}</p>`;
+ radios($('s1o'), 's1', S.traitOpts);
+ $('s2o').innerHTML = shuffle(S.phenAll.map((o, k) => [o, k])).map(([o]) => `<label><input type="checkbox" value="${o}"> <span>${o}</span></label>`).join('');
+ radios($('s3a'), 's3a', S.phen); radios($('s3b'), 's3b', S.why);
+ document.querySelector('.step[data-n="1"]').hidden = false;
+ setTimeout(() => $('data').scrollIntoView({ behavior: 'smooth' }), 100);
+}
+// שלב 1
+$('s1c').onclick = () => { const k = picked('s1'), ok = k === 0;
+ fb($('s1f'), ok, ok ? `נכון. התכונה: <b>${S.trait}</b>.` : k < 0 ? 'בחרו תשובה.' : `"${S.traitOpts[k]}" ${k === 2 ? 'הוא היצור, לא התכונה.' : 'הוא פנוטיפ או חלק מהתכונה. התכונה היא המאפיין שמשתנה בין פרטים.'}`);
+ if (k >= 0) Lab.rec('שלב 1: התכונה', ok, S.traitOpts[k]); if (ok) Lab.solve(1) };
+// שלב 2
+$('s2c').onclick = () => { const v = [...$('s2o').querySelectorAll('input:checked')].map(i => i.value), ok = sameSet(v, S.phen);
+ fb($('s2f'), ok, ok ? `נכון. הפנוטיפים: ${S.phen.join(' ו')}.` : v.length !== 2 ? 'בחרו בדיוק שני פנוטיפים.' : 'אחד הפנוטיפים לא שייך לתכונה הזו. חזרו לנתונים.');
+ Lab.rec('שלב 2: הפנוטיפים', ok, v.join(', ')); if (ok) Lab.solve(2) };
+// שלב 3
+$('s3c').onclick = () => { const a = picked('s3a'), b = picked('s3b'), ch = $('s3l').value.trim();
+ if (a < 0 || b < 0) return fb($('s3f'), false, 'ענו על שתי השאלות.');
+ if (!/^[A-Za-z]$/.test(ch)) return fb($('s3f'), false, 'כתבו אות לטינית אחת.');
+ if (a !== 0) { Lab.rec('שלב 3: אלל דומיננטי', false, S.phen[a]); return fb($('s3f'), false, 'לא. חזרו לנתונים: איזה פנוטיפ לא הופיע בהורים (או ב-F₁) והופיע בצאצאים? הוא נקבע על ידי האלל הרצסיבי.') }
+ if (b !== 0) { Lab.rec('שלב 3: אלל דומיננטי', false, S.why[b]); return fb($('s3f'), false, S.whyNo[b]) }
+ U = ch.toUpperCase(); l = ch.toLowerCase();
+ const warn = 'OCSWVXZPK'.includes(U) ? ` (שימו לב: ב-${U} קשה להבחין בין גדולה לקטנה בכתב יד)` : '';
+ fb($('s3f'), true, `נכון. המקרא: <span class="legend">${L(U)} = ${dom()} (דומיננטי) · ${L(l)} = ${rec()} (רצסיבי)</span>${warn}`);
+ Lab.rec('שלב 3: אלל דומיננטי', true, `${U} = ${dom()}, ${l} = ${rec()}`); Lab.solve(3) };
+// שלב 4
+document.querySelector('.step[data-n="4"]').addEventListener('open', () => {
+ $('s4t').innerHTML = '<b>אללים:</b>' + chip(U, U) + chip(l, l);
+ $('s4mp').textContent = 'פנוטיפ: ' + S.m.ph; $('s4fp').textContent = 'פנוטיפ: ' + S.f.ph; $('s4h').textContent = S.pHint;
+ ['m0', 'm1', 'f0', 'f1'].forEach(i => { const s = $(i); delete s.dataset.v; s.innerHTML = ''; s.className = 'slot' });
+});
+$('s4c').onclick = () => {
+ const m = slotVals('#m0,#m1'), f = slotVals('#f0,#f1');
+ if ([...m, ...f].some(v => !v)) return fb($('s4f'), false, 'השלימו שני אללים לכל הורה.');
+ const okm = sameSet(m, al(S.m.d)), okf = sameSet(f, al(S.f.d));
+ ['m0', 'm1'].forEach(i => $(i).classList.add(okm ? 'ok' : 'no')); ['f0', 'f1'].forEach(i => $(i).classList.add(okf ? 'ok' : 'no'));
+ const g = (a) => gn(a[0], a[1]);
+ if (okm && okf) { fb($('s4f'), true, `נכון. ♀ ${L(g(m))} · ♂ ${L(g(f))}. ${S.pWhy}`); Lab.rec('שלב 4: גנוטיפים של ההורים', true, `♀${g(m)} ♂${g(f)}`); Lab.solve(4) }
+ else { const bad = !okm ? S.m : S.f, arr = !okm ? m : f;
+  const msg = bad.d === 0 && arr.includes(U) ? `לפרט בפנוטיפ ${rec()} (רצסיבי) יש רק אללים ${L(l)}.` : bad.d === 1 ? S.pHint + ' מה זה אומר על האללים של ההורה?' : 'בדקו שוב את הפנוטיפ.';
+  fb($('s4f'), false, `${!okm ? 'הנקבה' : 'הזכר'}: לא מדויק. ${msg}`); Lab.rec('שלב 4: גנוטיפים של ההורים', false, `♀${m.join('')} ♂${f.join('')}`) }
+};
+// שלב 5: מיוזה
+const chrom = (a, red) => `<span class="chrom${red ? ' r' : ''}" data-drag="1" data-v="${a}" tabindex="0" role="button" aria-label="כרומוזום עם אלל ${a}"><i></i><span>${a}</span></span>`;
+document.querySelector('.step[data-n="5"]').addEventListener('open', () => {
+ const p = (sym, nm, k, A) => `<div class="pcell"><span class="sex">${sym}</span><b>${nm}: ${L(gn(A[0], A[1]))}</b>
+   <div class="circle drop home" id="${k}h" aria-label="תא של ${nm}">${chrom(A[0], 0)}${chrom(A[1], 1)}</div>
+   <span class="hint">↓ תאי רבייה</span><div class="row"><div class="circle n drop" id="${k}g0" tabindex="0" role="button" aria-label="תא רבייה 1"></div><div class="circle n drop" id="${k}g1" tabindex="0" role="button" aria-label="תא רבייה 2"></div></div></div>`;
+ $('s5').innerHTML = p('♀', 'נקבה', 'm', al(S.m.d)) + p('♂', 'זכר', 'f', al(S.f.d));
+});
+const gam = k => [0, 1].map(i => { const c = $(k + 'g' + i).querySelectorAll('.chrom'); return c.length === 1 ? c[0].dataset.v : null });
+$('s5c').onclick = () => {
+ const bad = ['m', 'f'].some(k => [0, 1].some(i => $(k + 'g' + i).querySelectorAll('.chrom').length !== 1));
+ if (bad) { Lab.rec('שלב 5: מיוזה', false, 'הפרדה לא שלמה'); return fb($('s5f'), false, 'בכל תא רבייה צריך להיות <b>כרומוזום אחד</b> מכל זוג. הכרומוזומים ההומולוגיים נפרדים זה מזה.') }
+ const gm = gam('m'), gf = gam('f');
+ fb($('s5f'), true, `נכון! הכרומוזומים ההומולוגיים נפרדו, ובכל תא רבייה יש <b>אלל אחד</b>. גמטות הנקבה: ${gm.map(L).join(', ')} · גמטות הזכר: ${gf.map(L).join(', ')}.<br>בחלוקה השנייה של המיוזה נפרדות הכרומטידות האחיות, ונוצרות ארבע גמטות — שתיים מכל סוג. לכן הטרוזיגוט יוצר שני סוגי גמטות ביחס 1 : 1.`);
+ Lab.rec('שלב 5: מיוזה', true, `♀ ${gm.join(',')} ♂ ${gf.join(',')}`); Lab.solve(5) };
+// שלב 6: טבלת פאנט
+document.querySelector('.step[data-n="6"]').addEventListener('open', () => {
+ const gm = al(S.m.d), gf = al(S.f.d);
+ $('s6t').innerHTML = '<b>♀ ביציות:</b>' + gm.map(a => chip(a, a)).join('') + '<b style="margin-inline-start:12px">♂ זרע:</b>' + gf.map(a => chip(a, a)).join('') + '<b style="margin-inline-start:12px">אללים למשבצות:</b>' + chip(U, U) + chip(l, l);
+ ['c0', 'c1', 'r0', 'r1'].forEach(i => { const s = $(i); delete s.dataset.v; s.innerHTML = ''; s.className = 'slot' });
+ ['00', '01', '10', '11'].forEach(x => $('x' + x).innerHTML = slot('x' + x + 'a') + slot('x' + x + 'b'));
+});
+$('s6c').onclick = () => {
+ const gm = al(S.m.d), gf = al(S.f.d), R = slotVals('#r0,#r1'), C = slotVals('#c0,#c1');
+ if ([...R, ...C].some(v => !v)) return fb($('s6f'), false, 'השלימו קודם את ארבע הכותרות: שתי ביציות ושני תאי זרע.');
+ const okH = sameSet(R, gm) && sameSet(C, gf), swapped = !okH && sameSet(R, gf) && sameSet(C, gm);
+ if (!okH && !swapped) { Lab.rec('שלב 6: טבלת פאנט', false, 'כותרות'); return fb($('s6f'), false, 'הכותרות לא תואמות לגמטות. בשורות — הגמטות של הנקבה, בעמודות — של הזכר.') }
+ let wrong = 0, order = 0, empty = 0;
+ ['00', '01', '10', '11'].forEach(x => { const [i, j] = [+x[0], +x[1]], v = slotVals(`#x${x}a,#x${x}b`), want = [R[i], C[j]];
+  if (v.some(e => !e)) { empty++; return } const ok = sameSet(v, want); if (!ok) wrong++; else if (v.join('') !== gn(...want)) order++;
+  [`x${x}a`, `x${x}b`].forEach(id => $(id).classList.add(ok ? 'ok' : 'no')) });
+ if (empty) return fb($('s6f'), false, (empty === 1 ? 'יש משבצת אחת לא מלאה.' : `יש ${empty} משבצות לא מלאות.`));
+ if (wrong) { Lab.rec('שלב 6: טבלת פאנט', false, `${wrong} משבצות שגויות`); return fb($('s6f'), false, `${wrong === 1 ? 'משבצת אחת לא נכונה' : wrong + ' משבצות לא נכונות'}. בכל משבצת: האלל שבראש השורה ← והאלל שבראש העמודה.`) }
+ fb($('s6f'), true, (swapped ? 'נכון — רק שימו לב: לפי הכותרת השורות הן של הנקבה. בתוצאה זה לא משנה. ' : 'נכון! ') + (order ? `ובסימון: אות גדולה לפני קטנה (${L(U + l)}).` : ''));
+ Lab.rec('שלב 6: טבלת פאנט', true, swapped ? 'הורים בכותרות הפוכות' : 'תקין'); Lab.solve(6) };
+// שלב 7: יחסים
+document.querySelector('.step[data-n="7"]').addEventListener('open', () => {
+ $('s7g').innerHTML = [U + U, U + l, l + l].map(g => `${L(g)}: <input class="t" data-g="${g}" inputmode="numeric" aria-label="מספר משבצות ${g}">`).join(' : ');
+ $('s7p').innerHTML = `${dom()}: <input class="t" id="pd" inputmode="numeric" aria-label="דומיננטי"> : ${rec()}: <input class="t" id="pr" inputmode="numeric" aria-label="רצסיבי">`;
+ $('s7grow').hidden = true; $('s7r').textContent = '';
+});
+function expected() { const gm = al(S.m.d), gf = al(S.f.d), c = {}; gm.forEach(a => gf.forEach(b => { const g = gn(a, b); c[g] = (c[g] || 0) + 1 })); return c }
+const prop = (a, b) => { const sa = a.reduce((x, y) => x + y, 0), sb = b.reduce((x, y) => x + y, 0); return sa > 0 && a.every((v, i) => Math.abs(v / sa - b[i] / sb) < 1e-9) };
+$('s7c').onclick = () => {
+ const E = expected(), gs = [U + U, U + l, l + l], got = gs.map(g => Number($('s7g').querySelector(`[data-g="${g}"]`).value || 0)), want = gs.map(g => E[g] || 0);
+ const pd = Number($('pd').value || 0), pr = Number($('pr').value || 0), wd = want[0] + want[1], wr = want[2];
+ const okG = prop(got, want), okP = prop([pd, pr], [wd, wr]);
+ const txt = `${want.join(' : ')} גנוטיפי · ${wd} : ${wr} פנוטיפי`;
+ if (okG && okP) { fb($('s7f'), true, `נכון! יחס גנוטיפי ${gs.map(L).join(' : ')} = ${want.join(' : ')}; יחס פנוטיפי ${dom()} : ${rec()} = ${wd} : ${wr}. ${S.obs}`); $('s7grow').hidden = false; Lab.rec('שלב 7: יחסי הצאצאים', true, txt); Lab.solve(7) }
+ else { fb($('s7f'), false, !okG ? 'ספרו בטבלת הפאנט כמה משבצות יש מכל גנוטיפ.' : `היחס הגנוטיפי נכון. עכשיו הפנוטיפים: איזה גנוטיפים נותנים פנוטיפ ${dom()}?`); Lab.rec('שלב 7: יחסי הצאצאים', false, `${got.join(':')} | ${pd}:${pr}`) }
+};
+$('s7grow').addEventListener('click', e => { const b = e.target.closest('[data-g]'); if (!b) return; const n = +b.dataset.g, gm = al(S.m.d), gf = al(S.f.d);
+ let d = 0; for (let i = 0; i < n; i++) { const g = gm[Math.random() < .5 ? 0 : 1] + gf[Math.random() < .5 ? 0 : 1]; if (g.includes(U)) d++ }
+ $('s7r').innerHTML = `מתוך ${n.toLocaleString('he-IL')} צאצאים: <b>${d}</b> ${dom()} ו-<b>${n - d}</b> ${rec()} (${Math.round(d / n * 100)}% : ${Math.round((n - d) / n * 100)}%).` });
+
+// ---- חממת הכלאות ----
+const COL = {kalanit:{d:'#FFFFFF',r:'#C0392B'}, pea:{d:'#F4D03F',r:'#58A55C'}, guinea:{d:'#222222',r:'#FFFFFF'}};
+let FK = null, F1done = false;
+$('scen').addEventListener('change', e => { FK = e.target.value; F1done = false; $('fF1').disabled = $('fTC').disabled = true; $('farmOut').innerHTML = '';
+ $('farmP').innerHTML = `<b>P:</b> ♀ זן טהור, ${SC[FK].phen[0]} (${L(U + U)}) × ♂ זן טהור, ${SC[FK].phen[1]} (${L(l + l)})` });
+const dot = (dom, k) => `<i style="background:${dom ? COL[k].d : COL[k].r}" title="${dom ? SC[k].phen[0] : SC[k].phen[1]}"></i>`;
+function breed(m, f, n) { const kids = []; for (let i = 0; i < n; i++) { const e = m[Math.random() < .5 ? 0 : 1], s = f[Math.random() < .5 ? 0 : 1]; kids.push([e, s, gn(e, s)]) } return kids }
+function show(title, kids, expD, expR) {
+ const k = FK, d = kids.filter(x => x[2].includes(U)).length, r = kids.length - d, n = kids.length;
+ const exD = Math.round(n * expD / (expD + expR)), exR = n - exD;
+ $('farmOut').innerHTML = `<h3>${title}</h3><div class="dots">${kids.slice(0, 400).map(x => dot(x[2].includes(U), k)).join('')}</div>
+  <table class="cmp"><tr><th></th><th>${SC[k].phen[0]}</th><th>${SC[k].phen[1]}</th></tr><tr><td>התקבל</td><td>${d}</td><td>${r}</td></tr><tr><td>צפוי (${expD} : ${expR})</td><td>${exD}</td><td>${exR}</td></tr></table>
+  <p><b>שישה צאצאים ראשונים והגמטות שיצרו אותם:</b></p><div class="gam">${kids.slice(0, 6).map(x => `<span>ביצית ${L(x[0])} + זרע ${L(x[1])} ← ${L(x[2])}</span>`).join('')}</div>`;
+ Lab.rec(`חממה: ${title}`, true, `${d} ${SC[k].phen[0]} : ${r} ${SC[k].phen[1]} (צפוי ${expD}:${expR})`);
+}
+$('fP').onclick = () => { if (!FK) { $('farmOut').innerHTML = '<p class="hint">בחרו קודם תרחיש למעלה.</p>'; return }
+ show('דור F₁', breed([U, U], [l, l], 12), 1, 0); F1done = true; $('fF1').disabled = $('fTC').disabled = false;
+ $('farmOut').innerHTML += `<p>כל צאצאי F₁ ${L(U + l)}: ${SC[FK].phen[0]}. הפנוטיפ ${SC[FK].phen[1]} "נעלם". האם הוא יחזור?</p>` };
+$('fF1').onclick = () => show('דור F₂: ♀ F₁ × ♂ F₁', breed([U, l], [U, l], +$('fN').value), 3, 1);
+$('fTC').onclick = () => show('הכלאת מבחן: ♀ F₁ × ♂ ' + SC[FK].phen[1], breed([U, l], [l, l], +$('fN').value), 1, 1);
+// שאלות בגרות
+const QS = [
+ {src:'בגרות 2022 שאלה 26א(2) · בגרות 2026 שאלה 24א(2)', stem:'בכלניות, אחד מן האללים מקודד לחלבון A, הגורם לפירוק חומר הצבע האדום. <b>מהו צבעו של פרט הטרוזיגוט, ומדוע?</b>',
+  opts:['לבן: בתאיו האלל ללבן מקודד לחלבון A, וחלבון A מפרק את חומר הצבע האדום','ורוד: הצבעים של שני האללים מתערבבים','אדום: האלל לאדום מתבטא תמיד','אי אפשר לדעת מהנתונים'], ans:0,
+  ok:'נכון. מספיק אלל אחד המקודד לחלבון A — חומר הצבע האדום מתפרק והפרח לבן.', no:['','זה ידע קודם לא רלוונטי (ב-2026 קיבל 0 נקודות). לפי הנתונים חלבון A מפרק את הצבע.','הפנוטיפ נקבע לפי החלבון שנוצר בתא. בהטרוזיגוט נוצר חלבון A.','יש מספיק נתונים: ידוע מה עושה חלבון A.']},
+ {src:'חוברת שאלות ממוינות 4א, שאלה 12', stem:`בעזים, האלל לצבע לבן (${L('A')}) דומיננטי לאלל לצבע שחור (${L('a')}). <b>איזו הכלאה תאפשר לקבוע אם עז לבנה היא ${L('AA')} או ${L('Aa')}?</b>`,
+  opts:[`הכלאה עם עז שחורה ${L('aa')} — הכלאת מבחן`,'הכלאה עם עז לבנה אחרת','הכלאה עם עז הטרוזיגוטית','אין צורך בהכלאה, מספיק לראות את הפנוטיפ'], ans:0,
+  ok:`נכון. כל הגמטות של ${L('aa')} נושאות ${L('a')}, ולכן פנוטיפ הצאצא מראה איזה אלל הגיע מהעז הנבדקת.`, no:['','גם לעז לבנה אחרת הגנוטיפ לא ידוע.','אם ייוולד גדי שחור, לא נדע מאיזה הורה הגיע האלל a.',`לפרטים ${L('AA')} ו-${L('Aa')} אותו פנוטיפ.`]},
+ {src:'חוברת שאלות ממוינות 4א, שאלות 22–23', stem:'בהכלאת המבחן נולד גדי <b>שחור</b> אחד. מה אפשר להסיק על העז הלבנה?',
+  opts:[`היא ${L('Aa')} בוודאות`,`היא ${L('AA')} בוודאות`,'צריך עוד צאצאים, צאצא אחד לא מכריע','אי אפשר להסיק דבר'], ans:0,
+  ok:`נכון. הגדי השחור ${L('aa')} קיבל ${L('a')} משני ההורים. צאצא אחד בפנוטיפ הרצסיבי מכריע.`, no:['',`עז ${L('AA')} מעבירה רק ${L('A')}.`,'צאצא בפנוטיפ הרצסיבי מכריע. רק צאצאים לבנים לא מכריעים.','צאצא בפנוטיפ הרצסיבי מכריע.']},
+ {src:'חוברת שאלות ממוינות 4א, שאלה 9', stem:`לתמר ולאמנון גנוטיפ ${L('Aa')} (${L('a')} — אלל ללבקנות). הם מתכננים ארבעה ילדים. <b>כמה מהילדים יהיו לבקנים?</b>`,
+  opts:['אי אפשר לדעת. ההסתברות לכל ילד היא 1/4, בלי תלות באחיו','בדיוק ילד אחד','לפחות ילד אחד','אף ילד'], ans:0,
+  ok:'נכון. יחס 3 : 1 הוא הסתברות לכל צאצא, לא חלוקה מדויקת.', no:['','כל הפריה היא אירוע בלתי תלוי.','ייתכן שאף ילד לא יהיה לבקן: (3/4)⁴.','ההסתברות לכל ילד היא 1/4.']},
+ {src:'חוברת שאלות ממוינות 4א, שאלה 2', type:'frac', stem:`בשרקנים ${L('A')} — פרווה שחורה (דומיננטי), ${L('a')} — לבנה. הכליאו זנים טהורים, שחור × לבן, ואת צאצאי F₁ הכליאו ביניהם. <b>מה ההסתברות שצאצא ב-F₂ יהיה לבן?</b> (שבר, למשל 1/2)`,
+  ans:.25, ok:`נכון. P: ${L('AA × aa')} ← F₁: ${L('Aa')} ← F₂: 1 ${L('AA')} : 2 ${L('Aa')} : 1 ${L('aa')}, ולכן 1/4.`, hint:`F₁ כולם ${L('Aa')}. בנו טבלת פאנט ל-${L('Aa × Aa')}.`},
+ {src:'חוברת שאלות ממוינות 4א, שאלה 15ג', type:'frac', stem:'לזוג הורים בעלי צבע עור תקין נולדו בן לבקן ובן בעל צבע עור תקין. <b>מה ההסתברות שהבן בעל צבע העור התקין הוא הטרוזיגוט?</b>',
+  ans:2/3, ok:`נכון. ההורים ${L('Aa × Aa')}. הבן אינו ${L('aa')}, ולכן נשארות 3 אפשרויות: ${L('AA')}, ${L('Aa')}, ${L('Aa')} — 2/3 הטרוזיגוטים.`, hint:'הבן אינו לבקן: מוציאים את המשבצת aa ובודקים רק את שלוש הנותרות.'},
+ {src:'מצגת 1 · שאלה לכיתה', stem:'שני צמחי אפונה צהובים הוכלאו. מתוך 400 זרעים, 98 היו ירוקים. <b>מה הגנוטיפים של ההורים?</b>',
+  opts:[`${L('Aa × Aa')}`,`${L('AA × Aa')}`,`${L('AA × AA')}`,`${L('Aa × aa')}`], ans:0,
+  ok:`נכון. 98/400 קרוב ל-1/4. זרע ירוק ${L('aa')} קיבל ${L('a')} מכל הורה, ושני ההורים צהובים.`, no:['',`מהכלאת ${L('AA × Aa')} לא נולדים ${L('aa')}.`,'מהכלאת שני הומוזיגוטים דומיננטיים כל הצאצאים צהובים.','שני ההורים צהובים, ולכן אף אחד מהם אינו aa.']}
+, {src:'העשרה · לא במיקוד תשפ״ז · מצגת 1 (קו-דומיננטיות)', type:'frac', stem:`<b>העשרה:</b> בבקר, האללים לפרווה אדומה (${L('A<sup>1</sup>')}) ולבנה (${L('A<sup>2</sup>')}) קו-דומיננטיים: ${L('A<sup>1</sup>A<sup>2</sup>')} — "רואן" (שערות אדומות ושערות לבנות). <b>מה ההסתברות שצאצא של שני פרטים רואן יהיה רואן?</b>`,
+  ans:.5, ok:'נכון. A¹A² × A¹A² ← ‏1 A¹A¹ (אדום) : 2 A¹A² (רואן) : 1 A²A² (לבן). בקו-דומיננטיות היחס הפנוטיפי 1 : 2 : 1, כמו היחס הגנוטיפי.', hint:'בנו טבלת פאנט. בקו-דומיננטיות לכל גנוטיפ פנוטיפ משלו.'}];
+renderQuestions($('qs'), QS, 'q');
+renderMatch($('match'), [
+ ['גן','מקטע DNA במיקום קבוע בכרומוזום, המקודד לחלבון'], ['אלל','גרסה של גן, הנבדלת ברצף הנוקלאוטידים'],
+ ['גנוטיפ','הרכב האללים של פרט בגן מסוים'], ['פנוטיפ','ביטוי התכונה בפרט'],
+ ['הומוזיגוט','פרט ששני האללים שלו בגן מסוים זהים'], ['הטרוזיגוט','פרט ששני האללים שלו בגן מסוים שונים'],
+ ['אלל דומיננטי','אלל שהפנוטיפ שלו זהה בהומוזיגוט ובהטרוזיגוט'], ['אלל רצסיבי','אלל שמתבטא בפנוטיפ רק בהומוזיגוט'],
+ ['זן טהור','פרטים הומוזיגוטים, שבהכלאה ביניהם כל הצאצאים בפנוטיפ ההורים'], ['הכלאת מבחן','הכלאה עם הומוזיגוט רצסיבי, שבה מבררים את הגנוטיפ של פרט בפנוטיפ דומיננטי'],
+ ['גמטה','תא רבייה עם אלל אחד לכל גן'], ['F₁','דור הצאצאים הראשון']
+], $('mchk'), $('mfb'));
+renderBagrut($('bq'), [
+ {src:'בגרות 2022 שאלה 26 · בגרות 2026 שאלה 24 (מחוון משרד החינוך)', title:'צבע הפרחים בכלניות', stem:`<p>צבע הפרחים בכלניות הוא תכונה תורשתית. בטבלה שלפניכם מוצגים נתונים של הכלאות בין כלניות אדומות לכלניות לבנות:</p><table><thead><tr><th>הורים</th><th>צאצאים אדומים</th><th>צאצאים לבנים</th></tr></thead><tbody><tr><td>לבן × לבן</td><td>5</td><td>17</td></tr><tr><td>אדום × לבן</td><td>14</td><td>12</td></tr><tr><td>אדום × אדום</td><td>23</td><td>0</td></tr></tbody></table>`,
+  parts:[
+   {n:'א(1)', task:'בהנחה ששני אללים קובעים את צבע הפרח — אדום או לבן — קִבעו על פי תוצאות ההכלאות איזה מן האללים הוא האלל הרצסיבי. נַמקו את הקביעה.', pts:4,
+    rubric:[['האלל לצבע אדום הוא הרצסיבי',33],['נימוק: בהכלאת שני צמחים בעלי פרחים לבנים התקבלו גם צאצאים בעלי פרחים אדומים — פנוטיפ שלא הופיע אצל ההורים',67]],
+    model:'האלל לצבע אדום רצסיבי. בהכלאה לבן × לבן התקבלו גם צאצאים אדומים: לשני ההורים הלבנים יש אלל לאדום שלא התבטא בהם, ולכן הם הטרוזיגוטים והאלל לאדום רצסיבי. (אפשר לנמק גם בתרשים הכלאה.)'},
+   {n:'א(2)', task:'אחד מן האללים מקודד לחלבון A, הגורם לפירוק חומר הצבע האדום. צַיינו את צבעו של פרט הטרוזיגוט, והַסבירו כיצד צבע זה מתקבל על סמך המידע על חלבון A.', pts:2.75,
+    rubric:[['צבעו של ההטרוזיגוט לבן',25],['בתאיו יש אלל המקודד לחלבון A, ולכן נוצר חלבון A',50],['חלבון A מפרק את חומר הצבע האדום, ולכן הפרח לבן',25]],
+    model:'לבן. בתאי ההטרוזיגוט יש אלל אחד המקודד לחלבון A. חלבון A נוצר ומפרק את חומר הצבע האדום, ולכן הפרח לבן.'},
+   {n:'ב', task:'בטבע יש כלניות בצבעים שונים. הַציעו הסבר אחד: כיצד תהליך המיוזה תורם להגדלת השונות התורשתית באוכלוסייה?', pts:2,
+    rubric:[['במיוזה הכרומוזומים ההומולוגיים נפרדים באופן בלתי תלוי (או: מתרחש שחלוף)',60],['לכן נוצרות גמטות בצירופים שונים של אללים',40]],
+    model:'במיוזה זוגות הכרומוזומים ההומולוגיים נפרדים באופן בלתי תלוי זה בזה, ולכן נוצרות גמטות בצירופים שונים של אללים. בהפריה מתלכדות גמטות שונות, ונוצרים צאצאים בצירופי אללים חדשים.'}]},
+ {src:'בגרות 2025 שאלה 23ב', title:'לבקנות באדם', stem:`<p>תכונת הלבקנות באדם נגרמת בגלל אי־היווצרות הצבען מלנין בגוף. התכונה נקבעת על ידי גן שיש לו שני אללים: ${L('A')} — היווצרות מלנין (דומיננטי), ${L('a')} — אי־היווצרות מלנין (רצסיבי).</p><p>♀ אישה ו-♂ גבר, שאינם לבקנים, הם בני זוג. לכל אחד מהם יש הורה אחד לבקן. לבני הזוג נולדו כמה צאצאים.</p>`,
+  parts:[{n:'', task:'צַיינו את הגנוטיפים של בני הזוג, ואת הגנוטיפים והפנוטיפים של כל הצאצאים האפשריים שלהם.', pts:5,
+    rubric:[[`גנוטיפ האישה ${L('Aa')} וגנוטיפ הגבר ${L('Aa')}`,40],[`הגנוטיפים האפשריים של הצאצאים: ${L('AA')}, ${L('Aa')}, ${L('aa')}`,30],[`פנוטיפים: ${L('AA')} ו-${L('Aa')} — היווצרות מלנין (לא לבקנים); ${L('aa')} — לבקן`,30]],
+    model:'כל אחד מבני הזוג קיבל a מההורה הלבקן, ואינו לבקן — לכן שניהם Aa. צאצאים אפשריים: AA ו-Aa — מלנין נוצר (לא לבקנים); aa — לבקן.'}]}
+], 'b');
+$('dl').onclick = () => labPdf('מעבדה ותרגול 1: הכלאות', 'מעבדה1-הכלאות');
+</script>
+<script>async function downloadPdf(el,fname,filter){const scale=2;const canvas=await htmlToImage.toCanvas(el,{pixelRatio:scale,backgroundColor:'#ffffff',filter});
+ const{jsPDF}=window.jspdf;const pdf=new jsPDF({unit:'mm',format:'a4'});const pw=190,ph=277,px=canvas.width/pw,pageH=Math.floor(ph*px);let y=0,first=true;
+ while(y<canvas.height-2){const end=Math.min(y+pageH,canvas.height);const c=document.createElement('canvas');c.width=canvas.width;c.height=end-y;c.getContext('2d').drawImage(canvas,0,y,canvas.width,end-y,0,0,canvas.width,end-y);
+  if(!first)pdf.addPage();pdf.addImage(c.toDataURL('image/jpeg',.9),'JPEG',10,10,pw,(end-y)/px);first=false;y=end}pdf.save(fname)}</script><script>(function(){const g=document.getElementById('gate'),n=document.getElementById('gName'),c=document.getElementById('gClass');
+try{const s=JSON.parse(localStorage.getItem('genetika-student')||'{}');n.value=s.name||'';c.value=s.cls||''}catch(e){}
+document.getElementById('gGo').onclick=()=>{const nm=n.value.trim(),cl=c.value.trim();
+ if(nm.length<2||!cl){document.getElementById('gErr').textContent='כתבו שם (לפחות 2 אותיות) וכיתה.';return}
+ try{localStorage.setItem('genetika-student',JSON.stringify({name:nm,cls:cl}))}catch(e){}
+ document.querySelectorAll('[data-fill="name"]').forEach(e=>{if('value' in e)e.value=nm;else e.textContent=nm});
+ document.querySelectorAll('[data-fill="class"]').forEach(e=>{if('value' in e)e.value=cl;else e.textContent=cl});
+ window.STUDENT={name:nm,cls:cl};g.hidden=true};n.focus()})();</script>
+</body>
+</html>

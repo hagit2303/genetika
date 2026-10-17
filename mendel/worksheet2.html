@@ -166,7 +166,7 @@ let html='';QUESTIONS.forEach((P,pi)=>{html+=`<h2>${P.part}</h2>`;P.qs.forEach((
  html+=`<div class="q" id="${qid}"><div class="qn">שאלה ${qn}</div><p class="stem">${Q.stem}</p>${Q.photo?`<img class="qphoto" src="${Q.photo}" alt="כבשים לבנות וכבשים טלואות בעדר">`:''}${pics(Q.pics)}`;
  Q.items.forEach((it,ii)=>{const id=`${qid}_${ii}`;ITEMS.push({it,id,qn,Q});
   html+=`<div class="it" id="w_${id}">${it.label?`<span class="lbl">${Q.items.length>1?'אבגדהוזח'[ii]+'. ':''}${it.label}</span>`:''}${field(it,id)}<span class="fix" id="f_${id}" hidden></span></div>`});
- html+=`<div class="exp"><b>הסבר:</b> ${Q.exp}</div></div>`})});
+ html+=`${Q.exp?`<div class="exp"><b>הסבר:</b> ${Q.exp}</div>`:''}</div>`})});
 $('qs').innerHTML=html;$('nQ').textContent=qn;$('nP').textContent=QUESTIONS.length;$('nI').textContent=ITEMS.length;$('today').textContent=new Date().toLocaleDateString('he-IL');
 /* קריאה ושמירה */
 function read(x){const{it,id}=x;if(it.type==='mc'){const r=document.querySelector(`[name="${id}"]:checked`);return r?r.value:''}
@@ -178,7 +178,14 @@ function parseFrac(s){s=(s||'').replace(',','.').replace(/\s/g,'');if(!s)return 
 function normG(it,s){s=(s||'').replace(/\s/g,'');if(it.co){s=s.toUpperCase().replace(/A/g,'').replace(/\^/g,'');if(!/^[12]{2}$/.test(s))return null;return[...s].sort().join('')}
  const D=it.L,r=D.toLowerCase();if(s.length!==2||![...s].every(c=>c===D||c===r))return null;return[...s].sort((a,b)=>a===D?-1:b===D?1:0).join('')}
 function isEmpty(x,v){return x.it.type==='ratio'?v.some(e=>e===''):v===''}
+/* בגרסה הציבורית התשובות חתומות (it.h): משווים טביעה של התשובה, והתשובה עצמה לא נמצאת בדף */
+function hsh(t){let h=0x811c9dc5;for(const c of t){h^=c.codePointAt(0);h=Math.imul(h,0x01000193)>>>0}return h.toString(16)}
+function canon(it,v){if(it.type==='mc'||it.type==='sel')return String(+v);if(it.type==='geno')return String(normG(it,v));
+ if(it.type==='num'){const n=Number(String(v).replace(',','.'));return isNaN(n)?'':n.toFixed(it.tol?2:4)}
+ if(it.type==='frac'){const f=parseFrac(v);return isNaN(f)?'':f.toFixed(3)}
+ if(it.type==='ratio'){const n=v.map(Number),s=n.reduce((a,b)=>a+b,0);return s>0?n.map(e=>(e/s).toFixed(6)).join(':'):''}}
 function grade(x,v){const it=x.it;if(isEmpty(x,v))return false;
+ if(it.h)return it.h.includes(hsh(`${KEY}|${x.id}|${canon(it,v)}`));
  if(it.type==='mc'||it.type==='sel')return +v===it.ans;
  if(it.type==='geno')return normG(it,v)===(it.co?[...it.ans].sort().join(''):it.ans);
  if(it.type==='num'){const n=Number(String(v).replace(',','.'));return Math.abs(n-it.ans)<=(it.tol||0)+1e-9}
@@ -195,16 +202,16 @@ $('confNo').onclick=()=>{$('confirm').hidden=true;$('check').hidden=false};
 $('confYes').onclick=()=>{ITEMS.forEach(x=>state.a[x.id]=read(x));state.checked=true;save();showResults()};
 function showResults(){let ok=0;
  ITEMS.forEach(x=>{const v=state.a[x.id]??(x.it.type==='ratio'?Array(x.it.n).fill(''):'');const g=grade(x,v);x.ok=g;x.given=givenTxt(x,v);if(g)ok++;
-  const w=$('w_'+x.id);w.classList.add(g?'ok':'no');if(!g){const f=$('f_'+x.id);f.hidden=false;f.textContent='✘ התשובה הנכונה: '+correctTxt(x.it)}});
+  const w=$('w_'+x.id);w.classList.add(g?'ok':'no');if(!g){const f=$('f_'+x.id);f.hidden=false;f.textContent=x.it.h?'✘ לא נכון — נבדוק יחד בכיתה':'✘ התשובה הנכונה: '+correctTxt(x.it)}});
  document.querySelectorAll('#qs input,#qs select').forEach(e=>e.disabled=true);document.querySelectorAll('.q').forEach(q=>q.classList.add('done'));
  const sc=Math.round(ok/ITEMS.length*100);state.score=sc;state.ok=ok;save();
  $('confirm').hidden=true;$('check').hidden=true;$('result').hidden=false;$('scoreTxt').textContent=`ציון: ${sc}`;
- $('scoreDet').textContent=`${ok} סעיפים נכונים מתוך ${ITEMS.length}. עברו על התיקונים וההסברים, ואז הורידו את הקובץ.`;buildReport(sc,ok)}
+ $('scoreDet').textContent=`${ok} סעיפים נכונים מתוך ${ITEMS.length}. ${ITEMS[0].it.h?'את התשובות הנכונות נבדוק יחד בכיתה. הורידו את הקובץ.':'עברו על התיקונים וההסברים, ואז הורידו את הקובץ.'}`;buildReport(sc,ok)}
 function buildReport(sc,ok){const st=window.STUDENT||{};const nm=st.name||document.querySelector('[data-fill="name"]').textContent,cl=st.cls||document.querySelector('[data-fill="class"]').textContent;
  let h=`<div class="rh"><h1>${CFG.title}</h1><p>שם: <b>${nm}</b> · כיתה: <b>${cl}</b> · תאריך: ${$('today').textContent}</p><p style="font-size:20px">ציון: <b>${sc}</b> (${ok} מתוך ${ITEMS.length} סעיפים נכונים)</p></div>`;
- let cur=0;ITEMS.forEach((x,k)=>{if(x.qn!==cur){if(cur)h+=`<div class="rx">הסבר: ${strip(ITEMS[k-1].Q.exp)}</div></div>`;cur=x.qn;h+=`<div class="rblk"><div class="rq">שאלה ${x.qn}: ${strip(x.Q.stem).slice(0,160)}${strip(x.Q.stem).length>160?'…':''}</div>`}
-  h+=`<div class="rr"><span>${strip(x.it.label||'תשובה')}</span><span>${x.given}</span><span class="${x.ok?'y':'n'}">${x.ok?'✔':'✘'}</span>${x.ok?'':`<span class="rc">התשובה הנכונה: ${correctTxt(x.it)}</span>`}</div>`});
- h+=`<div class="rx">הסבר: ${strip(ITEMS[ITEMS.length-1].Q.exp)}</div></div><p class="rx" style="margin-top:12px">גנטיקה מנדלית · ביולוגיה י״ב · נבדק אוטומטית</p>`;$('report').innerHTML=h}
+ const EXP=Q=>Q.exp?`<div class="rx">הסבר: ${strip(Q.exp)}</div>`:'';let cur=0;ITEMS.forEach((x,k)=>{if(x.qn!==cur){if(cur)h+=`${EXP(ITEMS[k-1].Q)}</div>`;cur=x.qn;h+=`<div class="rblk"><div class="rq">שאלה ${x.qn}: ${strip(x.Q.stem).slice(0,160)}${strip(x.Q.stem).length>160?'…':''}</div>`}
+  h+=`<div class="rr"><span>${strip(x.it.label||'תשובה')}</span><span>${x.given}</span><span class="${x.ok?'y':'n'}">${x.ok?'✔':'✘'}</span>${x.ok||x.it.h?'':`<span class="rc">התשובה הנכונה: ${correctTxt(x.it)}</span>`}</div>`});
+ h+=`${EXP(ITEMS[ITEMS.length-1].Q)}</div><p class="rx" style="margin-top:12px">גנטיקה מנדלית · ביולוגיה י״ב · נבדק אוטומטית</p>`;$('report').innerHTML=h}
 $('pdf').onclick=async()=>{const b=$('pdf');buildReport(state.score,state.ok);b.disabled=true;const old=b.textContent;b.textContent='מכין קובץ…';
  try{const el=$('report');const scale=2;const canvas=await htmlToImage.toCanvas(el,{pixelRatio:scale,backgroundColor:'#ffffff'});
   const{jsPDF}=window.jspdf;const pdf=new jsPDF({unit:'mm',format:'a4'});const pw=190,ph=277,px=canvas.width/pw,pageH=Math.floor(ph*px);

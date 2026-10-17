@@ -1,0 +1,61 @@
+/* מנוע המעבדות של הפרק: שלבים, גרירה, משוב (נטען אחרי unit.css) */
+.step{background:#fff;border:2px solid var(--ink);padding:18px;display:flex;flex-direction:column;gap:12px}
+.step[hidden]{display:none}
+.step .sn{font-family:"Amatic SC",cursive;font-size:28px;color:var(--red);line-height:1}
+.step.done{border-color:var(--ok)}
+.step.done .sn::after{content:"  ✓";color:var(--ok)}
+.hint{color:var(--mut);font-size:15px}
+.legend{background:#FFFBEA;border:1.5px dashed var(--tline);padding:6px 12px;font-weight:700;align-self:flex-start}
+
+/* צ'יפים וחריצים */
+.tray{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:#F4F8F5;border:1.5px dashed var(--grid);padding:8px 10px;min-height:52px}
+.tray b{font-size:15px;color:var(--mut);font-weight:500}
+.chip{display:inline-flex;align-items:center;justify-content:center;min-width:42px;height:42px;padding:0 10px;border:2px solid var(--ink);background:#fff;font:italic 700 22px Georgia,serif;cursor:grab;user-select:none;touch-action:none;direction:ltr}
+.chip.sel{outline:4px solid var(--hl);outline-offset:2px}
+.chip.ghost{position:fixed;pointer-events:none;z-index:999;opacity:.9;box-shadow:0 6px 16px rgba(0,0,0,.25)}
+.chip.t{font:700 16px Rubik,Arial,sans-serif;font-style:normal;direction:rtl}
+.slot{display:inline-flex;align-items:center;justify-content:center;min-width:46px;height:46px;border:2px dashed var(--ink);background:#FFFDF4;font:italic 700 22px Georgia,serif;direction:ltr;cursor:pointer;vertical-align:middle}
+.slot.on{background:#FFF3B8;border-style:solid}
+.slot.ok{background:var(--okbg);border:2px solid var(--ok)}
+.slot.no{background:var(--nobg);border:2px solid var(--red)}
+.slot:empty::before{content:"?";color:#C9C2A8;font-style:normal}
+
+/* תאים וכרומוזומים */
+.cellbox,.tray,table.pun2{user-select:none;-webkit-user-select:none}
+.cellbox{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;align-items:flex-start}
+.pcell{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.circle{border:3px solid var(--ink);border-radius:50%;width:150px;height:150px;display:flex;align-items:center;justify-content:center;gap:12px;background:#F4F8F5}
+.circle.n{width:104px;height:104px;border-style:dashed;background:#FFFDF4}
+.circle.n.on{background:#FFF3B8}
+.chrom{display:flex;flex-direction:column;align-items:center;gap:4px;touch-action:none;cursor:grab}
+.chrom i{display:block;width:16px;height:74px;border:2px solid var(--ink);border-radius:8px;background:#fff;position:relative}
+.chrom i::after{content:"";position:absolute;inset-inline:-2px;top:44%;height:10px;background:var(--ink)}
+.chrom.r i{border-color:var(--red)}.chrom.r i::after{background:var(--red)}
+.chrom span{font:italic 700 20px Georgia,serif;direction:ltr}
+.chrom.sel{outline:4px solid var(--hl);outline-offset:3px}
+.chrom.ghost{position:fixed;pointer-events:none;z-index:999;opacity:.9}
+.sex{font-size:28px;line-height:1}
+
+/* טבלת פאנט */
+table.pun2{width:auto;border-collapse:collapse;direction:ltr;margin-inline:auto}
+table.pun2 th,table.pun2 td{border:2px solid var(--ink);padding:6px;text-align:center;min-width:88px;height:64px}
+table.pun2 th{background:#F4F8F5}
+table.pun2 .corner{font:500 13px Rubik,Arial,sans-serif;direction:rtl;color:var(--mut)}
+table.pun2 td .slot{min-width:38px;height:40px;font-size:19px;margin:1px}
+
+/* דוח להורדה */
+#report{position:fixed;left:0;top:0;visibility:hidden;z-index:-1;pointer-events:none;width:760px;background:#fff;color:#1F4D3A;font-family:Arial,sans-serif;padding:24px;direction:rtl}
+#report h1{font-family:Arial,sans-serif;font-weight:700;font-size:24px;margin-bottom:6px}
+#report .rr{border-bottom:1px solid #DDE7EE;padding:5px 0;font-size:14px;display:flex;gap:8px}
+#report .rr b{min-width:180px}
+#report .y{color:#2E7D4F;font-weight:700}#report .n{color:#B8423A;font-weight:700}
+.dl{background:var(--hl);color:var(--ink);font-size:20px;padding:14px 24px;align-self:flex-start}
+.match{display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center}
+.match select{min-width:150px}
+.match .m-ok{outline:3px solid var(--ok)}.match .m-no{outline:3px solid var(--red)}
+.bq textarea{font:inherit;font-size:16px;width:100%;border:2px solid var(--ink);padding:8px;background:#fff;resize:vertical}
+.bq textarea[readonly]{background:#F4F8F5}
+.bpart{display:flex;flex-direction:column;gap:8px;border-top:1px dashed var(--grid);padding-top:10px}
+.rub{display:flex;flex-direction:column;gap:6px;background:#FFFBEA;border:1.5px dashed var(--tline);padding:10px}
+.rub label{display:flex;gap:8px;align-items:flex-start}
+.rub details summary{cursor:pointer;font-weight:700}
