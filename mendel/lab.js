@@ -125,7 +125,7 @@ async function labPdf(title, file) {
   try {
     buildReport(title); const r = $('report'); r.style.visibility = 'visible';
     const nm = ((window.STUDENT || {}).name || 'תלמיד').replace(/[\\/:*?"<>|]/g, '');
-    await downloadPdf(r, `${file}-${nm}.pdf`); $('dlmsg').textContent = 'הקובץ ירד. העלו אותו למשימה ב-Classroom.';
+    await downloadPdf(r, `${file}-${nm}.pdf`); $('dlmsg').textContent = 'הקובץ מוכן. שמרו אותו והעלו למשימה ב-Classroom.';
   } catch (e) { $('dlmsg').textContent = 'ההורדה לא הצליחה. נסו שוב, או הדפיסו את הדף (Ctrl+P) ושמרו כ-PDF.' }
   $('report').style.visibility = 'hidden'; b.disabled = false; b.textContent = old;
 }
