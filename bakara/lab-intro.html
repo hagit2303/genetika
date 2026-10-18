@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,">
+<title>תרגול: מבוא לבקרה על ביטוי גנים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Rubik:wght@400;500;700&family=Amatic+SC:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="unit.css">
+<link rel="stylesheet" href="lab.css">
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+.qn{font-family:"Amatic SC",cursive;font-size:26px;color:var(--red);line-height:1}
+.cols5{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:10px}
+.bin{display:flex;flex-direction:column;gap:6px;border:2px dashed var(--ink);background:#FFFDF4;min-height:120px;padding:8px}
+.bin h4{font-family:"Secular One",Rubik;font-weight:400;font-size:17px;text-align:center;border-bottom:1px solid var(--grid);padding-bottom:4px}
+.bin.on{background:#FFF3B8}
+.pool{display:flex;flex-wrap:wrap;gap:8px;background:#F4F8F5;border:1.5px dashed var(--grid);padding:10px;min-height:56px}
+.chrom.gc{flex-direction:row;gap:0;background:#fff;border:2px solid var(--ink);padding:6px 10px;font:500 15px Rubik,Arial,sans-serif;line-height:1.3;max-width:100%}
+.chrom.gc.ok{background:var(--okbg);border-color:var(--ok)}.chrom.gc.no{background:var(--nobg);border-color:var(--red)}
+.ama3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}@media (max-width:640px){.ama3{grid-template-columns:1fr}}
+.sitebar{position:fixed;top:10px;inset-inline-end:12px;z-index:50;display:flex;gap:6px}
+.sitebar a{font:700 14px Rubik,Arial,sans-serif;color:#1F4D3A;background:#fff;border:2px solid #1F4D3A;padding:5px 10px;text-decoration:none}
+.gate{position:fixed;inset:0;z-index:100;background:rgba(31,77,58,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.gate[hidden]{display:none}
+.gbox{background:#fff;border:3px solid #1F4D3A;max-width:420px;width:100%;padding:22px;display:flex;flex-direction:column;gap:12px;font-family:Rubik,Arial,sans-serif;color:#1F4D3A}
+.gbox h2{font-family:"Secular One",Rubik,sans-serif;font-weight:400;font-size:28px}.gbox label{display:flex;flex-direction:column;gap:4px;font-weight:500}
+.gbox input{font:inherit;font-size:18px;padding:8px;border:2px solid #1F4D3A}
+.gbox button{font:inherit;font-weight:700;font-size:18px;padding:10px;border:0;background:#1F4D3A;color:#fff;cursor:pointer}
+.gerr{color:#B8423A;font-weight:500;min-height:1.2em}
+@media print{.sitebar,.gate{display:none!important}}
+</style>
+</head>
+<body>
+<nav class="sitebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a></nav>
+<div class="gate" id="gate"><div class="gbox" role="dialog" aria-modal="true" aria-labelledby="gTitle"><h2 id="gTitle">לפני שמתחילים</h2><p>כתבו את השם והכיתה שלכם. הם יופיעו בקובץ שתעלו למשימה ב־Classroom.</p><label>שם מלא<input id="gName" autocomplete="name"></label><label>כיתה<input id="gClass"></label><p class="gerr" id="gErr"></p><button id="gGo">מתחילים</button></div></div>
+<main class="w">
+<span class="note">יחידה 2 · תרגול אחרי מצגת המבוא</span>
+<h1>תרגול: מבוא לבקרה על ביטוי גנים</h1>
+<p class="lead">גוררים כל כרטיס למקום שלו (בעכבר, באצבע, או בלחיצה על הכרטיס ואחר כך על המקום). אחר כך שאלות בגרות, התאמת מושגים והורדת קובץ להגשה.</p>
+<p class="src">בבגרות תשפ״ז ✓ · מושגים: ביטוי גן, בקרה על ביטוי גנים, אמ"ע, גנים של תחזוקה שוטפת, רמות בקרה, התמיינות, תא גזע</p>
+<label class="tmode" id="tmode"><input type="checkbox"> מצב מורה</label>
+
+<section class="step" data-n="1"><span class="sn">משימה 1 · איפה?</span>
+<h3>גררו כל חלבון לתאים שבהם מתבטא הגן שלו</h3>
+<p class="hint">רמז: יש חלבונים שהגנים שלהם מתבטאים בכל התאים.</p>
+<div class="pool drop" id="p1" aria-label="כרטיסים"></div>
+<div class="cols5" id="b1"></div>
+<button id="c1">בדיקה</button><div class="fb" id="f1" role="status"></div></section>
+
+<section class="step" data-n="2" hidden><span class="sn">משימה 2 · אמ"ע</span>
+<h3>מיינו כל דוגמה: איפה, מתי או עוצמה?</h3>
+<p class="hint"><b>א</b>יפה — באילו תאים · <b>מ</b>תי — באיזה שלב או בתגובה לאיזה אות · <b>ע</b>וצמה — כמה חלבון נוצר</p>
+<div class="pool drop" id="p2" aria-label="כרטיסים"></div>
+<div class="ama3" id="b2"></div>
+<button id="c2">בדיקה</button><div class="fb" id="f2" role="status"></div>
+<p class="tnote">בחלק מהדוגמאות יש יותר ממרכיב אחד (למשל חלבוני חלב: גם איפה וגם מתי). כאן נבחר המרכיב שהדוגמה מדגישה. כדאי לדון בזה בכיתה.</p></section>
+
+<section class="card"><h2>שאלות בגרות</h2><p class="hint">משוב מיידי. כל ניסיון נרשם בדוח.</p></section>
+<div id="qs"></div>
+
+<section class="card"><h2>שאלות בסגנון בגרות</h2><p class="hint">כתבו תשובה מלאה, כמו בבחינה. אחר כך פתחו את המחוון וסמנו מה כלול בתשובה שלכם.</p></section>
+<div id="bq"></div>
+
+<section class="card"><h2>התאמת מושגים</h2><div class="match" id="match"></div><button id="mchk">בדיקה</button><div class="fb" id="mfb" role="status"></div></section>
+
+<section class="card"><h2>סיום: הורדת קובץ</h2><p>הקובץ כולל את השם, את המשימות, את התשובות ואת מספר הניסיונות. העלו אותו למשימה ב-Classroom.</p>
+<button class="dl" id="dl">⬇ הורדת קובץ PDF</button><p class="hint" id="dlmsg"></p></section>
+
+<p class="row"><a class="btn ghost" href="deck-intro.html">→ מצגת המבוא</a><a class="btn" href="index.html">לדף היחידה ←</a></p>
+<p class="credit">היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים.</p>
+</main>
+<div id="report" aria-hidden="true"></div>
+<script src="lab.js"></script>
+<script>
+(function(){const tm=$('tmode');let on=false;try{on=localStorage.getItem('genetika-teacher')==='1'}catch(e){}
+ const set=v=>{document.body.classList.toggle('teacher',v);tm.querySelector('input').checked=v};set(on);
+ tm.querySelector('input').onchange=e=>{set(e.target.checked);try{localStorage.setItem('genetika-teacher',e.target.checked?'1':'0')}catch(er){}}})();
+
+// מיון כרטיסים לסלים
+const card = (id, txt) => `<span class="chrom gc" data-drag="1" data-v="${id}" tabindex="0" role="button">${txt}</span>`;
+function sorter(pool, bins, items, cats) {
+ $(bins).innerHTML = cats.map(([k, t]) => `<div class="bin drop" data-k="${k}" aria-label="${t}"><h4>${t}</h4></div>`).join('');
+ $(pool).innerHTML = shuffle(items.slice()).map(([id, t]) => card(id, t)).join('');
+}
+function checkSort(bins, items, out, title, done, n) {
+ const want = Object.fromEntries(items.map(([id, , k]) => [id, k])); let wrong = 0, left = 0;
+ document.querySelectorAll(`#${bins} .chrom, #${bins.replace('b', 'p')} .chrom`).forEach(c => {
+  const bin = c.closest('.bin'); c.classList.remove('ok', 'no');
+  if (!bin) { left++; return } const ok = bin.dataset.k === want[c.dataset.v]; c.classList.add(ok ? 'ok' : 'no'); if (!ok) wrong++ });
+ if (left) return fb($(out), false, `נשארו ${left} כרטיסים שלא מוינו.`);
+ fb($(out), !wrong, !wrong ? done : `${wrong === 1 ? 'כרטיס אחד לא במקום (מסומן באדום)' : wrong + ' כרטיסים לא במקום (מסומנים באדום)'}. גררו אותם למקום אחר ובדקו שוב.`);
+ Lab.rec(title, !wrong, wrong ? `${wrong} טעויות` : 'הכול במקום'); if (!wrong) Lab.solve(n);
+}
+const I1 = [['hb','המוגלובין','rbc'],['ins','אינסולין','beta'],['ker','קרטין','skin'],['myo','מיוזין (בכמות גדולה)','muscle'],['resp','אנזימים של הנשימה התאית','all'],['ribo','חלבוני ריבוזום','all']];
+const C1 = [['rbc','תאים שמהם מתפתחים תאי דם אדומים'],['beta','תאי β בלבלב'],['skin','תאי עור'],['muscle','תאי שריר'],['all','כל התאים']];
+sorter('p1','b1',I1,C1);
+$('c1').onclick = () => checkSort('b1', I1, 'f1', 'משימה 1: איפה מתבטא הגן', 'נכון! לכל התאים אותו DNA, אבל בכל סוג תא מתבטאים גנים אחרים. הגנים לנשימה תאית ולחלבוני ריבוזום מתבטאים בכל התאים: אלה גנים של תחזוקה שוטפת.', 1);
+const I2 = [['a1','קרטין נוצר בתאי העור, ולא בתאי הכבד','A'],['a2','רודופסין, חלבון שקולט אור, נוצר רק בתאי הרשתית בעין','A'],
+ ['m1','חלבוני חלב נוצרים בבלוטות החלב אחרי לידה','M'],['m2','חיידקי אי קולי מייצרים אנזימים לפירוק לקטוז רק כשיש לקטוז בסביבה','M'],['m3','בגיל ההתבגרות מתועתקים בתאי עור הפנים גנים הקשורים לצמיחת שיער','M'],
+ ['e1','אחרי אימוני כוח נוצרים בתאי השריר יותר חלבוני שריר','E'],['e2','בתאי הכבד של אדם ששותה אלכוהול רב נוצר יותר מאנזים מסוים שמפרק אלכוהול','E']];
+const C2 = [['A','איפה'],['M','מתי'],['E','עוצמה']];
+sorter('p2','b2',I2,C2);
+$('c2').onclick = () => checkSort('b2', I2, 'f2', 'משימה 2: אמ"ע', 'נכון! איפה — באילו תאים; מתי — באיזה שלב או בתגובה לאיזה אות; עוצמה — כמה חלבון נוצר.', 2);
+
+// שאלות בגרות (חוברת שאלות ממוינות, פרק 4ח)
+const TF = ['נכון', 'לא נכון'];
+const QS = [
+ {src:'חוברת שאלות ממוינות 4ח, שאלה 1א', stem:'"ביטוי של גן פירושו שהגן עובר תעתוק ותרגום, ובסופם נוצר חלבון לפי המידע שבגן."', opts:TF, ans:0, ok:'נכון. ביטוי גן = תעתוק ותרגום.', no:['','זו בדיוק ההגדרה של ביטוי גן.']},
+ {src:'חוברת שאלות ממוינות 4ח, שאלה 1ב', stem:'"כל הגנים מתבטאים בכל התאים."', opts:TF, ans:1, ok:'נכון, המשפט לא נכון: כל הגנים נמצאים בכל התאים, אבל בכל תא מתבטא רק חלק מהם.', no:['כל הגנים נמצאים בכל התאים, אבל לא כולם מתבטאים בכל תא.','']},
+ {src:'חוברת שאלות ממוינות 4ח, שאלה 1ג', stem:'"גנים הקשורים לתהליכי חיים בסיסיים, כמו נשימה תאית, מתבטאים בכל תאי הגוף."', opts:TF, ans:0, ok:'נכון. אלה גנים של תחזוקה שוטפת.', no:['','נשימה תאית מתרחשת בכל התאים, ולכן הגנים לאנזימים שלה מתבטאים בכולם.']},
+ {src:'חוברת שאלות ממוינות 4ח, שאלה 1ה', stem:'"הגנים מתבטאים בתאים כל הזמן ובאותה עוצמה."', opts:TF, ans:1, ok:'נכון, המשפט לא נכון: הבקרה קובעת גם מתי וגם באיזו עוצמה גן מתבטא.', no:['זכרו את ה"מ" וה"ע" של אמ"ע.','']},
+ {src:'חוברת שאלות ממוינות 4ח, שאלות 3 ו-10', stem:'קישור הורמון המין הגברי <b>טסטוסטרון</b> לקולטנים בתאי עור הפנים גורם ל<b>תעתוק</b> של גנים הקשורים לצמיחת שיער הפנים. <b>מהי רמת הבקרה?</b>',
+  opts:['בקרה ברמת ה-DNA (תעתוק)','בקרה ברמת פעילות החלבון'], ans:0, ok:'נכון. ההורמון גורם לתעתוק של גנים — בקרה ברמת ה-DNA.', no:['','כאן נוצרים חלבונים חדשים בעקבות תעתוק — זו לא הפעלה של חלבון קיים.']},
+ {src:'חוברת שאלות ממוינות 4ח, שאלה 10ב', stem:'ההורמון <b>גלוקגון</b> גורם להפעלת אנזימים <b>שכבר נמצאים</b> בתאי הכבד ומפרקים גליקוגן. <b>מהי רמת הבקרה?</b>',
+  opts:['בקרה ברמת ה-DNA (תעתוק)','בקרה ברמת פעילות החלבון'], ans:1, ok:'נכון. האנזימים כבר קיימים; ההורמון משפיע על פעילותם.', no:['האנזימים כבר נמצאים בתא — לא נוצרים חלבונים חדשים.','']},
+ {src:'חוברת שאלות ממוינות 4ח, שאלה 10ג', stem:'בתאי הכליות, ההורמון <b>ADH</b> גורם לתעלות מים, שכבר נמצאות בתא, לעבור אל קרום התא. כך עולה הספיגה החוזרת של מים. <b>מהי רמת הבקרה?</b>',
+  opts:['בקרה ברמת ה-DNA (תעתוק)','בקרה ברמת פעילות החלבון'], ans:1, ok:'נכון. התעלות כבר קיימות; משתנה מיקומן ופעילותן.', no:['התעלות כבר קיימות בתא. לא מתוארת יצירה של חלבונים חדשים.','']},
+ {src:'חוברת שאלות ממוינות 4ח, שאלה 10א', stem:'ההורמון <b>פרולקטין</b> מעורר תעתוק של גנים הקשורים ליצירת חלב בבלוטות החלב. <b>מהי רמת הבקרה?</b>',
+  opts:['בקרה ברמת ה-DNA (תעתוק)','בקרה ברמת פעילות החלבון'], ans:0, ok:'נכון. תעתוק של גנים — בקרה ברמת ה-DNA.', no:['','ההורמון מעורר תעתוק — כלומר נוצרים RNA שליח וחלבונים חדשים.']}
+];
+renderQuestions($('qs'), QS, 'q');
+renderBagrut($('bq'), [
+ {src:'חוברת שאלות ממוינות 4ח, שאלה 2', title:'תאי עצב ותאי שריר', stem:'<p>תאי עצב ותאי שריר של אדם נוצרו מאותה ביצית מופרית.</p>',
+  parts:[{n:'א', task:'האם בתאי עצב יימצאו אותן מולקולות RNA שליח כמו בתאי שריר? נַמקו.', pts:4,
+   rubric:[['לא — יימצאו מולקולות RNA שליח שונות (חלקן משותפות)',30],['בשני סוגי התאים אותו DNA, עם אותם גנים',30],['אבל בכל סוג תא מתבטאים גנים אחרים, ולכן מתועתקים RNA שליח שונים',40]],
+   model:'לא. לשני סוגי התאים אותו DNA, אבל בכל סוג תא מתבטאים גנים אחרים. לכן בתאי עצב מתועתקים RNA שליח של חלבונים ייחודיים לתאי עצב, ובתאי שריר — של חלבונים ייחודיים לשריר. RNA שליח של גנים של תחזוקה שוטפת (למשל אנזימי הנשימה התאית) יימצא בשניהם.'}]},
+ {src:'חוברת שאלות ממוינות 4ח, שאלה 8', title:'תאי גזע עובריים', stem:'<p>מאותה תרבית של תאי גזע עובריים אפשר לגדל רקמת שריר ורקמת כבד.</p>',
+  parts:[
+   {n:'א', task:'הַסבירו מדוע אפשר ליצור מאותם תאי גזע עובריים רקמות שונות.', pts:3,
+    rubric:[['בתאי הגזע נמצאים כל הגנים',40],['בתהליך ההתמיינות מופעלים בכל סוג תא גנים מסוימים ומושתקים אחרים',60]],
+    model:'בתאי הגזע העובריים נמצאים כל הגנים. בהתמיינות, בכל סוג תא מופעלים גנים מסוימים ומושתקים אחרים, ולכן נוצרים תאים שונים — תאי שריר או תאי כבד.'},
+   {n:'ב', task:'אם יפיקו את כל ה-RNA השליח מרקמת השריר ומרקמת הכבד, האם הוא יהיה זהה? נַמקו.', pts:3,
+    rubric:[['לא זהה',30],['ברקמות השונות מתבטאים גנים שונים, ולכן מתועתק RNA שליח שונה',70]],
+    model:'לא. אף שה-DNA זהה, בתאי השריר ובתאי הכבד מתבטאים גנים שונים, ולכן ה-RNA השליח שונה (פרט ל-RNA שליח של גנים של תחזוקה שוטפת).'}]},
+ {src:'חוברת שאלות ממוינות 4ח, שאלה 13ב', title:'גנים בכל תא', stem:'<p>יש גנים שמתבטאים בכל תאי הגוף.</p>',
+  parts:[{n:'', task:'הביאו דוגמה אחת לגנים כאלה (אין צורך בשם הגן), והסבירו מדוע הם מתבטאים בכל התאים.', pts:3,
+   rubric:[['דוגמה נכונה: אנזימים של הנשימה התאית / חלבוני ריבוזום / חלבונים של קרום התא',50],['הסבר: הם קשורים לתהליך חיים בסיסי שמתרחש בכל תא',50]],
+   model:'גנים לאנזימים של הנשימה התאית. נשימה תאית מתרחשת בכל תא חי, ולכן הגנים האלה מתבטאים בכל התאים — גנים של תחזוקה שוטפת.'}]}
+], 'b');
+renderMatch($('match'), [
+ ['ביטוי גן','תעתוק ותרגום של המידע שבגן, שבסופם נוצר חלבון'],
+ ['בקרה על ביטוי גנים','מנגנונים שקובעים איפה, מתי ובאיזו עוצמה יתבטא גן'],
+ ['גן של תחזוקה שוטפת','גן שמתבטא בכל התאים, כי הוא קשור לתהליך חיים בסיסי'],
+ ['התמיינות','תהליך שבו תאים הופכים לסוגי תאים שונים, בעקבות הפעלה והשתקה של גנים'],
+ ['תא גזע','תא שיכול להתחלק ולהתמיין לסוגי תאים שונים'],
+ ['אות','גורם מתוך התא או מחוצה לו, שמפעיל שינוי בביטוי גנים'],
+ ['RNA שליח','מולקולה שמתועתקת מגן ומתורגמת לחלבון']
+], $('mchk'), $('mfb'));
+$('dl').onclick = () => labPdf('תרגול: מבוא לבקרה על ביטוי גנים', 'בקרת-גנים-מבוא');
+</script>
+<script>async function downloadPdf(el,fname,filter){const scale=2;const canvas=await htmlToImage.toCanvas(el,{pixelRatio:scale,backgroundColor:'#ffffff',filter});
+ const{jsPDF}=window.jspdf;const pdf=new jsPDF({unit:'mm',format:'a4'});const pw=190,ph=277,px=canvas.width/pw,pageH=Math.floor(ph*px);let y=0,first=true;
+ while(y<canvas.height-2){const end=Math.min(y+pageH,canvas.height);const c=document.createElement('canvas');c.width=canvas.width;c.height=end-y;c.getContext('2d').drawImage(canvas,0,y,canvas.width,end-y,0,0,canvas.width,end-y);
+  if(!first)pdf.addPage();pdf.addImage(c.toDataURL('image/jpeg',.9),'JPEG',10,10,pw,(end-y)/px);first=false;y=end}pdf.save(fname)}</script><script>(function(){const g=document.getElementById('gate'),n=document.getElementById('gName'),c=document.getElementById('gClass');
+try{const s=JSON.parse(localStorage.getItem('genetika-student')||'{}');n.value=s.name||'';c.value=s.cls||''}catch(e){}
+document.getElementById('gGo').onclick=()=>{const nm=n.value.trim(),cl=c.value.trim();
+ if(nm.length<2||!cl){document.getElementById('gErr').textContent='כתבו שם (לפחות 2 אותיות) וכיתה.';return}
+ try{localStorage.setItem('genetika-student',JSON.stringify({name:nm,cls:cl}))}catch(e){}
+ document.querySelectorAll('[data-fill="name"]').forEach(e=>{if('value' in e)e.value=nm;else e.textContent=nm});
+ document.querySelectorAll('[data-fill="class"]').forEach(e=>{if('value' in e)e.value=cl;else e.textContent=cl});
+ window.STUDENT={name:nm,cls:cl};g.hidden=true};n.focus()})();</script>
+</body>
+</html>

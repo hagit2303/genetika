@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מבוא: בקרה על ביטוי גנים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Rubik:wght@400;500;700&family=Amatic+SC:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#FBFCFA;--grid:#DDE7EE;--ink:#1F4D3A;--mut:#5C6F66;--hl:#F4D35E;--red:#B8423A;--card:#fff;--ok:#1E7B4D;--okbg:#E3F2E6}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{overflow:hidden;color:var(--ink);font-family:Rubik,Arial,sans-serif;background:var(--paper);
+ background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
+.deck{position:relative;height:100%}
+.s{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;gap:14px;padding:clamp(18px,4vh,48px) clamp(16px,7vw,110px) 80px clamp(16px,5vw,80px);overflow-y:auto;border-inline-start:3px double var(--red);margin-inline-start:clamp(10px,4vw,56px)}
+.s.on{display:flex}
+h1,h2,h3{font-family:"Secular One",Rubik,sans-serif;font-weight:400}
+h1{font-size:clamp(40px,6.5vw,84px);line-height:1.05}
+h2{font-size:clamp(26px,3.6vw,46px);line-height:1.15;text-wrap:balance}
+h3{font-size:clamp(19px,2vw,24px);margin-bottom:6px}
+p,li,td,th{font-size:clamp(15px,1.6vw,20px);line-height:1.5}
+.note{font-family:"Amatic SC",cursive;font-size:clamp(26px,3vw,40px);color:var(--red);line-height:1.05}
+.date{font-family:"Amatic SC",cursive;font-size:28px;color:var(--mut)}
+mark{background:linear-gradient(transparent 45%,var(--hl) 45% 90%,transparent 90%);color:inherit;padding:0 2px}
+.L{direction:ltr;unicode-bidi:isolate;display:inline-block}
+table{border-collapse:collapse;width:100%;background:var(--card);border:2px solid var(--ink)}
+th,td{border:1px solid var(--grid);padding:6px 10px;text-align:start}
+th{background:var(--ink);color:#fff;font-weight:500}
+td.n{text-align:center;font-variant-numeric:tabular-nums}
+td.r{font-weight:700;color:var(--red)}
+.tw{overflow-x:auto}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,3vw,40px);align-items:start}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(10px,2vw,24px)}
+.box{background:var(--card);border:2px solid var(--ink);padding:14px;position:relative}
+.box.soft{border-color:var(--grid)}
+ol,ul{padding-inline-start:22px;display:flex;flex-direction:column;gap:4px}
+.cross{direction:ltr;font-size:clamp(22px,3vw,36px);font-weight:700;letter-spacing:.04em}
+.pun{border:2px solid var(--ink);width:auto;direction:ltr;margin:6px 0}
+.pun td,.pun th{width:clamp(64px,9vw,110px);height:clamp(54px,8vw,90px);text-align:center;font-size:clamp(20px,2.8vw,34px);font-weight:700}
+.pun th{background:#EEF3F0;color:var(--ink)}
+.pun td.rec{background:#FFF6D6}.pun td.het{background:#F1F7F3}
+sup{font-size:.6em}
+.stamp{position:absolute;top:-14px;inset-inline-end:-10px;transform:rotate(-6deg);border:3px solid var(--red);color:var(--red);font-weight:700;padding:2px 10px;background:var(--paper);font-size:14px;z-index:1}
+.photo{position:relative;background:#fff;padding:10px 10px 34px;box-shadow:0 4px 14px rgba(31,77,58,.18);transform:rotate(2deg);max-width:min(380px,80vw)}
+.photo img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover}
+.photo::before{content:"";position:absolute;top:-12px;left:40%;width:90px;height:24px;background:rgba(244,211,94,.7);transform:rotate(-4deg)}
+.photo span{position:absolute;bottom:6px;inset-inline:0;text-align:center;font-family:"Amatic SC";font-size:24px;color:var(--mut)}
+/* מהלך הכלאה כתוב */
+.wk{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;align-items:center;background:var(--card);border:2px solid var(--ink);padding:14px 18px}
+.wk b{font-family:"Secular One";font-weight:400;color:var(--mut);font-size:clamp(15px,1.6vw,20px)}
+.wk span{direction:ltr;text-align:right;font-size:clamp(18px,2.2vw,28px);font-weight:700;letter-spacing:.03em}
+.wk small{font-weight:400;font-size:.7em;color:var(--mut)}
+.circ{display:inline-grid;place-items:center;width:1.7em;height:1.7em;border:2px solid var(--ink);border-radius:50%;margin-inline:3px}
+/* מיוזה */
+.mei{display:flex;align-items:center;gap:clamp(8px,2vw,24px);flex-wrap:wrap;direction:ltr;justify-content:center}
+.cell{width:clamp(90px,12vw,150px);aspect-ratio:1;border:3px solid var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--card);font-weight:700;font-size:clamp(20px,2.4vw,30px)}
+.cell.g{width:clamp(64px,8vw,100px)}
+.chr{display:flex;flex-direction:column;align-items:center;gap:2px}
+.chr i{width:12px;height:clamp(40px,5vw,64px);border-radius:6px;background:var(--ink)}
+.chr.r i{background:var(--red)}
+.ar{font-size:32px;color:var(--mut)}
+.rev{align-self:flex-start;cursor:pointer;font:inherit;font-weight:700;background:var(--ink);color:#fff;border:0;padding:8px 18px}
+.ans{visibility:hidden}.ans.show{visibility:visible}
+.opts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.opts.t2{grid-template-columns:1fr 1fr}
+.op{font:inherit;font-weight:700;cursor:pointer;background:var(--card);border:2px solid var(--ink);padding:12px;font-size:clamp(16px,1.8vw,22px);text-align:start}
+.op.ltr{direction:ltr;text-align:center}
+.op.ok{background:var(--okbg);border-color:var(--ok)}.op.no{opacity:.45;text-decoration:line-through}
+.why{visibility:hidden;color:var(--ok);font-weight:500}.why.show{visibility:visible}
+.qtag{font-family:"Amatic SC";font-size:32px;color:var(--red)}
+.btn{align-self:flex-start;background:var(--ink);color:#fff;text-decoration:none;padding:10px 20px;font-weight:700}
+.credit{font-size:13px;color:var(--mut)}
+.nav{position:fixed;bottom:14px;inset-inline-start:16px;display:flex;gap:8px;align-items:center;z-index:5}
+.nav button{width:42px;height:42px;cursor:pointer;font-size:20px;border:2px solid var(--ink);background:var(--card);color:var(--ink)}
+.nav span{min-width:56px;text-align:center;direction:ltr;font-family:"Amatic SC";font-size:28px}
+.prog{position:fixed;bottom:0;inset-inline:0;height:5px}.prog::after{content:"";position:absolute;inset-block:0;inset-inline-start:0;width:var(--p,0);background:var(--ink);transition:width .4s}
+@media (max-width:760px){.s{justify-content:flex-start;margin-inline-start:6px}.cols,.cols3{grid-template-columns:1fr}.opts{grid-template-columns:1fr 1fr}.photo{max-width:60vw}}
+@media print{body{overflow:visible;background:#fff}.s{position:relative;display:flex!important;page-break-after:always;height:100vh}.nav,.prog,.rev{display:none}.ans,.why{visibility:visible}}
+
+.def{background:var(--card);border:2px solid var(--ink);border-inline-start:10px solid var(--ink);padding:12px 16px;display:flex;flex-direction:column;gap:4px}
+.term{font-family:"Secular One",Rubik;font-size:clamp(22px,2.6vw,30px);line-height:1.1}
+.dd{font-size:clamp(17px,1.9vw,23px);font-weight:500}
+.ex{color:var(--mut)}
+ol.toc{display:flex;flex-direction:column;gap:8px;padding-inline-start:28px}ol.toc li{font-size:clamp(17px,2vw,24px);border-bottom:1px dashed var(--grid);padding-bottom:6px}
+.tagsm{font-size:13px;border:2px solid var(--red);color:var(--red);padding:0 6px;vertical-align:middle}
+.sw{display:inline-block;width:16px;height:16px;border-radius:50%;border:1px solid rgba(0,0,0,.25);vertical-align:middle;margin-inline-end:6px}
+.wk span.r{direction:rtl;text-align:start}
+.chrfig{display:flex;justify-content:center;margin:0}
+.ic{width:64px;height:48px;vertical-align:middle;flex:none}
+.ic.lg{width:130px;height:96px}.ic.md{width:88px;height:66px}
+.icrow{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap}
+.icrow figure{display:flex;flex-direction:column;align-items:center;gap:2px;margin:0;font-size:15px;color:var(--mut)}
+td .ic{margin-inline-end:8px}
+.wide{width:100%;max-height:30vh;object-fit:cover;border:2px solid var(--ink)}
+.pun td .ic{width:46px;height:34px;display:block;margin:0 auto 2px}
+.pun.sheep td{font-size:clamp(16px,2vw,24px)}
+.gal td{padding:3px 10px}
+.tight .box{padding:10px 12px}.tight p{font-size:clamp(14px,1.45vw,18px)}.tight h2{font-size:clamp(24px,3vw,38px)}.gal .ic{width:46px;height:30px}
+.s>.stamp.nm{top:14px;inset-inline-end:clamp(16px,5vw,60px);transform:rotate(-4deg);font-size:15px}
+.sitebar{position:fixed;top:10px;inset-inline-end:12px;z-index:50;display:flex;gap:6px}
+.sitebar a{font:700 14px Rubik,Arial,sans-serif;color:#1F4D3A;background:#fff;border:2px solid #1F4D3A;padding:5px 10px;text-decoration:none}
+.gate{position:fixed;inset:0;z-index:100;background:rgba(31,77,58,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.gate[hidden]{display:none}
+.gbox{background:#fff;border:3px solid #1F4D3A;max-width:420px;width:100%;padding:22px;display:flex;flex-direction:column;gap:12px;font-family:Rubik,Arial,sans-serif;color:#1F4D3A}
+.gbox h2{font-family:"Secular One",Rubik,sans-serif;font-weight:400;font-size:28px}.gbox label{display:flex;flex-direction:column;gap:4px;font-weight:500}
+.gbox input{font:inherit;font-size:18px;padding:8px;border:2px solid #1F4D3A}
+.gbox button{font:inherit;font-weight:700;font-size:18px;padding:10px;border:0;background:#1F4D3A;color:#fff;cursor:pointer}
+.gerr{color:#B8423A;font-weight:500;min-height:1.2em}
+@media print{.sitebar,.gate{display:none!important}}
+.sitebar{top:auto;bottom:14px;inset-inline-end:16px}
+</style></head><body><svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<pattern id="roan" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#A9322B"/><rect width="2.4" height="6" fill="#FFFFFF"/></pattern>
+<!-- כבשה: צבע הצמר דרך --c -->
+<symbol id="sheep" viewBox="0 0 120 84">
+<g fill="#5A4A3A"><rect x="30" y="56" width="7" height="24" rx="3"/><rect x="45" y="58" width="7" height="22" rx="3"/><rect x="70" y="58" width="7" height="22" rx="3"/><rect x="84" y="56" width="7" height="24" rx="3"/></g>
+<g style="fill:var(--c,#FFFFFF)" stroke="#8C8273" stroke-width="1.6"><circle cx="30" cy="44" r="15"/><circle cx="44" cy="30" r="15"/><circle cx="62" cy="27" r="15"/><circle cx="80" cy="31" r="14"/><circle cx="88" cy="46" r="13"/><circle cx="70" cy="56" r="14"/><circle cx="46" cy="57" r="14"/></g>
+<ellipse cx="60" cy="44" rx="30" ry="17" style="fill:var(--c,#FFFFFF)"/>
+<ellipse cx="102" cy="36" rx="11" ry="14" fill="#F2E9DC" stroke="#8C8273" stroke-width="1.6"/>
+<ellipse cx="94" cy="27" rx="7" ry="3.5" fill="#E7CDBF" stroke="#8C8273" stroke-width="1.2" transform="rotate(-25 94 27)"/>
+<circle cx="105" cy="33" r="2.2" fill="#222"/><ellipse cx="108" cy="45" rx="3" ry="2" fill="#C99"/>
+</symbol>
+<symbol id="spots" viewBox="0 0 120 84"><g fill="#6B3E1F"><circle cx="40" cy="36" r="8"/><circle cx="64" cy="48" r="9"/><circle cx="80" cy="30" r="6"/><circle cx="28" cy="52" r="5"/><circle cx="55" cy="26" r="5"/></g><path d="M96 26 q8 -6 15 4 q-4 6 -9 4 z" fill="#6B3E1F"/></symbol>
+<!-- שרקן -->
+<symbol id="guinea" viewBox="0 0 120 80">
+<g fill="#D8A39A"><ellipse cx="40" cy="70" rx="7" ry="4"/><ellipse cx="80" cy="70" rx="7" ry="4"/></g>
+<ellipse cx="56" cy="47" rx="40" ry="24" style="fill:var(--c,#222)" stroke="#555" stroke-width="1.6"/>
+<ellipse cx="92" cy="44" rx="20" ry="18" style="fill:var(--c,#222)" stroke="#555" stroke-width="1.6"/>
+<ellipse cx="84" cy="27" rx="8" ry="5" fill="#D8A39A" stroke="#555" stroke-width="1.2"/>
+<circle cx="100" cy="40" r="3.2" style="fill:var(--eye,#111)"/><ellipse cx="110" cy="48" rx="3" ry="2" fill="#C77"/>
+</symbol>
+<!-- ארנב -->
+<symbol id="rabbit" viewBox="0 -14 120 104">
+<ellipse cx="50" cy="62" rx="34" ry="22" style="fill:var(--c,#8B6B4A)" stroke="#555" stroke-width="1.6"/>
+<circle cx="18" cy="58" r="7" style="fill:var(--c,#8B6B4A)" stroke="#555" stroke-width="1.2"/>
+<ellipse cx="80" cy="18" rx="6" ry="20" style="fill:var(--c,#8B6B4A)" stroke="#555" stroke-width="1.4" transform="rotate(-12 80 18)"/>
+<ellipse cx="92" cy="20" rx="6" ry="20" style="fill:var(--c,#8B6B4A)" stroke="#555" stroke-width="1.4" transform="rotate(10 92 20)"/>
+<circle cx="88" cy="50" r="17" style="fill:var(--c,#8B6B4A)" stroke="#555" stroke-width="1.6"/>
+<circle cx="94" cy="46" r="3.2" style="fill:var(--eye,#111)"/><ellipse cx="104" cy="54" rx="2.5" ry="2" fill="#C77"/>
+</symbol>
+<!-- זבוב הפירות -->
+<symbol id="flyN" viewBox="0 0 120 80"><g fill="#DCE8F2" fill-opacity=".75" stroke="#7F98AD" stroke-width="1.2"><ellipse cx="36" cy="26" rx="34" ry="10" transform="rotate(-12 60 40)"/><ellipse cx="38" cy="36" rx="32" ry="9" transform="rotate(8 60 40)"/></g></symbol>
+<symbol id="flyV" viewBox="0 0 120 80"><g fill="#DCE8F2" stroke="#7F98AD" stroke-width="1.4"><path d="M64 36 q-4 -14 -14 -12 q3 5 -3 8 q6 6 17 4z"/><path d="M60 40 q-10 -4 -16 2 q5 2 1 6 q9 0 15 -8z"/></g></symbol>
+<symbol id="flyB" viewBox="0 0 120 80">
+<g stroke="#5A3A1A" stroke-width="1.6" fill="none"><path d="M58 50 l-8 18"/><path d="M64 51 l0 20"/><path d="M70 50 l8 18"/></g>
+<ellipse cx="42" cy="46" rx="20" ry="11" fill="#8B5A2B"/><g stroke="#5A3A1A" stroke-width="2"><path d="M30 37 v18"/><path d="M38 35 v22"/><path d="M46 35 v22"/></g>
+<ellipse cx="64" cy="44" rx="12" ry="10" fill="#A0703C"/><circle cx="82" cy="42" r="8" fill="#A0703C"/><circle cx="86" cy="40" r="5.5" fill="#C0392B"/>
+</symbol>
+<!-- בקר -->
+<symbol id="cow" viewBox="0 -8 142 100">
+<g fill="#4A4A4A"><rect x="28" y="60" width="8" height="28" rx="3"/><rect x="44" y="62" width="8" height="26" rx="3"/><rect x="80" y="62" width="8" height="26" rx="3"/><rect x="94" y="60" width="8" height="28" rx="3"/></g>
+<path d="M22 40 q-12 6 -10 22" stroke="#555" stroke-width="2.5" fill="none"/>
+<rect x="20" y="28" width="88" height="40" rx="15" style="fill:var(--c,#A9322B)" stroke="#555" stroke-width="1.6"/>
+<rect x="100" y="18" width="28" height="32" rx="10" style="fill:var(--c,#A9322B)" stroke="#555" stroke-width="1.6"/>
+<path d="M104 20 q-6 -10 -12 -8 M124 20 q6 -10 12 -8" stroke="#D9CFC0" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+<ellipse cx="114" cy="46" rx="11" ry="7" fill="#E8B4A8" stroke="#555" stroke-width="1.2"/><circle cx="108" cy="30" r="2.6" fill="#111"/><circle cx="122" cy="30" r="2.6" fill="#111"/>
+</symbol>
+<!-- עגבנייה -->
+<symbol id="tomT" viewBox="0 0 70 130"><path d="M35 128 V14" stroke="#3E7A2E" stroke-width="4"/><g fill="#5FA046"><ellipse cx="22" cy="40" rx="12" ry="6" transform="rotate(-25 22 40)"/><ellipse cx="48" cy="62" rx="12" ry="6" transform="rotate(25 48 62)"/><ellipse cx="22" cy="86" rx="12" ry="6" transform="rotate(-25 22 86)"/><ellipse cx="48" cy="22" rx="11" ry="5" transform="rotate(25 48 22)"/></g><g fill="#D93A2B"><circle cx="46" cy="44" r="7"/><circle cx="24" cy="66" r="7"/><circle cx="46" cy="96" r="7"/></g><rect x="20" y="122" width="30" height="8" rx="2" fill="#8B5E3C"/></symbol>
+<symbol id="tomD" viewBox="0 0 70 130"><path d="M35 128 V92" stroke="#3E7A2E" stroke-width="4"/><g fill="#5FA046"><ellipse cx="22" cy="104" rx="12" ry="6" transform="rotate(-25 22 104)"/><ellipse cx="48" cy="98" rx="12" ry="6" transform="rotate(25 48 98)"/></g><g fill="#D93A2B"><circle cx="46" cy="110" r="7"/><circle cx="26" cy="92" r="6"/></g><rect x="20" y="122" width="30" height="8" rx="2" fill="#8B5E3C"/></symbol>
+<!-- פרח אפונה -->
+<symbol id="peaflower" viewBox="0 0 90 90"><path d="M45 88 V66" stroke="#4E8A26" stroke-width="3"/><path d="M36 66 q9 -8 18 0 q-9 6 -18 0z" fill="#5FA046"/>
+<path d="M45 8 C22 6 8 22 14 40 C18 50 30 52 45 46 C60 52 72 50 76 40 C82 22 68 6 45 8z" style="fill:var(--c,#8E44AD)" stroke="#5E3F6E" stroke-width="1.4"/>
+<path d="M45 14 C44 24 44 34 45 44" stroke="#5E3F6E" stroke-width="1" fill="none" opacity=".5"/>
+<path d="M24 44 C14 50 16 64 30 62 C38 60 42 54 42 48z" style="fill:var(--c2,#B06AD0)" stroke="#5E3F6E" stroke-width="1.2"/>
+<path d="M66 44 C76 50 74 64 60 62 C52 60 48 54 48 48z" style="fill:var(--c2,#B06AD0)" stroke="#5E3F6E" stroke-width="1.2"/>
+<path d="M38 52 C40 62 50 62 52 52 C48 56 42 56 38 52z" style="fill:var(--c3,#E8D6F0)" stroke="#5E3F6E" stroke-width="1"/></symbol>
+<!-- זרע אפונה -->
+<symbol id="seed" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" style="fill:var(--c,#E9C536)" stroke="#8C7A2A" stroke-width="1.5"/><ellipse cx="14" cy="14" rx="5" ry="3" fill="#fff" fill-opacity=".45"/></symbol>
+<symbol id="seedW" viewBox="0 0 40 40"><path d="M20 4 C30 4 36 10 35 18 C38 22 35 30 30 32 C27 37 18 38 13 34 C6 33 3 26 6 20 C3 14 8 6 14 7 C16 5 18 4 20 4z" style="fill:var(--c,#D8C26A)" stroke="#8C7A2A" stroke-width="1.5"/><path d="M12 14 q6 4 2 10 M22 10 q-2 8 6 12 M16 28 q6 -2 10 2" stroke="#8C7A2A" stroke-width="1.2" fill="none"/></symbol>
+</defs></svg>
+<nav class="sitebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a></nav><div class="deck">
+
+
+<section class="s"><span class="date">יחידה 2 · מבוא · עמוד 1</span>
+<style>.vid{position:relative;width:min(100%,640px);aspect-ratio:16/9;border:3px solid var(--ink);background:#000}.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.chain{display:flex;flex-wrap:wrap;gap:8px;align-items:center;direction:rtl}.chain span{background:#fff;border:2px solid var(--ink);padding:8px 14px;font-weight:700}.chain i{font-style:normal;font-size:26px;color:var(--mut)}
+.ama{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.ama .box b{font-family:"Secular One",Rubik;font-weight:400;font-size:clamp(40px,6vw,72px);color:var(--red);line-height:1;display:block}
+@media (max-width:760px){.ama{grid-template-columns:1fr}}</style>
+<h1>בקרה על ביטוי גנים<br>מבוא</h1>
+<p class="note">איך ייתכן שבכל תאי הגוף אותו DNA, ובכל זאת כל תא שונה?</p>
+<div class="box"><span class="stamp">בבגרות תשפ״ז ✓</span>
+<p><b>במיקוד:</b> "בכל תא באים לידי ביטוי רק חלק מן הגנים. קיימת בקרה על ביטוי גנים הקובעת היכן, מתי, ובאיזו רמה יתבטאו הגנים השונים."</p>
+<p class="ex">מושגים: ביטוי גן · בקרה על ביטוי גנים · גנים של תחזוקה שוטפת · התמיינות · תא גזע · אותות · רמות בקרה</p></div>
+</section>
+
+<section class="s"><span class="date">פתיחה · עמוד 2</span>
+<h2>דבר אליי בפרחים…</h2>
+<div class="cols"><div class="vid"><iframe src="https://www.youtube-nocookie.com/embed/YxBdB1ThX5s" title="דבר אלי בפרחים" allow="encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<div class="box"><p>בשיר מבקשים: אל תגיד במילים — תגיד בפרחים.</p>
+<p>ומה עם הגנים שלנו? הם לא "מדברים" במילים. המידע שבגן <b>בא לידי ביטוי בחלבון</b>.</p>
+<p class="note">דבר אליי בחלבון!</p></div></div>
+</section>
+
+<section class="s k-q"><span class="qtag">שאלה לכיתה · עמוד 3</span>
+<h2>אז מה לדעתכם המטרה של השיעור היום?</h2>
+<div class="opts t2"><button class="op" data-ok="0">ללמוד איך נוצר חלבון בריבוזום</button><button class="op" data-ok="1">להבין איך נקבע איזה גן יתבטא — באיזה תא, מתי ובאיזו כמות</button><button class="op" data-ok="0">ללמוד שירים ישנים</button><button class="op" data-ok="0">להבין מה ההבדל בין DNA ל-RNA</button></div>
+<p class="why">נכון! את יצירת החלבון כבר למדנו. השאלה היום: <b>מה קובע</b> אם המידע שבגן יגיע לחלבון, איפה, מתי ובאיזו כמות. לזה קוראים <b>בקרה על ביטוי גנים</b>.</p>
+</section>
+
+<section class="s"><span class="date">תזכורת · עמוד 4</span>
+<h2>מה זה "ביטוי של גן"?</h2>
+<div class="chain" aria-label="מסלול ביטוי הגן"><span>גן ב-DNA</span><i>←</i><span>תעתוק</span><i>←</i><span>RNA שליח</span><i>←</i><span>תרגום</span><i>←</i><span>חלבון</span><i>←</i><span>תכונה</span></div>
+<div class="def"><span class="term">ביטוי גן</span><span class="dd">תהליך שבו המידע שבגן מתועתק ל-RNA שליח, וה-RNA השליח מתורגם לחלבון.</span><span class="ex">גן שעובר תעתוק ותרגום — "מתבטא". גן שלא עובר — "אינו מתבטא", אף שהוא נמצא בתא.</span></div>
+</section>
+
+<section class="s"><span class="date">חידה · עמוד 5</span>
+<h2>אותו DNA — תאים שונים לגמרי</h2>
+<div class="cols"><div class="box"><p>כל תאי הגוף נוצרו מביצית מופרית אחת, בחלוקות מיטוזה. לכן <b>בכל התאים אותו DNA</b>, עם אותם כ-20,000 גנים.</p>
+<p>ובכל זאת: תא עצב ארוך ומסועף, תא שריר מתכווץ, תא דם אדום מלא בהמוגלובין.</p></div>
+<div class="box soft"><h3>שאלה</h3><p>אם יש להם אותם גנים — מה ההבדל ביניהם?</p>
+<button class="rev">תשובה</button><p class="ans">ההבדל הוא <b>אילו גנים מתבטאים</b> בכל תא. בכל תא מתבטא רק חלק מהגנים, ולכן בכל סוג תא נוצרים חלבונים אחרים.</p></div></div>
+</section>
+
+<section class="s"><span class="date">סרטון · עמוד 6</span>
+<h2>שלושה זרים זהים</h2>
+<div class="cols"><div class="vid"><iframe src="https://www.youtube-nocookie.com/embed/IIVtRd8urJw" title="שלושה זרים זהים – טריילר" allow="encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<div class="box"><ul>
+<li>בשנת 1961 נולדה בניו יורק שלישייה זהה, ונמסרה לאימוץ בשלוש משפחות שונות.</li>
+<li>אף אחד מהם לא ידע על האחרים. בשנת 1980, בגיל 19, הם נפגשו במקרה.</li>
+<li>תאומים זהים (ושלישייה זהה) נוצרים מאותה ביצית מופרית — ולכן ה-DNA שלהם כמעט זהה.</li></ul>
+<p class="ex">כתבה נוספת: <a href="https://www.youtube.com/watch?v=Beob6a707vo" target="_blank" rel="noopener">כאן חדשות, 5:38</a></p></div></div>
+</section>
+
+<section class="s k-q"><span class="qtag">שאלה לכיתה · עמוד 7</span>
+<h2>לשלושת האחים כמעט אותו DNA. האם הם זהים בכל התכונות?</h2>
+<div class="opts t2"><button class="op" data-ok="0">כן, אותו DNA = אותן תכונות בדיוק</button><button class="op" data-ok="1">לא בדיוק: הסביבה שבה גדלו השפיעה על ביטוי הגנים שלהם</button><button class="op" data-ok="0">לא, כי כל אחד קיבל גנים אחרים</button><button class="op" data-ok="0">אי אפשר לדעת</button></div>
+<p class="why">לאחים יש אותם גנים, אבל אותות מהסביבה — תזונה, פעילות, מצבים בחיים — משפיעים על <b>אילו גנים מתבטאים ובאיזו עוצמה</b>. כך גם לתאומים זהים יש הבדלים.</p>
+</section>
+
+<section class="s"><span class="date">דוגמאות · עמוד 8</span>
+<h2>אילו גנים מתבטאים באילו תאים?</h2>
+<div class="box"><table><thead><tr><th>החלבון</th><th>מה הוא עושה</th><th>באילו תאים הגן מתבטא</th></tr></thead><tbody>
+<tr><td>המוגלובין</td><td>נושא חמצן</td><td>בתאים שמהם מתפתחים תאי דם אדומים</td></tr>
+<tr><td>אינסולין</td><td>הורמון שמוריד את ריכוז הגלוקוז בדם</td><td>בתאי β בלבלב</td></tr>
+<tr><td>קרטין</td><td>חלבון מבני קשה</td><td>בתאי העור, השיער והציפורניים</td></tr>
+<tr><td>אקטין ומיוזין (בכמות גדולה)</td><td>התכווצות</td><td>בתאי שריר</td></tr>
+<tr><td>אנזימים של הנשימה התאית</td><td>הפקת אנרגיה (ATP)</td><td class="r">בכל התאים</td></tr></tbody></table>
+<p class="ex">גנים שמתבטאים בכל התאים, כי הם קשורים לתהליכי חיים בסיסיים, נקראים <b>גנים של תחזוקה שוטפת</b> (Housekeeping genes).</p></div>
+</section>
+
+<section class="s"><span class="date">ומה אם לא? · עמוד 9</span>
+<h2>מה היה קורה אילו כל הגנים היו מתבטאים כל הזמן בכל התאים?</h2>
+<button class="rev">מה אתם חושבים?</button>
+<div class="ans cols"><div class="box"><h3>בזבוז</h3><p>ייצור חלבונים מנצל אנרגיה (ATP) וחומצות אמינו. תא שהיה מייצר את כל החלבונים, גם את אלה שאין בהם שימוש בתא הזה, היה מנצל אותם לשווא.</p></div>
+<div class="box"><h3>נזק</h3><p>גנים הקשורים לחלוקת תאים מתבטאים בדרך כלל רק בזמנים מסוימים. אם הם מתבטאים ללא הפסקה, התאים מתחלקים ללא בקרה — ונוצרים גידולים סרטניים.</p></div></div>
+</section>
+
+<section class="s"><span class="date">אמ"ע · עמוד 10</span>
+<h2>בקרה על ביטוי גנים: אמ"ע</h2>
+<div class="ama"><div class="box"><b>א</b><h3>איפה</h3><p>באילו תאים הגן מתבטא. תאים שונים מבטאים חלבונים שונים.</p></div>
+<div class="box"><b>מ</b><h3>מתי</h3><p>באיזה שלב בחיים, או בתגובה לאיזה אות. גן שמתבטא — לא מתבטא בהכרח כל הזמן.</p></div>
+<div class="box"><b>ע</b><h3>עוצמה</h3><p>כמה תעתוק ותרגום — כלומר כמה חלבון נוצר.</p></div></div>
+<div class="def"><span class="term">בקרה על ביטוי גנים</span><span class="dd">מנגנונים שקובעים איפה, מתי ובאיזו עוצמה יתבטא כל גן.</span></div>
+</section>
+
+<section class="s"><span class="date">אמ"ע בדוגמאות · עמוד 11</span>
+<h2>איפה? מתי? עוצמה?</h2>
+<div class="ama"><div class="box"><h3>איפה</h3><ul><li>קרטין — בתאי עור, לא בתאי כבד</li><li>אינסולין — בתאי β בלבלב בלבד</li></ul></div>
+<div class="box"><h3>מתי</h3><ul><li>חלבוני חלב נוצרים בבלוטות החלב אחרי לידה</li><li>עצים משירים עלים בתגובה לשינוי באורך היום</li><li>חיידקי אי קולי מייצרים אנזימים לפירוק לקטוז רק כשיש לקטוז</li></ul></div>
+<div class="box"><h3>עוצמה</h3><ul><li>אחרי אימוני כוח נוצרים בתאי השריר יותר חלבוני שריר</li><li>בתאי הכבד של אדם ששותה אלכוהול רב נוצר יותר מאנזים מסוים שמפרק אלכוהול</li></ul></div></div>
+</section>
+
+<section class="s"><span class="date">מה מפעיל את הבקרה · עמוד 12</span>
+<h2>התא לא "מחליט" — התא מגיב לאותות</h2>
+<div class="cols"><div class="box"><h3>אותות מתוך התא</h3><p>למשל: נזק ב-DNA, כמות ה-ATP בתא.</p></div>
+<div class="box"><h3>אותות מחוץ לתא</h3><p>הורמונים, אותות מתאים שכנים, וגורמים מהסביבה: אור, טמפרטורה, מזון.</p><p class="ex">דוגמה: הורמון הטסטוסטרון נקשר לקולטן בתאי עור הפנים, ובעקבות זאת מתועתקים גנים הקשורים לצמיחת שיער הפנים.</p></div></div>
+<p class="note">אות ← שרשרת תגובות בתא ← שינוי בביטוי הגן</p>
+</section>
+
+<section class="s"><span class="date">רמות בקרה · עמוד 13</span>
+<h2>הבקרה יכולה להתרחש בכל שלב בדרך מהגן לחלבון הפעיל</h2>
+<div class="chain"><span>מבנה ה-DNA (אריזה)</span><i>←</i><span>תעתוק</span><i>←</i><span>עיבוד RNA (שחבור)</span><i>←</i><span>תרגום</span><i>←</i><span>פעילות החלבון ופירוקו</span></div>
+<div class="box"><p>בהמשך היחידה נכיר כל רמה. בשלב זה חשוב לזכור: <b>בקרה אינה רק "להדליק ולכבות" גן</b> — היא יכולה לשנות גם את כמות החלבון ואת משך פעילותו.</p>
+<p class="ex">דוגמה לבקרה ברמת פעילות החלבון: ההורמון גלוקגון גורם להפעלת אנזימים שקיימים כבר בתאי הכבד, ומפרקים גליקוגן.</p></div>
+</section>
+
+<section class="s"><span class="date">חיידק ואדם · עמוד 14</span>
+<h2>ומה עם חיידק?</h2>
+<div class="cols"><div class="box"><p>חיידק הוא <b>יצור חד-תאי</b>. אילו מרכיבי אמ"ע רלוונטיים לו?</p>
+<button class="rev">תשובה</button><p class="ans"><b>מתי ועוצמה — כן.</b> החיידק מגיב לשינויים בסביבה, למשל בסוג המזון. <b>איפה — לא במובן של רקמות:</b> אין לו תאים מסוגים שונים.</p></div>
+<div class="box soft"><p>ביצורים רב-תאיים הבקרה היא גם הבסיס ל<b>התמיינות</b>: מאותה ביצית מופרית נוצרים תאי עצב, שריר ועור, כי בכל סוג תא מופעלים גנים מסוימים ומושתקים אחרים.</p>
+<p class="note">הבא בתור: בקרה בפרוקריוטים — אופרון הלקטוז</p></div></div>
+</section>
+
+<section class="s"><span class="date">עכשיו תורכם · עמוד 15</span>
+<h2>תרגול: מבוא לבקרה</h2>
+<p>במעבדה תגררו גנים לתאים שבהם הם מתבטאים, תמיינו דוגמאות לפי אמ"ע, ותענו על שאלות בגרות. בסוף: הורדת קובץ.</p>
+<a class="btn" href="lab-intro.html">לתרגול ←</a>
+</section>
+
+<section class="s"><span class="date">סיכום · עמוד 16</span>
+<h2>מה רשמנו ביומן</h2>
+<div class="cols"><div class="box"><ul>
+<li>בכל תאי הגוף אותו DNA, אבל בכל תא מתבטא רק חלק מהגנים.</li>
+<li>ביטוי גן = תעתוק ותרגום. גן שלא מתבטא עדיין נמצא בתא.</li>
+<li>בקרה על ביטוי גנים קובעת <b>א</b>יפה, <b>מ</b>תי ובאיזו <b>ע</b>וצמה יתבטא כל גן.</li>
+<li>גנים של תחזוקה שוטפת מתבטאים בכל התאים.</li>
+<li>אותות מתוך התא ומחוצה לו מפעילים את הבקרה.</li>
+<li>בקרה יכולה להתרחש בכל שלב: מבנה DNA, תעתוק, שחבור, תרגום, פעילות החלבון.</li></ul></div>
+<div class="box soft"><h3>מושגים לחזרה</h3><p>ביטוי גן · בקרה על ביטוי גנים · אמ"ע · גנים של תחזוקה שוטפת · אותות · התמיינות · תא גזע · רמות בקרה</p></div></div>
+<p class="credit">היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים. על בסיס: אורה כהנא, "בקרה על ביטוי הגנים והנדסה גנטית", המרכז הארצי למורי הביולוגיה, 2018; מצגות חגית ברגמן; חוברת שאלות בגרות ממוינות.</p>
+</section>
+
+</div>
+
+<div class="prog" id="prog"></div>
+<div class="nav"><button id="prev" aria-label="עמוד קודם">→</button><span id="cnt"></span><button id="next" aria-label="עמוד הבא">←</button></div>
+<script src="nav.js"></script></body></html>

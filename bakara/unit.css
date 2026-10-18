@@ -1,0 +1,53 @@
+/* יחידת גנטיקה מנדלית — רכיבים משותפים לשלבים 2–5 (סגנון "יומן המעבדה") */
+:root{--paper:#FBFCFA;--grid:#DDE7EE;--ink:#1F4D3A;--mut:#5C6F66;--hl:#F4D35E;--red:#B8423A;--card:#fff;--ok:#2E7D4F;--okbg:#E8F4EC;--nobg:#FBEAE8;--tbg:#FFF8DC;--tline:#C9A21A}
+*{box-sizing:border-box;margin:0;padding:0}
+body{color:var(--ink);font-family:Rubik,Arial,sans-serif;background:var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;min-height:100vh;padding-inline:16px;font-size:17px;line-height:1.6}
+.w{max-width:980px;margin:auto;padding-block:64px 48px;display:flex;flex-direction:column;gap:18px}
+h1,h2,h3{font-family:"Secular One",Rubik,sans-serif;font-weight:400;line-height:1.2}
+h1{font-size:clamp(30px,5vw,48px)}h2{font-size:clamp(22px,3.4vw,30px)}h3{font-size:21px}
+.note{font-family:"Amatic SC",cursive;font-size:30px;color:var(--red);line-height:1}
+.lead{color:var(--mut);max-width:66ch;font-size:18px}
+.L{direction:ltr;unicode-bidi:isolate;font-family:Georgia,"Times New Roman",serif;font-style:italic;font-weight:700}
+.card{background:#fff;border:2px solid var(--ink);padding:18px;display:flex;flex-direction:column;gap:10px}
+.src{font-size:14px;color:var(--mut);border-inline-start:3px solid var(--hl);padding-inline-start:8px}
+.credit{color:var(--mut);font-size:14px;border-top:1px solid var(--grid);padding-top:14px}
+button,.btn{font:inherit;font-weight:700;padding:9px 16px;border:2px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer}
+button.ghost,.btn.ghost{background:#fff;color:var(--ink)}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--hl);outline-offset:2px}
+select,input.t{font:inherit;font-size:17px;padding:6px 8px;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+table{border-collapse:collapse;width:100%}th,td{border:1.5px solid var(--ink);padding:8px;text-align:center;vertical-align:top}
+th{background:#F4F8F5;font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px}
+
+/* שלבי היחידה */
+.stages{display:flex;flex-direction:column;gap:8px}
+.stages ol{list-style:none;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.stages a{display:flex;flex-direction:column;gap:2px;text-decoration:none;color:var(--ink);background:#fff;border:2px solid var(--ink);padding:6px 8px;font-size:14px;line-height:1.25;height:100%}
+.stages a b{font-family:"Amatic SC",cursive;font-size:22px;color:var(--red);line-height:1}
+.stages a[aria-current="page"]{background:var(--ink);color:#fff}.stages a[aria-current="page"] b{color:var(--hl)}
+.bar{height:8px;background:#fff;border:1.5px solid var(--ink)}.bar i{display:block;height:100%;background:var(--hl)}
+@media (max-width:640px){.stages ol{grid-template-columns:repeat(5,minmax(0,1fr))}.stages a span{display:none}}
+
+/* מצב מורה */
+.tmode{display:flex;align-items:center;gap:8px;font-weight:700;align-self:flex-start;background:#fff;border:2px dashed var(--tline);padding:6px 12px;cursor:pointer}
+.tnote{display:none;background:var(--tbg);border:1.5px dashed var(--tline);padding:10px 14px;font-size:16px}
+body.teacher .tnote{display:block}
+.tnote::before{content:"למורה · ";font-weight:700}
+
+/* משוב */
+.fb{display:none;padding:10px 14px;border:2px solid;font-size:16px}
+.fb.ok{display:block;background:var(--okbg);border-color:var(--ok)}
+.fb.no{display:block;background:var(--nobg);border-color:var(--red)}
+.opts{display:flex;flex-direction:column;gap:6px}
+.opts label{display:flex;gap:8px;align-items:flex-start;cursor:pointer;background:#fff;border:1.5px solid var(--grid);padding:8px 10px}
+.opts label:hover{border-color:var(--ink)}
+.enrich{border-style:dashed;opacity:.92}
+.enrich .note::after{content:" · העשרה, לא לבחינה";font-family:Rubik,Arial,sans-serif;font-size:15px;color:var(--mut)}
+
+/* סרגל עליון */
+.sitebar{position:fixed;top:10px;inset-inline-end:12px;z-index:50;display:flex;gap:6px}
+.sitebar a{font:700 14px Rubik,Arial,sans-serif;color:#1F4D3A;background:#fff;border:2px solid #1F4D3A;padding:5px 10px;text-decoration:none}
+@media print{.sitebar,.tmode,.stages,button{display:none!important}body{background:#fff}.card{break-inside:avoid}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
