@@ -38,7 +38,7 @@ svg.ped{width:min(100%,440px);height:auto;background:#fff;border:2px solid var(-
 <main class="w">
 <span class="note">מעבדה ותרגול 2 · אחרי מצגת 2</span>
 <h1>מעבדת שושלות: איך מחלה עוברת במשפחה</h1>
-<p class="lead">קוראים שושלת, קובעים אם האלל למחלה דומיננטי או רצסיבי, גוררים גנוטיפ לכל פרט ומחשבים הסתברויות. בסוף: שאלות, התאמת מושגים והורדת קובץ.</p>
+<p class="lead">קוראים שושלת, קובעים אם האלל למחלה דומיננטי או רצסיבי, גוררים גנוטיפ לכל פרט ומחשבים הסתברויות. בכל שלב <b>ניסיון אחד</b>: אחרי הבדיקה השלב ננעל ומוצג הפתרון. בסוף: שאלות, התאמת מושגים והורדת קובץ.</p>
 <p class="src">שושלות והורשה באדם — לא בבגרות תשפ״ז · דרך ההורשה של תכונה אחת — בבגרות ✓</p>
 <label class="tmode" id="tmode"><input type="checkbox"> מצב מורה</label>
 <p class="tnote">סדר מומלץ: סיסטיק פיברוזיס (שני דורות) ← PKU (שלושה דורות, פרט שנכנס למשפחה) ← לבקנות (בגרות 2025) ← אנמיה חרמשית (נשאים ומלריה) ← אכונדרופלזיה (דומיננטי ואלל לטלי). בפרטים שאי אפשר לקבוע את הגנוטיפ שלהם בוודאות, הנכון הוא <span class="L">A_</span>.</p>
@@ -141,38 +141,40 @@ function start(k) {
  radios($('s2a'), 's2a', ['רצסיבי', 'דומיננטי']); radios($('s2b'), 's2b', C.why);
  document.querySelector('.step[data-n="1"]').hidden = false; setTimeout(() => $('data').scrollIntoView({ behavior: 'smooth' }), 100);
 }
-$('s1c').onclick = () => { const v = [...$('s1o').querySelectorAll('input:checked')].map(i => i.value), want = inds().filter(d => d.a).map(d => d.id), ok = sameSet(v, want);
- fb($('s1f'), ok, ok ? `נכון. החולים: ${want.join(', ')} (צורה מלאה).` : 'פרט חולה מסומן בצורה מלאה: ריבוע מלא (זכר) או עיגול מלא (נקבה).');
- Lab.rec(`${C.dis} — שלב 1: חולים`, ok, v.join(',')); if (ok) Lab.solve(1) };
+$('s1c').onclick = () => { const v = [...$('s1o').querySelectorAll('input:checked')].map(i => i.value), want = inds().filter(d => d.a).map(d => d.id);
+ if (!v.length) return fb($('s1f'), false, 'סמנו את הפרטים החולים.');
+ const ok = sameSet(v, want);
+ fb($('s1f'), ok, ok ? `✓ נכון. החולים: ${want.join(', ')} (צורה מלאה).` : `✘ לא מדויק. <b>החולים הם: ${want.join(', ')}</b>. פרט חולה מסומן בצורה מלאה: ריבוע מלא (זכר) או עיגול מלא (נקבה).`);
+ Lab.rec(`${C.dis} — שלב 1: חולים`, ok, v.join(','), want.join(','), 'צורה מלאה = פרט בעל התכונה.'); Lab.finish(1) };
 $('s2c').onclick = () => { const a = picked('s2a'), b = picked('s2b'), wantA = C.dom ? 1 : 0;
  if (a < 0 || b < 0) return fb($('s2f'), false, 'ענו על שתי השאלות.');
- if (a !== wantA) { Lab.rec(`${C.dis} — שלב 2: דרך ההורשה`, false, a ? 'דומיננטי' : 'רצסיבי'); return fb($('s2f'), false, 'לא. חפשו בשושלת זוג הורים בפנוטיפ אחד שנולד להם ילד בפנוטיפ האחר.') }
- if (b !== 0) { Lab.rec(`${C.dis} — שלב 2: דרך ההורשה`, false, C.why[b]); return fb($('s2f'), false, C.whyNo[b]) }
- fb($('s2f'), true, C.dom ? 'נכון. לשני הורים חולים נולד ילד בריא: ההורים נושאים אלל לפנוטיפ התקין שלא מתבטא בהם. לכן האלל למחלה דומיננטי.' : 'נכון. לשני הורים בריאים נולד ילד חולה: שני ההורים נושאים את האלל למחלה בלי שהוא מתבטא בהם. לכן האלל למחלה רצסיבי.');
- Lab.rec(`${C.dis} — שלב 2: דרך ההורשה`, true, C.dom ? 'דומיננטי' : 'רצסיבי'); Lab.solve(2) };
+ const ok = a === wantA && b === 0, mode = C.dom ? 'דומיננטי' : 'רצסיבי';
+ const why = C.dom ? 'לשני הורים חולים נולד ילד בריא: ההורים נושאים אלל לפנוטיפ התקין שלא מתבטא בהם. לכן האלל למחלה דומיננטי.' : 'לשני הורים בריאים נולד ילד חולה: שני ההורים נושאים את האלל למחלה בלי שהוא מתבטא בהם. לכן האלל למחלה רצסיבי.';
+ fb($('s2f'), ok, ok ? '✓ נכון. ' + why : `✘ ${a !== wantA ? `האלל למחלה <b>${mode}</b>.` : C.whyNo[b]}<br><b>הנימוק הנכון:</b> ${C.why[0]}. ${why}`);
+ Lab.rec(`${C.dis} — שלב 2: דרך ההורשה`, ok, `${a ? 'דומיננטי' : 'רצסיבי'} · ${C.why[b]}`, `${mode} · ${C.why[0]}`, why); Lab.finish(2) };
 document.querySelector('.step[data-n="3"]').addEventListener('open', () => {
  $('s3l').innerHTML = C.dom ? `מקרא: ${L(U)} = אלל ל${C.dis} (דומיננטי) · ${L(l)} = אלל לפנוטיפ תקין` : `מקרא: ${L(U)} = אלל לפנוטיפ תקין (דומיננטי) · ${L(l)} = אלל ל${C.dis} (רצסיבי)`;
  $('s3t').innerHTML = '<b>גנוטיפים:</b>' + ['AA', 'Aa', 'aa', 'A_'].map(g => chip(g, g)).join('');
- $('s3i').innerHTML = inds().map(d => `<div class="ind"><b>${d.s === 'm' ? '♂ זכר' : '♀ נקבה'} ${d.id}</b><span>${d.a ? (C.dom ? 'חולה' : 'חולה') : 'בריא' + (d.s === 'f' ? 'ה' : '')}</span>${slot('g' + d.id)}</div>`).join('');
+ $('s3i').innerHTML = inds().map(d => `<div class="ind"><b>${d.s === 'm' ? '♂ זכר' : '♀ נקבה'} ${d.id}</b><span>${d.a ? 'חולה' : 'בריא' + (d.s === 'f' ? 'ה' : '')}</span>${slot('g' + d.id)}<span class="ri" id="rg${d.id}"></span></div>`).join('');
 });
 const G = { D: 'AA', H: 'Aa', R: 'aa', U: 'A_' };
 $('s3c').onclick = () => {
- let wrong = [], empty = 0, close = [];
- inds().forEach(d => { const s = $('g' + d.id), v = s.dataset.v || ''; if (!v) { empty++; return }
-  const want = G[C.g[d.id]], ok = v === want; s.classList.remove('ok', 'no'); s.classList.add(ok ? 'ok' : 'no');
-  if (!ok) { wrong.push(d.id); if (want === 'A_' && (v === 'AA' || v === 'Aa')) close.push(d.id) } });
+ const empty = inds().filter(d => !$('g' + d.id).dataset.v).length;
  if (empty) return fb($('s3f'), false, empty === 1 ? 'יש פרט אחד בלי גנוטיפ.' : `יש ${empty} פרטים בלי גנוטיפ.`);
- const txt = inds().map(d => `${d.id}:${$('g' + d.id).dataset.v}`).join(' ');
- if (!wrong.length) { fb($('s3f'), true, 'נכון! כל הגנוטיפים במקום.' + (C.dom ? ' שימו לב: כל החולים Aa, כי AA לטלי.' : '')); Lab.rec(`${C.dis} — שלב 3: גנוטיפים`, true, txt); Lab.solve(3); return }
- let msg = wrong.length === 1 ? `פרט אחד לא נכון (${wrong[0]}).` : `${wrong.length} פרטים לא נכונים (${wrong.join(', ')}).`;
- if (close.length) msg += ` ${close.length === 1 ? 'בפרט' : 'בפרטים'} ${close.join(', ')} אי אפשר לדעת בוודאות אם הם הומוזיגוטים או הטרוזיגוטים — כתבו ${L('A_')}.`;
- else msg += ' רמז: התחילו מהחולים, ואחר כך בדקו מה כל הורה העביר לילדיו.';
- fb($('s3f'), false, msg); Lab.rec(`${C.dis} — שלב 3: גנוטיפים`, false, txt);
+ const wrong = [];
+ inds().forEach(d => { const s = $('g' + d.id), want = G[C.g[d.id]], ok = s.dataset.v === want; s.classList.add(ok ? 'ok' : 'no'); if (!ok) { wrong.push(d.id); $('rg' + d.id).textContent = 'הנכון: ' + want } });
+ const txt = inds().map(d => `${d.id}:${$('g' + d.id).dataset.v}`).join(' '), right = inds().map(d => `${d.id}:${G[C.g[d.id]]}`).join(' ');
+ const ok = !wrong.length;
+ fb($('s3f'), ok, ok ? '✓ נכון! כל הגנוטיפים במקום.' + (C.dom ? ' שימו לב: כל החולים Aa, כי AA לטלי.' : '')
+  : `✘ ${wrong.length === 1 ? 'פרט אחד לא נכון' : wrong.length + ' פרטים לא נכונים'} (${wrong.join(', ')}). ליד כל פרט כתוב הגנוטיפ הנכון.<br>כשאי אפשר לדעת בוודאות אם הפרט הומוזיגוט או הטרוזיגוט כותבים ${L('A_')}. מתחילים מהחולים, ובודקים מה כל הורה העביר לילדיו.`);
+ Lab.rec(`${C.dis} — שלב 3: גנוטיפים`, ok, txt, right, 'מתחילים מהחולים; מה שלא ידוע בוודאות — A_.'); Lab.finish(3);
 };
 document.querySelector('.step[data-n="4"]').addEventListener('open', () => { $('s4q').textContent = C.pq; $('s4in').value = '' });
-$('s4c').onclick = () => { const raw = $('s4in').value, v = parseFrac(raw), ok = Math.abs(v - C.pa) < .005;
- fb($('s4f'), ok, ok ? C.pok : 'עדיין לא. ' + C.phint); Lab.rec(`${C.dis} — שלב 4: הסתברות`, ok, raw);
- if (ok) { $('s4f').innerHTML += '<br><b>סיימתם את המשפחה הזו. בחרו משפחה אחרת למעלה, או המשיכו לשאלות.</b>'; Lab.solve(4) } };
+$('s4c').onclick = () => { const raw = $('s4in').value.trim(), v = parseFrac(raw);
+ if (!raw || isNaN(v)) return fb($('s4f'), false, 'כתבו תשובה (למשל 1/4).');
+ const ok = Math.abs(v - C.pa) < .005;
+ fb($('s4f'), ok, (ok ? '✓ ' + C.pok : `✘ לא נכון. <b>התשובה הנכונה: ${fr(C.pa)}</b>. ` + why(C.pok)) + '<br><b>סיימתם את המשפחה הזו. בחרו משפחה אחרת למעלה, או המשיכו לשאלות.</b>');
+ Lab.rec(`${C.dis} — שלב 4: הסתברות`, ok, raw, fr(C.pa), C.pok.replace(/<[^>]+>/g, '')); Lab.finish(4) };
 
 const QS = [
  {src:'חוברת שאלות ממוינות 4א, שאלה 11', stem:'כשמתגלה שאב הוא נשא של מחלת טיי-זקס (מחלה רצסיבית), ממליצים לבדוק גם את האם. <b>מדוע?</b>',

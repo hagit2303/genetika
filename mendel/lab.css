@@ -44,7 +44,7 @@ table.pun2 .corner{font:500 13px Rubik,Arial,sans-serif;direction:rtl;color:var(
 table.pun2 td .slot{min-width:38px;height:40px;font-size:19px;margin:1px}
 
 /* דוח להורדה */
-#report{position:fixed;left:0;top:0;visibility:hidden;z-index:-1;pointer-events:none;width:760px;background:#fff;color:#1F4D3A;font-family:Arial,sans-serif;padding:24px;direction:rtl}
+#report{position:fixed;left:0;top:0;display:none;z-index:-1;pointer-events:none;width:760px;background:#fff;color:#1F4D3A;font-family:Arial,sans-serif;padding:24px;direction:rtl}
 #report h1{font-family:Arial,sans-serif;font-weight:700;font-size:24px;margin-bottom:6px}
 #report .rr{border-bottom:1px solid #DDE7EE;padding:5px 0;font-size:14px;display:flex;gap:8px}
 #report .rr b{min-width:180px}
@@ -59,3 +59,10 @@ table.pun2 td .slot{min-width:38px;height:40px;font-size:19px;margin:1px}
 .rub{display:flex;flex-direction:column;gap:6px;background:#FFFBEA;border:1.5px dashed var(--tline);padding:10px}
 .rub label{display:flex;gap:8px;align-items:flex-start}
 .rub details summary{cursor:pointer;font-weight:700}
+.opts label.right{border-color:var(--ok);background:var(--okbg)}.opts label.wrong{border-color:var(--red);background:var(--nobg)}
+.step.locked .sn::after{content:"  🔒";}
+.chip.frozen{cursor:default;opacity:.6}
+.mi{border-inline-start:4px solid var(--red);background:#fff;padding:8px 12px;margin-bottom:8px}.mi p{margin:2px 0}.ri{color:var(--ok);font-weight:700}
+/* hidden תמיד מסתיר — גם רכיבים שמוגדרים display:flex (המחוון לא נראה לפני כתיבה) */
+[hidden]{display:none!important}
+.rub label{flex-wrap:wrap;min-width:0}.rub label>*{min-width:0}

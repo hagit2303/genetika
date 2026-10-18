@@ -44,7 +44,7 @@
 <main class="w">
 <span class="note">מעבדה ותרגול 3 · אחרי מצגת 3</span>
 <h1>מעבדת סוגי דם: מהבדיקה ועד התורשה</h1>
-<p class="lead">בודקים סוג דם בעזרת נוגדנים, קובעים גנוטיפים, בונים טבלת פאנט ומחשבים הסתברויות. בסוף: שאלות, התאמת מושגים והורדת קובץ.</p>
+<p class="lead">בודקים סוג דם בעזרת נוגדנים, קובעים גנוטיפים, בונים טבלת פאנט ומחשבים הסתברויות. בכל שלב <b>ניסיון אחד</b>: אחרי הבדיקה השלב ננעל ומוצג הפתרון. בסוף: שאלות, התאמת מושגים והורדת קובץ.</p>
 <p class="src">סוגי דם, גן מרובה אללים וקו-דומיננטיות — לא בבגרות תשפ״ז</p>
 <label class="tmode" id="tmode"><input type="checkbox"> מצב מורה</label>
 <p class="tnote">בשלב 1 התלמידים מטפטפים כל נוגדן לבאר. אם טפטפו את שני הנוגדנים לאותה דגימה בסדר הפוך — זה בסדר, הבדיקה מתחשבת בנוגדן ולא במיקום.</p>
@@ -133,28 +133,30 @@ document.addEventListener('lab:drop', e => {
  const agg = (v === 'antiA' && t.includes('A')) || (v === 'antiB' && t.includes('B'));
  w.classList.add(agg ? 'agg' : 'smooth'); w.innerHTML = (v === 'antiA' ? 'נגד A' : 'נגד B') + '<br>' + (agg ? 'התגבשות' : 'אין');
 });
+const fam = () => F.name.slice(F.name.indexOf(' ') + 1);
+const setA = (id, v) => { const e = $(id); e.dataset.v = v; e.innerHTML = AL[v] };
 $('s1c').onclick = () => {
- let msg = [], ok = true;
- P().forEach(([id, who, g]) => { const v = [0, 1].map(i => $('w' + id + i).dataset.v || '');
-  if (!sameSet(v, ['antiA', 'antiB'])) { ok = false; msg.push(`${who}: צריך נוגדן נגד A בבאר אחת ונגד B בשנייה`); return }
-  const sel = $('t' + id).value; if (sel !== typeOf(g)) { ok = false; msg.push(`${who}: ${sel ? 'סוג הדם לא מתאים לתוצאות' : 'בחרו סוג דם'}`) } });
- fb($('s1f'), ok, ok ? 'נכון! התגבשות עם נוגדן נגד A ← יש אנטיגן A. התגבשות עם נוגדן נגד B ← יש אנטיגן B. בלי התגבשות בכלל ← O.' : msg.join('<br>'));
- Lab.rec('שלב 1: בדיקת סוג דם', ok, P().map(([id, w]) => `${w}: ${$('t' + id).value || '?'}`).join(' · ')); if (ok) Lab.solve(1);
+ const miss = P().filter(([id]) => !sameSet([0, 1].map(i => $('w' + id + i).dataset.v || ''), ['antiA', 'antiB']));
+ if (miss.length) return fb($('s1f'), false, 'בכל דגימה: נוגדן נגד A בבאר אחת ונוגדן נגד B בשנייה.');
+ if (P().some(([id]) => !$('t' + id).value)) return fb($('s1f'), false, 'בחרו סוג דם לכל דגימה.');
+ const wrong = P().filter(([id, , g]) => $('t' + id).value !== typeOf(g)), ok = !wrong.length;
+ const right = P().map(([, w, g]) => `${w}: ${typeOf(g)}`).join(' · ');
+ fb($('s1f'), ok, (ok ? '✓ נכון! ' : `✘ לא נכון אצל: ${wrong.map(x => x[1]).join(', ')}. <b>התשובה הנכונה: ${right}</b>.<br>`) + 'התגבשות עם נוגדן נגד A ← יש אנטיגן A. התגבשות עם נוגדן נגד B ← יש אנטיגן B. בלי התגבשות בכלל ← O.');
+ Lab.rec(`${fam()} — שלב 1: בדיקת סוג דם`, ok, P().map(([id, w]) => `${w}: ${$('t' + id).value}`).join(' · '), right, 'התגבשות = יש על התאים את האנטיגן שהנוגדן נקשר אליו.'); Lab.finish(1);
 };
 document.querySelector('.step[data-n="2"]').addEventListener('open', () => {
  $('s2t').innerHTML = '<b>אללים:</b>' + ['A', 'B', 'o'].map(a => chip(a, AL[a])).join('');
  $('s2').innerHTML = P().map(([id, who, g]) => `<div class="person"><b>${who}</b><span>סוג דם ${typeOf(g)}</span><div class="row">${slot('a' + id + '0')}${slot('a' + id + '1')}</div></div>`).join('');
 });
 $('s2c').onclick = () => {
- let bad = [], amb = [];
- P().forEach(([id, who, g]) => { const v = [0, 1].map(i => $('a' + id + i).dataset.v || ''); if (v.some(x => !x)) { bad.push(who + ' (חסר אלל)'); return }
-  const ok = sameSet(v, g.split('')); [0, 1].forEach(i => $('a' + id + i).classList.add(ok ? 'ok' : 'no'));
-  if (!ok) { if (typeOf(v.join('')) === typeOf(g)) amb.push(who); else bad.push(who) } });
- const ok = !bad.length && !amb.length;
- let m = ok ? 'נכון! ' + F.why : '';
- if (bad.length) m += `לא מתאים לסוג הדם: ${bad.join(', ')}. `;
- if (amb.length) m += `${amb.join(', ')}: הגנוטיפ מתאים לסוג הדם, אבל בדקו מה עבר לילד. ${'הילד קיבל אלל אחד מכל הורה.'}`;
- fb($('s2f'), ok, m); Lab.rec('שלב 2: גנוטיפים', ok, P().map(([id, w]) => `${w}: ${plain(gtxt([0, 1].map(i => $('a' + id + i).dataset.v || '').join('')) || '?')}`).join(' · ')); if (ok) Lab.solve(2);
+ if (P().some(([id]) => [0, 1].some(i => !$('a' + id + i).dataset.v))) return fb($('s2f'), false, 'השלימו שני אללים לכל אחד מבני המשפחה.');
+ const wrong = [];
+ P().forEach(([id, who, g]) => { const v = [0, 1].map(i => $('a' + id + i).dataset.v), okp = sameSet(v, g.split('')); [0, 1].forEach(i => $('a' + id + i).classList.add(okp ? 'ok' : 'no')); if (!okp) wrong.push(who) });
+ const ok = !wrong.length, right = P().map(([, w, g]) => `${w}: ${plain(gtxt(g))}`).join(' · ');
+ const given = P().map(([id, w]) => `${w}: ${plain(gtxt([0, 1].map(i => $('a' + id + i).dataset.v).join('')))}`).join(' · ');
+ if (!ok) P().forEach(([id, , g]) => { setA('a' + id + '0', g[0]); setA('a' + id + '1', g[1]) });
+ fb($('s2f'), ok, ok ? '✓ נכון! ' + F.why : `✘ לא נכון אצל: ${wrong.join(', ')}. עכשיו מוצגים הגנוטיפים הנכונים.<br>${F.why}`);
+ Lab.rec(`${fam()} — שלב 2: גנוטיפים`, ok, given, right, plain(F.why)); Lab.finish(2);
 };
 document.querySelector('.step[data-n="3"]').addEventListener('open', () => {
  $('s3t').innerHTML = '<b>♀ ביציות:</b>' + F.m.split('').map(a => chip(a, AL[a])).join('') + '<b style="margin-inline-start:12px">♂ זרע:</b>' + F.f.split('').map(a => chip(a, AL[a])).join('') + '<b style="margin-inline-start:12px">אללים:</b>' + ['A', 'B', 'o'].map(a => chip(a, AL[a])).join('');
@@ -162,22 +164,24 @@ document.querySelector('.step[data-n="3"]').addEventListener('open', () => {
  ['00', '01', '10', '11'].forEach(x => $('x' + x).innerHTML = slot('x' + x + 'a') + slot('x' + x + 'b'));
 });
 $('s3c').onclick = () => {
- const R = slotVals('#r0,#r1'), Cc = slotVals('#c0,#c1');
- if ([...R, ...Cc].some(v => !v)) return fb($('s3f'), false, 'השלימו את ארבע הכותרות.');
- const okH = sameSet(R, F.m.split('')) && sameSet(Cc, F.f.split('')), sw = !okH && sameSet(R, F.f.split('')) && sameSet(Cc, F.m.split(''));
- if (!okH && !sw) { Lab.rec('שלב 3: טבלת פאנט', false, 'כותרות'); return fb($('s3f'), false, 'הכותרות לא תואמות לגמטות של ההורים.') }
- let wrong = 0, empty = 0;
- ['00', '01', '10', '11'].forEach(x => { const v = slotVals(`#x${x}a,#x${x}b`); if (v.some(e => !e)) { empty++; return }
-  const ok = sameSet(v, [R[+x[0]], Cc[+x[1]]]); if (!ok) wrong++; [`x${x}a`, `x${x}b`].forEach(id => $(id).classList.add(ok ? 'ok' : 'no')) });
- if (empty) return fb($('s3f'), false, (empty === 1 ? 'יש משבצת אחת לא מלאה.' : `יש ${empty} משבצות לא מלאות.`));
- if (wrong) { Lab.rec('שלב 3: טבלת פאנט', false, `${wrong} שגויות`); return fb($('s3f'), false, `${wrong === 1 ? 'משבצת אחת לא נכונה' : wrong + ' משבצות לא נכונות'}.`) }
- const types = {}; ['00', '01', '10', '11'].forEach(x => { const t = typeOf(slotVals(`#x${x}a,#x${x}b`).join('')); types[t] = (types[t] || 0) + 1 });
- fb($('s3f'), true, (sw ? 'נכון (ההורים בכותרות הפוכות — בתוצאה זה לא משנה). ' : 'נכון! ') + 'סוגי הדם בצאצאים: ' + Object.entries(types).map(([t, n]) => `${t}: ${n}/4`).join(' · '));
- Lab.rec('שלב 3: טבלת פאנט', true, Object.entries(types).map(([t, n]) => `${t}:${n}`).join(' ')); Lab.solve(3);
+ const R = slotVals('#r0,#r1'), Cc = slotVals('#c0,#c1'), cells = ['00', '01', '10', '11'].map(x => slotVals(`#x${x}a,#x${x}b`));
+ if ([...R, ...Cc].some(v => !v) || cells.some(v => v.some(e => !e))) return fb($('s3f'), false, 'השלימו את כל הטבלה: ארבע כותרות ושני אללים בכל משבצת.');
+ const m = F.m.split(''), f = F.f.split(''), okH = sameSet(R, m) && sameSet(Cc, f), sw = !okH && sameSet(R, f) && sameSet(Cc, m);
+ let wrong = 0;
+ ['00', '01', '10', '11'].forEach((x, k) => { const okc = (okH || sw) && sameSet(cells[k], [R[+x[0]], Cc[+x[1]]]); if (!okc) wrong++; [`x${x}a`, `x${x}b`].forEach(id => $(id).classList.add(okc ? 'ok' : 'no')) });
+ const ok = (okH || sw) && !wrong;
+ if (!ok) { setA('r0', m[0]); setA('r1', m[1]); setA('c0', f[0]); setA('c1', f[1]); ['00', '01', '10', '11'].forEach(x => { setA(`x${x}a`, m[+x[0]]); setA(`x${x}b`, f[+x[1]]) }) }
+ const types = {}; ['00', '01', '10', '11'].forEach(x => { const t = typeOf(m[+x[0]] + f[+x[1]]); types[t] = (types[t] || 0) + 1 });
+ const res = Object.entries(types).map(([t, n]) => `${t}: ${n}/4`).join(' · ');
+ fb($('s3f'), ok, (ok ? '✓ ' + (sw ? 'נכון (ההורים בכותרות הפוכות — בתוצאה זה לא משנה). ' : 'נכון! ') : `✘ ${!(okH || sw) ? 'הכותרות לא תאמו לגמטות של ההורים.' : (wrong === 1 ? 'משבצת אחת לא נכונה.' : wrong + ' משבצות לא נכונות.')} בטבלה מוצג עכשיו הפתרון הנכון.<br>`) + 'סוגי הדם בצאצאים: ' + res);
+ Lab.rec(`${fam()} — שלב 3: טבלת פאנט`, ok, ok ? res : `${wrong} שגויות`, res, 'בכל משבצת: אלל מהביצית ואלל מתא הזרע.'); Lab.finish(3);
 };
 document.querySelector('.step[data-n="4"]').addEventListener('open', () => { $('s4q').textContent = F.pq; $('s4in').value = '' });
-$('s4c').onclick = () => { const raw = $('s4in').value, v = parseFrac(raw), ok = Math.abs(v - F.pa) < .005;
- fb($('s4f'), ok, ok ? F.pok + '<br><b>סיימתם את המשפחה הזו. אפשר לבחור משפחה אחרת או להמשיך לשאלות.</b>' : 'עדיין לא. היעזרו בטבלת הפאנט: כמה משבצות מתוך 4?'); Lab.rec('שלב 4: הסתברות', ok, raw); if (ok) Lab.solve(4) };
+$('s4c').onclick = () => { const raw = $('s4in').value.trim(), v = parseFrac(raw);
+ if (!raw || isNaN(v)) return fb($('s4f'), false, 'כתבו תשובה (למשל 1/4 או 0).');
+ const ok = Math.abs(v - F.pa) < .005;
+ fb($('s4f'), ok, (ok ? '✓ ' + F.pok : `✘ לא נכון. <b>התשובה הנכונה: ${fr(F.pa)}</b>. ` + why(F.pok)) + '<br><b>סיימתם את המשפחה הזו. אפשר לבחור משפחה אחרת או להמשיך לשאלות.</b>');
+ Lab.rec(`${fam()} — שלב 4: הסתברות`, ok, raw, fr(F.pa), plain(F.pok)); Lab.finish(4) };
 
 const QS = [
  {src:'ברוח בגרות 2020 ומבחן רבעון ג (עליזה, עינה וחגית)', stem:'לאם סוג דם A, ולבנה סוג דם O. <b>מה הגנוטיפ של האם?</b>',

@@ -38,7 +38,7 @@
 <main class="w">
 <span class="note">יחידה 2 · תרגול אחרי מצגת המבוא</span>
 <h1>תרגול: מבוא לבקרה על ביטוי גנים</h1>
-<p class="lead">גוררים כל כרטיס למקום שלו (בעכבר, באצבע, או בלחיצה על הכרטיס ואחר כך על המקום). אחר כך שאלות בגרות, התאמת מושגים והורדת קובץ להגשה.</p>
+<p class="lead">גוררים כל כרטיס למקום שלו (בעכבר, באצבע, או בלחיצה על הכרטיס ואחר כך על המקום). בכל משימה <b>ניסיון אחד</b>: אחרי הבדיקה היא ננעלת ומוצג הפתרון. אחר כך שאלות בגרות, התאמת מושגים והורדת קובץ להגשה.</p>
 <p class="src">בבגרות תשפ״ז ✓ · מושגים: ביטוי גן, בקרה על ביטוי גנים, אמ"ע, גנים של תחזוקה שוטפת, רמות בקרה, התמיינות, תא גזע</p>
 <label class="tmode" id="tmode"><input type="checkbox"> מצב מורה</label>
 
@@ -85,13 +85,17 @@ function sorter(pool, bins, items, cats) {
  $(pool).innerHTML = shuffle(items.slice()).map(([id, t]) => card(id, t)).join('');
 }
 function checkSort(bins, items, out, title, done, n) {
- const want = Object.fromEntries(items.map(([id, , k]) => [id, k])); let wrong = 0, left = 0;
- document.querySelectorAll(`#${bins} .chrom, #${bins.replace('b', 'p')} .chrom`).forEach(c => {
-  const bin = c.closest('.bin'); c.classList.remove('ok', 'no');
-  if (!bin) { left++; return } const ok = bin.dataset.k === want[c.dataset.v]; c.classList.add(ok ? 'ok' : 'no'); if (!ok) wrong++ });
- if (left) return fb($(out), false, `נשארו ${left} כרטיסים שלא מוינו.`);
- fb($(out), !wrong, !wrong ? done : `${wrong === 1 ? 'כרטיס אחד לא במקום (מסומן באדום)' : wrong + ' כרטיסים לא במקום (מסומנים באדום)'}. גררו אותם למקום אחר ובדקו שוב.`);
- Lab.rec(title, !wrong, wrong ? `${wrong} טעויות` : 'הכול במקום'); if (!wrong) Lab.solve(n);
+ const want = Object.fromEntries(items.map(([id, , k]) => [id, k])), names = Object.fromEntries(items.map(([id, t]) => [id, t]));
+ const cards = [...document.querySelectorAll(`#${bins} .chrom, #${bins.replace('b', 'p')} .chrom`)];
+ const left = cards.filter(c => !c.closest('.bin')).length;
+ if (left) return fb($(out), false, left === 1 ? 'נשאר כרטיס אחד שלא מוין.' : `נשארו ${left} כרטיסים שלא מוינו.`);
+ const wrong = [];
+ cards.forEach(c => { const bin = c.closest('.bin'), ok = bin.dataset.k === want[c.dataset.v]; c.classList.add(ok ? 'ok' : 'no');
+  if (!ok) { wrong.push(`${names[c.dataset.v]} ← ${document.querySelector(`#${bins} .bin[data-k="${want[c.dataset.v]}"] h4`).textContent}`);
+   document.querySelector(`#${bins} .bin[data-k="${want[c.dataset.v]}"]`).appendChild(c); c.insertAdjacentHTML('beforeend', ' <small>(הועבר למקום הנכון)</small>') } });
+ const ok = !wrong.length;
+ fb($(out), ok, ok ? '✓ ' + done : `✘ ${wrong.length === 1 ? 'כרטיס אחד לא היה במקום. הוא הועבר עכשיו למקום הנכון (מסומן באדום)' : wrong.length + ' כרטיסים לא היו במקום. הם הועברו עכשיו למקום הנכון (מסומנים באדום)'}.<br>${done.replace(/^נכון! /, '')}`);
+ Lab.rec(title, ok, ok ? 'הכול במקום' : `${wrong.length} טעויות`, wrong.join(' · '), done.replace(/^נכון! /, '')); Lab.finish(n);
 }
 const I1 = [['hb','המוגלובין','rbc'],['ins','אינסולין','beta'],['ker','קרטין','skin'],['myo','מיוזין (בכמות גדולה)','muscle'],['resp','אנזימים של הנשימה התאית','all'],['ribo','חלבוני ריבוזום','all']];
 const C1 = [['rbc','תאים שמהם מתפתחים תאי דם אדומים'],['beta','תאי β בלבלב'],['skin','תאי עור'],['muscle','תאי שריר'],['all','כל התאים']];

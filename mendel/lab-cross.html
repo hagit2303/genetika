@@ -37,7 +37,7 @@
 <main class="w">
 <span class="note">מעבדה ותרגול 1 · אחרי מצגת 1</span>
 <h1>מעבדת הכלאות: מהתכונה ועד הצאצאים</h1>
-<p class="lead">עובדים כמו מנדל, צעד אחרי צעד. כל שלב נפתח אחרי שהקודם נכון. גוררים פריטים בעכבר או באצבע, או לוחצים על פריט ואחר כך על המקום שלו. בסוף: שאלות בגרות, התאמת מושגים והורדת קובץ להגשה.</p>
+<p class="lead">עובדים כמו מנדל, צעד אחרי צעד. בכל שלב יש <b>ניסיון אחד</b>: אחרי הבדיקה השלב ננעל, ומוצג הפתרון הנכון — וממשיכים לשלב הבא. גוררים פריטים בעכבר או באצבע, או לוחצים על פריט ואחר כך על המקום שלו. בסוף: שאלות בגרות, התאמת מושגים והורדת קובץ להגשה.</p>
 <p class="src">בבגרות תשפ״ז ✓ · מושגים: תכונה, פנוטיפ, אלל דומיננטי ורצסיבי, גנוטיפ, הומוזיגוט, הטרוזיגוט, מיוזה, גמטה, הפריה, P, F₁, F₂, הכלאת מבחן</p>
 <label class="tmode" id="tmode"><input type="checkbox"> מצב מורה</label>
 <p class="tnote">אפשר לעבור על תרחיש אחד יחד בכיתה (מומלץ: כלניות, שאלת הבגרות), ולתת את השניים האחרים לעבודה עצמית. הדוח בסוף מתעד כל שלב, את מספר הניסיונות ואת התשובה.</p>
@@ -192,24 +192,27 @@ function start(k) {
  document.querySelector('.step[data-n="1"]').hidden = false;
  setTimeout(() => $('data').scrollIntoView({ behavior: 'smooth' }), 100);
 }
-// שלב 1
-$('s1c').onclick = () => { const k = picked('s1'), ok = k === 0;
- fb($('s1f'), ok, ok ? `נכון. התכונה: <b>${S.trait}</b>.` : k < 0 ? 'בחרו תשובה.' : `"${S.traitOpts[k]}" ${k === 2 ? 'הוא היצור, לא התכונה.' : 'הוא פנוטיפ או חלק מהתכונה. התכונה היא המאפיין שמשתנה בין פרטים.'}`);
- if (k >= 0) Lab.rec('שלב 1: התכונה', ok, S.traitOpts[k]); if (ok) Lab.solve(1) };
+// שלב 1 — ניסיון אחד: אחרי הבדיקה השלב ננעל, ומוצג הפתרון
+const setSlot = (id, v) => { const e = $(id); e.dataset.v = v; e.textContent = v };
+$('s1c').onclick = () => { const k = picked('s1'); if (k < 0) return fb($('s1f'), false, 'בחרו תשובה.');
+ const ok = k === 0;
+ fb($('s1f'), ok, ok ? `✓ נכון. התכונה: <b>${S.trait}</b>.` : `✘ "${S.traitOpts[k]}" ${k === 2 ? 'הוא היצור, לא התכונה.' : 'הוא פנוטיפ או חלק מהתכונה.'} <br><b>התשובה הנכונה: ${S.trait}</b> — התכונה היא המאפיין שמשתנה בין פרטים.`);
+ Lab.rec('שלב 1: התכונה', ok, S.traitOpts[k], S.trait, 'התכונה היא המאפיין; הצורות שלה הן הפנוטיפים.'); Lab.finish(1) };
 // שלב 2
-$('s2c').onclick = () => { const v = [...$('s2o').querySelectorAll('input:checked')].map(i => i.value), ok = sameSet(v, S.phen);
- fb($('s2f'), ok, ok ? `נכון. הפנוטיפים: ${S.phen.join(' ו')}.` : v.length !== 2 ? 'בחרו בדיוק שני פנוטיפים.' : 'אחד הפנוטיפים לא שייך לתכונה הזו. חזרו לנתונים.');
- Lab.rec('שלב 2: הפנוטיפים', ok, v.join(', ')); if (ok) Lab.solve(2) };
+$('s2c').onclick = () => { const v = [...$('s2o').querySelectorAll('input:checked')].map(i => i.value);
+ if (v.length !== 2) return fb($('s2f'), false, 'בחרו בדיוק שני פנוטיפים.');
+ const ok = sameSet(v, S.phen);
+ fb($('s2f'), ok, ok ? `✓ נכון. הפנוטיפים: ${S.phen.join(' ו')}.` : `✘ אחד הפנוטיפים לא שייך לתכונה. <b>התשובה הנכונה: ${S.phen.join(' ו')}</b>.`);
+ Lab.rec('שלב 2: הפנוטיפים', ok, v.join(', '), S.phen.join(', '), 'שני הפנוטיפים הם שתי הצורות של אותה תכונה.'); Lab.finish(2) };
 // שלב 3
 $('s3c').onclick = () => { const a = picked('s3a'), b = picked('s3b'), ch = $('s3l').value.trim();
  if (a < 0 || b < 0) return fb($('s3f'), false, 'ענו על שתי השאלות.');
  if (!/^[A-Za-z]$/.test(ch)) return fb($('s3f'), false, 'כתבו אות לטינית אחת.');
- if (a !== 0) { Lab.rec('שלב 3: אלל דומיננטי', false, S.phen[a]); return fb($('s3f'), false, 'לא. חזרו לנתונים: איזה פנוטיפ לא הופיע בהורים (או ב-F₁) והופיע בצאצאים? הוא נקבע על ידי האלל הרצסיבי.') }
- if (b !== 0) { Lab.rec('שלב 3: אלל דומיננטי', false, S.why[b]); return fb($('s3f'), false, S.whyNo[b]) }
  U = ch.toUpperCase(); l = ch.toLowerCase();
+ const ok = a === 0 && b === 0, legend = `<span class="legend">${L(U)} = ${dom()} (דומיננטי) · ${L(l)} = ${rec()} (רצסיבי)</span>`;
  const warn = 'OCSWVXZPK'.includes(U) ? ` (שימו לב: ב-${U} קשה להבחין בין גדולה לקטנה בכתב יד)` : '';
- fb($('s3f'), true, `נכון. המקרא: <span class="legend">${L(U)} = ${dom()} (דומיננטי) · ${L(l)} = ${rec()} (רצסיבי)</span>${warn}`);
- Lab.rec('שלב 3: אלל דומיננטי', true, `${U} = ${dom()}, ${l} = ${rec()}`); Lab.solve(3) };
+ fb($('s3f'), ok, ok ? `✓ נכון. המקרא: ${legend}${warn}` : `✘ ${a !== 0 ? `הפנוטיפ הדומיננטי הוא <b>${dom()}</b>, לא ${S.phen[a]}.` : S.whyNo[b]}<br><b>הנימוק הנכון:</b> ${S.why[0]}.<br>המקרא להמשך: ${legend}`);
+ Lab.rec('שלב 3: אלל דומיננטי', ok, `${S.phen[a]} · ${S.why[b]}`, `${dom()} דומיננטי · ${S.why[0]}`, 'הפנוטיפ שלא הופיע בהורים (או ב-F₁) והופיע בצאצאים נקבע על ידי האלל הרצסיבי.'); Lab.finish(3) };
 // שלב 4
 document.querySelector('.step[data-n="4"]').addEventListener('open', () => {
  $('s4t').innerHTML = '<b>אללים:</b>' + chip(U, U) + chip(l, l);
@@ -219,14 +222,13 @@ document.querySelector('.step[data-n="4"]').addEventListener('open', () => {
 $('s4c').onclick = () => {
  const m = slotVals('#m0,#m1'), f = slotVals('#f0,#f1');
  if ([...m, ...f].some(v => !v)) return fb($('s4f'), false, 'השלימו שני אללים לכל הורה.');
- const okm = sameSet(m, al(S.m.d)), okf = sameSet(f, al(S.f.d));
+ const am = al(S.m.d), af = al(S.f.d), okm = sameSet(m, am), okf = sameSet(f, af), ok = okm && okf;
  ['m0', 'm1'].forEach(i => $(i).classList.add(okm ? 'ok' : 'no')); ['f0', 'f1'].forEach(i => $(i).classList.add(okf ? 'ok' : 'no'));
- const g = (a) => gn(a[0], a[1]);
- if (okm && okf) { fb($('s4f'), true, `נכון. ♀ ${L(g(m))} · ♂ ${L(g(f))}. ${S.pWhy}`); Lab.rec('שלב 4: גנוטיפים של ההורים', true, `♀${g(m)} ♂${g(f)}`); Lab.solve(4) }
- else { const bad = !okm ? S.m : S.f, arr = !okm ? m : f;
-  const msg = bad.d === 0 && arr.includes(U) ? `לפרט בפנוטיפ ${rec()} (רצסיבי) יש רק אללים ${L(l)}.` : bad.d === 1 ? S.pHint + ' מה זה אומר על האללים של ההורה?' : 'בדקו שוב את הפנוטיפ.';
-  fb($('s4f'), false, `${!okm ? 'הנקבה' : 'הזכר'}: לא מדויק. ${msg}`); Lab.rec('שלב 4: גנוטיפים של ההורים', false, `♀${m.join('')} ♂${f.join('')}`) }
-};
+ const g = a => gn(a[0], a[1]), right = `♀ ${g(am)} · ♂ ${g(af)}`;
+ fb($('s4f'), ok, ok ? `✓ נכון. ♀ ${L(g(m))} · ♂ ${L(g(f))}. ${S.pWhy}` : `✘ ${!okm && !okf ? 'הגנוטיפים של שני ההורים' : !okm ? 'הגנוטיפ של הנקבה' : 'הגנוטיפ של הזכר'} לא נכון.<br><b>התשובה הנכונה: ♀ ${L(g(am))} · ♂ ${L(g(af))}</b>.<br>${S.pWhy}`);
+ Lab.rec('שלב 4: גנוטיפים של ההורים', ok, `♀${g(m)} ♂${g(f)}`, right, S.pWhy);
+ if (!ok) { setSlot('m0', am[0]); setSlot('m1', am[1]); setSlot('f0', af[0]); setSlot('f1', af[1]) }
+ Lab.finish(4) };
 // שלב 5: מיוזה
 const chrom = (a, red) => `<span class="chrom${red ? ' r' : ''}" data-drag="1" data-v="${a}" tabindex="0" role="button" aria-label="כרומוזום עם אלל ${a}"><i></i><span>${a}</span></span>`;
 document.querySelector('.step[data-n="5"]').addEventListener('open', () => {
@@ -235,13 +237,15 @@ document.querySelector('.step[data-n="5"]').addEventListener('open', () => {
    <span class="hint">↓ תאי רבייה</span><div class="row"><div class="circle n drop" id="${k}g0" tabindex="0" role="button" aria-label="תא רבייה 1"></div><div class="circle n drop" id="${k}g1" tabindex="0" role="button" aria-label="תא רבייה 2"></div></div></div>`;
  $('s5').innerHTML = p('♀', 'נקבה', 'm', al(S.m.d)) + p('♂', 'זכר', 'f', al(S.f.d));
 });
-const gam = k => [0, 1].map(i => { const c = $(k + 'g' + i).querySelectorAll('.chrom'); return c.length === 1 ? c[0].dataset.v : null });
 $('s5c').onclick = () => {
- const bad = ['m', 'f'].some(k => [0, 1].some(i => $(k + 'g' + i).querySelectorAll('.chrom').length !== 1));
- if (bad) { Lab.rec('שלב 5: מיוזה', false, 'הפרדה לא שלמה'); return fb($('s5f'), false, 'בכל תא רבייה צריך להיות <b>כרומוזום אחד</b> מכל זוג. הכרומוזומים ההומולוגיים נפרדים זה מזה.') }
- const gm = gam('m'), gf = gam('f');
- fb($('s5f'), true, `נכון! הכרומוזומים ההומולוגיים נפרדו, ובכל תא רבייה יש <b>אלל אחד</b>. גמטות הנקבה: ${gm.map(L).join(', ')} · גמטות הזכר: ${gf.map(L).join(', ')}.<br>בחלוקה השנייה של המיוזה נפרדות הכרומטידות האחיות, ונוצרות ארבע גמטות — שתיים מכל סוג. לכן הטרוזיגוט יוצר שני סוגי גמטות ביחס 1 : 1.`);
- Lab.rec('שלב 5: מיוזה', true, `♀ ${gm.join(',')} ♂ ${gf.join(',')}`); Lab.solve(5) };
+ const placed = ['m', 'f'].reduce((n, k) => n + [0, 1].reduce((x, i) => x + $(k + 'g' + i).querySelectorAll('.chrom').length, 0), 0);
+ if (!placed) return fb($('s5f'), false, 'גררו את הכרומוזומים לתאי הרבייה.');
+ const ok = !['m', 'f'].some(k => [0, 1].some(i => $(k + 'g' + i).querySelectorAll('.chrom').length !== 1));
+ const why = 'בחלוקה הראשונה של המיוזה הכרומוזומים ההומולוגיים נפרדים, ולכן בכל תא רבייה יש כרומוזום אחד מכל זוג — אלל אחד.';
+ if (!ok) ['m', 'f'].forEach(k => { const all = [...document.querySelectorAll(`#${k}h .chrom, #${k}g0 .chrom, #${k}g1 .chrom`)]; all.forEach((c, i) => $(k + 'g' + (i % 2)).appendChild(c)) });
+ const gm = [0, 1].map(i => $('mg' + i).querySelector('.chrom').dataset.v), gf = [0, 1].map(i => $('fg' + i).querySelector('.chrom').dataset.v);
+ fb($('s5f'), ok, (ok ? '✓ נכון! ' : '✘ לא בכל תא רבייה היה כרומוזום אחד. כך נראית ההפרדה הנכונה: ') + `${why}<br>גמטות הנקבה: ${gm.map(L).join(', ')} · גמטות הזכר: ${gf.map(L).join(', ')}.<br>בחלוקה השנייה של המיוזה נפרדות הכרומטידות האחיות, ונוצרות ארבע גמטות — שתיים מכל סוג.`);
+ Lab.rec('שלב 5: מיוזה', ok, ok ? 'הפרדה נכונה' : 'הפרדה לא נכונה', 'כרומוזום אחד מכל זוג בכל תא רבייה', why); Lab.finish(5) };
 // שלב 6: טבלת פאנט
 document.querySelector('.step[data-n="6"]').addEventListener('open', () => {
  const gm = al(S.m.d), gf = al(S.f.d);
@@ -251,17 +255,18 @@ document.querySelector('.step[data-n="6"]').addEventListener('open', () => {
 });
 $('s6c').onclick = () => {
  const gm = al(S.m.d), gf = al(S.f.d), R = slotVals('#r0,#r1'), C = slotVals('#c0,#c1');
- if ([...R, ...C].some(v => !v)) return fb($('s6f'), false, 'השלימו קודם את ארבע הכותרות: שתי ביציות ושני תאי זרע.');
+ const cells = ['00', '01', '10', '11'].map(x => slotVals(`#x${x}a,#x${x}b`));
+ if ([...R, ...C].some(v => !v) || cells.some(v => v.some(e => !e))) return fb($('s6f'), false, 'השלימו את כל הטבלה: ארבע כותרות ושני אללים בכל משבצת.');
  const okH = sameSet(R, gm) && sameSet(C, gf), swapped = !okH && sameSet(R, gf) && sameSet(C, gm);
- if (!okH && !swapped) { Lab.rec('שלב 6: טבלת פאנט', false, 'כותרות'); return fb($('s6f'), false, 'הכותרות לא תואמות לגמטות. בשורות — הגמטות של הנקבה, בעמודות — של הזכר.') }
- let wrong = 0, order = 0, empty = 0;
- ['00', '01', '10', '11'].forEach(x => { const [i, j] = [+x[0], +x[1]], v = slotVals(`#x${x}a,#x${x}b`), want = [R[i], C[j]];
-  if (v.some(e => !e)) { empty++; return } const ok = sameSet(v, want); if (!ok) wrong++; else if (v.join('') !== gn(...want)) order++;
-  [`x${x}a`, `x${x}b`].forEach(id => $(id).classList.add(ok ? 'ok' : 'no')) });
- if (empty) return fb($('s6f'), false, (empty === 1 ? 'יש משבצת אחת לא מלאה.' : `יש ${empty} משבצות לא מלאות.`));
- if (wrong) { Lab.rec('שלב 6: טבלת פאנט', false, `${wrong} משבצות שגויות`); return fb($('s6f'), false, `${wrong === 1 ? 'משבצת אחת לא נכונה' : wrong + ' משבצות לא נכונות'}. בכל משבצת: האלל שבראש השורה ← והאלל שבראש העמודה.`) }
- fb($('s6f'), true, (swapped ? 'נכון — רק שימו לב: לפי הכותרת השורות הן של הנקבה. בתוצאה זה לא משנה. ' : 'נכון! ') + (order ? `ובסימון: אות גדולה לפני קטנה (${L(U + l)}).` : ''));
- Lab.rec('שלב 6: טבלת פאנט', true, swapped ? 'הורים בכותרות הפוכות' : 'תקין'); Lab.solve(6) };
+ let wrong = 0, order = 0;
+ ['00', '01', '10', '11'].forEach((x, k) => { const v = cells[k], want = [R[+x[0]], C[+x[1]]], okc = (okH || swapped) && sameSet(v, want);
+  if (!okc) wrong++; else if (v.join('') !== gn(...want)) order++; [`x${x}a`, `x${x}b`].forEach(id => $(id).classList.add(okc ? 'ok' : 'no')) });
+ const ok = (okH || swapped) && !wrong, right = `♀ ${gm.join(',')} × ♂ ${gf.join(',')} ← ${['00', '01', '10', '11'].map(x => gn(gm[+x[0]], gf[+x[1]])).join(', ')}`;
+ if (!ok) { setSlot('r0', gm[0]); setSlot('r1', gm[1]); setSlot('c0', gf[0]); setSlot('c1', gf[1]);
+  ['00', '01', '10', '11'].forEach(x => { const g = gn(gm[+x[0]], gf[+x[1]]); setSlot(`x${x}a`, g[0]); setSlot(`x${x}b`, g[1]) }) }
+ fb($('s6f'), ok, ok ? '✓ ' + (swapped ? 'נכון — רק שימו לב: לפי הכותרת השורות הן של הנקבה. ' : 'נכון! ') + (order ? `ובסימון: אות גדולה לפני קטנה (${L(U + l)}).` : '')
+  : `✘ ${!(okH || swapped) ? 'הכותרות לא תאמו לגמטות.' : (wrong === 1 ? 'משבצת אחת לא נכונה.' : wrong + ' משבצות לא נכונות.')} בטבלה מוצג עכשיו הפתרון הנכון: בשורות הביציות של הנקבה, בעמודות תאי הזרע של הזכר, ובכל משבצת — האלל מהשורה והאלל מהעמודה.`);
+ Lab.rec('שלב 6: טבלת פאנט', ok, ok ? 'טבלה נכונה' : `${wrong} משבצות שגויות`, right, 'בכל משבצת: אלל מהביצית ואלל מתא הזרע.'); Lab.finish(6) };
 // שלב 7: יחסים
 document.querySelector('.step[data-n="7"]').addEventListener('open', () => {
  $('s7g').innerHTML = [U + U, U + l, l + l].map(g => `${L(g)}: <input class="t" data-g="${g}" inputmode="numeric" aria-label="מספר משבצות ${g}">`).join(' : ');
@@ -271,13 +276,14 @@ document.querySelector('.step[data-n="7"]').addEventListener('open', () => {
 function expected() { const gm = al(S.m.d), gf = al(S.f.d), c = {}; gm.forEach(a => gf.forEach(b => { const g = gn(a, b); c[g] = (c[g] || 0) + 1 })); return c }
 const prop = (a, b) => { const sa = a.reduce((x, y) => x + y, 0), sb = b.reduce((x, y) => x + y, 0); return sa > 0 && a.every((v, i) => Math.abs(v / sa - b[i] / sb) < 1e-9) };
 $('s7c').onclick = () => {
- const E = expected(), gs = [U + U, U + l, l + l], got = gs.map(g => Number($('s7g').querySelector(`[data-g="${g}"]`).value || 0)), want = gs.map(g => E[g] || 0);
- const pd = Number($('pd').value || 0), pr = Number($('pr').value || 0), wd = want[0] + want[1], wr = want[2];
- const okG = prop(got, want), okP = prop([pd, pr], [wd, wr]);
- const txt = `${want.join(' : ')} גנוטיפי · ${wd} : ${wr} פנוטיפי`;
- if (okG && okP) { fb($('s7f'), true, `נכון! יחס גנוטיפי ${gs.map(L).join(' : ')} = ${want.join(' : ')}; יחס פנוטיפי ${dom()} : ${rec()} = ${wd} : ${wr}. ${S.obs}`); $('s7grow').hidden = false; Lab.rec('שלב 7: יחסי הצאצאים', true, txt); Lab.solve(7) }
- else { fb($('s7f'), false, !okG ? 'ספרו בטבלת הפאנט כמה משבצות יש מכל גנוטיפ.' : `היחס הגנוטיפי נכון. עכשיו הפנוטיפים: איזה גנוטיפים נותנים פנוטיפ ${dom()}?`); Lab.rec('שלב 7: יחסי הצאצאים', false, `${got.join(':')} | ${pd}:${pr}`) }
-};
+ const E = expected(), gs = [U + U, U + l, l + l], inG = gs.map(g => $('s7g').querySelector(`[data-g="${g}"]`).value.trim()), got = inG.map(v => Number(v || 0)), want = gs.map(g => E[g] || 0);
+ if (inG.some(v => v === '') || !$('pd').value.trim() || !$('pr').value.trim()) return fb($('s7f'), false, 'מלאו את כל התיבות (אפשר 0).');
+ const pd = Number($('pd').value), pr = Number($('pr').value), wd = want[0] + want[1], wr = want[2];
+ const ok = prop(got, want) && prop([pd, pr], [wd, wr]);
+ const txt = `גנוטיפי ${gs.join(' : ')} = ${want.join(' : ')} · פנוטיפי ${dom()} : ${rec()} = ${wd} : ${wr}`;
+ fb($('s7f'), ok, (ok ? '✓ נכון! ' : '✘ לא נכון. <b>התשובה הנכונה:</b> ') + `יחס גנוטיפי ${gs.map(L).join(' : ')} = ${want.join(' : ')}; יחס פנוטיפי ${dom()} : ${rec()} = ${wd} : ${wr}. ${S.obs}`);
+ Lab.rec('שלב 7: יחסי הצאצאים', ok, `${got.join(':')} | ${pd}:${pr}`, txt, 'סופרים בטבלת הפאנט כמה משבצות מכל גנוטיפ; AA ו-Aa שניהם בפנוטיפ הדומיננטי.');
+ Lab.finish(7); $('s7grow').hidden = false; $('s7grow').querySelectorAll('button').forEach(b => b.disabled = false) };
 $('s7grow').addEventListener('click', e => { const b = e.target.closest('[data-g]'); if (!b) return; const n = +b.dataset.g, gm = al(S.m.d), gf = al(S.f.d);
  let d = 0; for (let i = 0; i < n; i++) { const g = gm[Math.random() < .5 ? 0 : 1] + gf[Math.random() < .5 ? 0 : 1]; if (g.includes(U)) d++ }
  $('s7r').innerHTML = `מתוך ${n.toLocaleString('he-IL')} צאצאים: <b>${d}</b> ${dom()} ו-<b>${n - d}</b> ${rec()} (${Math.round(d / n * 100)}% : ${Math.round((n - d) / n * 100)}%).` });
