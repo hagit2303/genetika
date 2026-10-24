@@ -73,27 +73,15 @@ textarea[readonly]{opacity:.85}
 .tips div{background:var(--bg);border-radius:12px;padding:10px 14px}
 .tips b{color:var(--rich)}
 .ini{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:var(--rich);color:#fff!important;font-size:22px;margin-inline-end:4px}
-.sgate{position:fixed;inset:0;z-index:100;background:rgba(19,35,58,.6);display:flex;align-items:center;justify-content:center;padding:16px}
-.sgate .gbox{background:#fff;border:3px solid var(--tag);border-radius:18px;max-width:420px;width:100%;padding:20px;display:grid;gap:10px}
-.sgate label{display:grid;gap:4px;font-weight:700}
-.sgate input{padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
-.sgate .gerr{color:var(--bad);font-weight:700;min-height:1em}
-.btn{background:var(--accent);color:#fff;border:0;border-radius:12px;padding:10px 20px;font-weight:800}
-#report{position:fixed;left:0;top:0;display:none;z-index:-1;pointer-events:none;width:760px;background:#fff;color:#13233A;font-family:Arial,sans-serif;padding:24px;direction:rtl}
-#report h1{font-size:24px;margin-bottom:6px}
-#report .rr{border-bottom:1px solid #DCE3EA;padding:5px 0;font-size:14px;display:flex;gap:8px}
-#report .rr b{min-width:200px}
-#report .y{color:#1E7B4D;font-weight:700}#report .n{color:#B3261E;font-weight:700}
 footer{color:var(--muted);font-size:14px;border-top:1px solid var(--line);padding-top:12px}
 @media(max-width:760px){.sum{grid-template-columns:1fr}}
-@media print{.sgate,.dl{display:none!important}}
+
 </style>
 </head>
 <body>
-<div class="sgate" id="gate" hidden><div class="gbox" role="dialog" aria-modal="true" aria-labelledby="gTitle"><h2 id="gTitle">לפני שמתחילים</h2><p>כתבו שם מלא וכיתה. הם יופיעו בקובץ שתעלו למשימה ב־Classroom.</p><label>שם מלא<input id="gName" autocomplete="name"></label><label>כיתה<input id="gClass"></label><p class="gerr" id="gErr"></p><button class="btn" id="gGo" type="button">מתחילים ←</button></div></div>
 
 <div class="wrap">
-  <nav class="homebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><span class="who" data-fill="name"></span></nav>
+  <nav class="homebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a></nav>
   <section class="hero">
     <div class="kick">ביולוגיה · כיתות י״ב · תשפ״ז</div>
     <h1>חזרה למבחן <span>רבעון א'</span></h1>
@@ -105,7 +93,7 @@ footer{color:var(--muted);font-size:14px;border-top:1px solid var(--line);paddin
     </div>
     <a class="dl" href="assets/homer-lamivchan.pdf" target="_blank" rel="noopener" style="text-decoration:none;background:var(--poor)">📄 דף החומר למבחן (הנושאים והמושגים)</a>
     <nav class="toc" aria-label="תוכן החזרה">
-      <a href="#howto">📚 איך לומדים</a><a href="#p1">1 גוף האדם</a><a href="#p2">2 אנרגיה, אנזימים וקרום</a><a href="#p3">3 התא</a><a href="#p4">4 ההרכב הכימי</a><a href="#p5">5 החומר התורשתי</a><a href="#p6">6 מ-DNA לחלבון</a><a href="#p7">7 תורשה מנדלית</a><a href="#p8">8 גרפים</a><a href="#p9">9 שאלות פתוחות ומשעממ"ת</a><a href="#pend">📒 טעויות וקובץ</a><a href="https://view.genial.ly/65964ab65b2bd50014db1943" target="_blank" rel="noopener">📖 מושג ביום</a>
+      <a href="#howto">📚 איך לומדים</a><a href="#p1">1 גוף האדם</a><a href="#p2">2 אנרגיה, אנזימים וקרום</a><a href="#p3">3 התא</a><a href="#p4">4 ההרכב הכימי</a><a href="#p5">5 החומר התורשתי</a><a href="#p6">6 מ-DNA לחלבון</a><a href="#p7">7 תורשה מנדלית</a><a href="#p8">8 גרפים</a><a href="#p9">9 שאלות פתוחות ומשעממ"ת</a><a href="#pend">📒 דף הטעויות</a><a href="https://view.genial.ly/65964ab65b2bd50014db1943" target="_blank" rel="noopener">📖 מושג ביום</a>
     </nav>
   </section>
 
@@ -266,45 +254,25 @@ footer{color:var(--muted);font-size:14px;border-top:1px solid var(--line);paddin
   <section class="card" id="pend">
     <h2>📒 דף הטעויות שלי</h2>
     <p class="hint">כל שאלה שבה טעיתם, עם התשובה הנכונה וההסבר. לפני המבחן, עברו על הדף הזה שוב.</p>
+    <p class="note" id="prog"></p>
     <div id="mist"></div>
   </section>
 
-  <section class="card">
-    <h2>⬇ קובץ למורה</h2>
-    <p class="hint">בקובץ: השם, כמה תשובות נכונות היו בניסיון הראשון, כל התשובות שלכם ודף הטעויות. אפשר להוריד בכל שלב.</p>
-    <p class="note" id="prog"></p><button class="dl" id="dl" type="button">⬇ הורדת קובץ PDF</button><p class="hint" id="dlmsg"></p>
-  </section>
 
   <footer>ביולוגיה · כיתות י״ב · חזרה למבחן רבעון א' תשפ״ז. השאלות מבוססות על בחינות בגרות, על חוברת שאלות ממוינות מבחינות בגרות, ועל שאלות שנכתבו ברוח הבגרות. "מושג ביום" פותח על ידי הדס גרדי. החזרה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים. נבנתה על ידי חגית ברגמן.</footer>
 </div>
-<div id="report"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="assets/lab.js"></script>
-<script src="assets/pdf.js"></script>
 <script src="assets/charts.js"></script>
 <script src="assets/diagrams.js"></script>
 <script src="assets/q.js"></script>
 <script>
-window.REPORT_FOOT = 'ביולוגיה י״ב · חזרה למבחן רבעון א\'';
 [1, 2, 3, 4, 5, 6, 7].forEach(i => { $('d' + i).innerHTML = DIA['t' + i] });
 [[T1, 'a'], [T2, 'b'], [T3, 'c'], [T4, 'd'], [T5, 'e'], [T6, 'f'], [T7, 'g'], [GR, 'h']].forEach(([Q, tag], i) => renderQuestions($('q' + (i + 1)), Q, tag));
 renderBagrut($('q9'), OPEN, 'o');
 const TOTAL = document.querySelectorAll('.opts').length + OPEN.reduce((s, q) => s + q.parts.length, 0);
 function progress() { const n = Object.keys(Lab.log).length; $('prog').innerHTML = n >= TOTAL ? '✓ עניתם על כל השאלות. כל הכבוד!' : `עניתם על <b>${n}</b> מתוך <b>${TOTAL}</b> שאלות וסעיפים.` }
 setInterval(progress, 800); progress();
-$('dl').onclick = () => { if (!(window.STUDENT && window.STUDENT.name)) { $('gate').hidden = false; $('gErr').textContent = 'לפני ההורדה: כתבו שם וכיתה, הם יופיעו בקובץ.'; $('gName').focus(); window.AFTER_GATE = () => $('dl').click(); return } labPdf('חזרה למבחן רבעון א\' · י״ב', 'חזרה-רבעון-א') };
 </script>
-<script>(function(){const g=document.getElementById('gate'),n=document.getElementById('gName'),c=document.getElementById('gClass');
-let saved={};try{saved=JSON.parse(localStorage.getItem('bio12-student')||'{}')}catch(e){}
-n.value=saved.name||'';c.value=saved.cls||'';
-const fill=(nm,cl)=>document.querySelectorAll('[data-fill="name"]').forEach(e=>e.textContent='👋 '+nm+' · '+cl);
-if(saved.name&&saved.cls){window.STUDENT={name:saved.name,cls:saved.cls};fill(saved.name,saved.cls)}else{g.hidden=false;n.focus()}
-document.getElementById('gGo').onclick=()=>{const nm=n.value.trim(),cl=c.value.trim();
- if(nm.replace(/\s/g,'').length<2||!cl){document.getElementById('gErr').textContent='כתבו שם (לפחות 2 אותיות) וכיתה.';return}
- try{localStorage.setItem('bio12-student',JSON.stringify({name:nm,cls:cl}))}catch(e){}
- fill(nm,cl);window.STUDENT={name:nm,cls:cl};g.hidden=true;if(window.AFTER_GATE){const f=window.AFTER_GATE;window.AFTER_GATE=null;f()}};
-n.addEventListener('keydown',e=>{if(e.key==='Enter')c.focus()});c.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('gGo').click()});})();</script>
 </body>
 </html>
