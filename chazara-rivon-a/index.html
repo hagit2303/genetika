@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>חזרה למבחן רבעון א' · י״ב</title>
+<link rel="icon" href="data:,">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F4F7FA;--paper:#fff;--ink:#13233A;--muted:#5E6E82;--rich:#D7263D;--poor:#2457C5;--line:#DCE3EA;--accent:#13233A;--accent-soft:#EAF0F6;--tag:#D7263D;--tag-ink:#fff;--good:#1E7B4D;--good-bg:#E8F4EE;--bad:#B3261E;--bad-bg:#FBE7E5;--warn-bg:#FFF8E1;--gold:#F2B705}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:Assistant,Arial,sans-serif;font-size:18px;line-height:1.5;padding-inline:16px;overflow-x:hidden}
+button,select,input,textarea{font:inherit}
+button{cursor:pointer}
+.wrap{max-width:1000px;margin:auto;padding-block:14px 40px;display:flex;flex-direction:column;gap:14px}
+.homebar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.homebar a{background:#fff;color:var(--ink);border:2px solid var(--ink);border-radius:20px;padding:4px 14px;font-weight:800;font-size:14px;text-decoration:none}
+.homebar .who{margin-inline-start:auto;font-weight:800;color:var(--rich)}
+.kick{font-weight:800;color:var(--rich);font-size:14px}
+h1{font-size:clamp(32px,6vw,52px);font-weight:800;line-height:1.05}h1 span{color:var(--rich)}
+h2{font-size:clamp(21px,2.8vw,28px);font-weight:800;line-height:1.2}
+h3{font-size:1.1rem;font-weight:800}
+.hero{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.fact{background:var(--bg);border-radius:14px;padding:12px 14px}
+.fact b{display:block;font-size:30px;font-weight:800;color:var(--rich);line-height:1.1}
+.toc{display:flex;flex-wrap:wrap;gap:6px}
+.toc a{background:var(--accent-soft);color:var(--ink);border-radius:20px;padding:4px 12px;font-weight:700;font-size:15px;text-decoration:none}
+.toc a:hover{background:var(--line)}
+.part-h{display:flex;gap:12px;align-items:center;margin-top:18px;scroll-margin-top:12px}
+.part-h .n{width:46px;height:46px;border-radius:12px;background:var(--ink);color:#fff;font-weight:800;font-size:22px;display:flex;align-items:center;justify-content:center;flex:none}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.sum{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:18px;align-items:center}
+.sum ul{display:flex;flex-direction:column;gap:8px;padding-inline-start:20px}
+.sum li::marker{color:var(--rich)}
+.sum b{color:var(--ink)}
+.dia,.chart{width:100%;height:auto;display:block}
+.chart{max-width:560px;margin:8px auto;background:#FAFBFC;border-radius:12px}
+.terms{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:15px}
+.terms span{border:1.5px solid var(--line);border-radius:20px;padding:2px 10px;background:#fff}
+.terms i{font-style:normal;color:var(--muted);font-weight:700}
+.seq{font-family:Consolas,Menlo,monospace;font-weight:700;letter-spacing:1px;unicode-bidi:isolate}
+.hint{color:var(--muted);font-size:.92rem}
+.qn{display:inline-block;align-self:flex-start;font-size:.78rem;font-weight:800;padding:2px 10px;border-radius:999px;background:var(--tag);color:var(--tag-ink)}
+.src{font-size:.8rem;color:var(--muted)}
+.qs{display:grid;gap:14px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opts label{display:flex;gap:10px;align-items:flex-start;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:10px 14px;line-height:1.45;cursor:pointer}
+.opts label:hover{border-color:var(--accent)}
+.opts label input{margin-top:5px;accent-color:var(--accent);flex:none}
+.opts label.right{background:var(--good-bg);border-color:var(--good)}
+.opts label.wrong{background:var(--bad-bg);border-color:var(--bad)}
+.fb{border-radius:12px;padding:10px 14px;line-height:1.5}
+.fb:empty{display:none}
+.fb.ok{background:var(--good-bg);border-inline-start:6px solid var(--good)}
+.fb.no{background:var(--bad-bg);border-inline-start:6px solid var(--bad)}
+.note{background:var(--warn-bg);border-inline-start:6px solid var(--gold);border-radius:12px;padding:10px 14px}
+.ri{color:var(--good);font-weight:700}
+.rv,.sc{background:var(--accent);color:#fff;border:0;border-radius:12px;padding:9px 18px;font-weight:700;align-self:flex-start}
+.rv.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.rv[disabled],.sc[disabled]{opacity:.45;cursor:not-allowed}
+.bpart{display:flex;flex-direction:column;gap:8px;border-top:1px dashed var(--line);padding-top:12px;margin-top:6px}
+textarea{width:100%;padding:10px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+textarea[readonly]{opacity:.85}
+.rub{display:flex;flex-direction:column;gap:6px;background:var(--warn-bg);border-radius:12px;padding:10px 14px}
+.rub label{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+.rub label>*{min-width:0}
+.rub details summary{cursor:pointer;font-weight:700}
+[hidden]{display:none!important}
+.mi{border-inline-start:4px solid var(--bad);background:var(--bg);border-radius:8px;padding:8px 12px;margin-bottom:8px}.mi p{margin:2px 0}
+.dl{background:var(--tag);color:var(--tag-ink);border:0;border-radius:14px;font-size:1.15rem;font-weight:800;padding:14px 24px;align-self:flex-start}
+.tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.tips div{background:var(--bg);border-radius:12px;padding:10px 14px}
+.tips b{color:var(--rich)}
+.ini{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:var(--rich);color:#fff!important;font-size:22px;margin-inline-end:4px}
+.sgate{position:fixed;inset:0;z-index:100;background:rgba(19,35,58,.6);display:flex;align-items:center;justify-content:center;padding:16px}
+.sgate .gbox{background:#fff;border:3px solid var(--tag);border-radius:18px;max-width:420px;width:100%;padding:20px;display:grid;gap:10px}
+.sgate label{display:grid;gap:4px;font-weight:700}
+.sgate input{padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+.sgate .gerr{color:var(--bad);font-weight:700;min-height:1em}
+.btn{background:var(--accent);color:#fff;border:0;border-radius:12px;padding:10px 20px;font-weight:800}
+#report{position:fixed;left:0;top:0;display:none;z-index:-1;pointer-events:none;width:760px;background:#fff;color:#13233A;font-family:Arial,sans-serif;padding:24px;direction:rtl}
+#report h1{font-size:24px;margin-bottom:6px}
+#report .rr{border-bottom:1px solid #DCE3EA;padding:5px 0;font-size:14px;display:flex;gap:8px}
+#report .rr b{min-width:200px}
+#report .y{color:#1E7B4D;font-weight:700}#report .n{color:#B3261E;font-weight:700}
+footer{color:var(--muted);font-size:14px;border-top:1px solid var(--line);padding-top:12px}
+@media(max-width:760px){.sum{grid-template-columns:1fr}}
+@media print{.sgate,.dl{display:none!important}}
+</style>
+</head>
+<body>
+<div class="sgate" id="gate" hidden><div class="gbox" role="dialog" aria-modal="true" aria-labelledby="gTitle"><h2 id="gTitle">לפני שמתחילים</h2><p>כתבו שם מלא וכיתה. הם יופיעו בקובץ שתעלו למשימה ב־Classroom.</p><label>שם מלא<input id="gName" autocomplete="name"></label><label>כיתה<input id="gClass"></label><p class="gerr" id="gErr"></p><button class="btn" id="gGo" type="button">מתחילים ←</button></div></div>
+
+<div class="wrap">
+  <nav class="homebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><span class="who" data-fill="name"></span></nav>
+  <section class="hero">
+    <div class="kick">ביולוגיה · כיתות י״ב · תשפ״ז</div>
+    <h1>חזרה למבחן <span>רבעון א'</span></h1>
+    <p>זו חזרה למבחן, ולא תחליף ללמידה מהמחברת, מהקלאסרום ומחומרי מט״ח. בכל נושא: סיכום קצר עם איור, המושגים שצריך להכיר, ושאלות ברוח הבגרות. לכל שאלה ניסיון אחד, ואחריו מופיעים התשובה הנכונה וההסבר. בסוף יש תרגול גרפים, שאלות פתוחות עם מחוון לבדיקה עצמית, ודף הטעויות שלכם.</p>
+    <div class="facts">
+      <div class="fact"><b>1.11.2026</b>מועד המבחן</div>
+      <div class="fact"><b>20</b>שאלות סגורות (חלק א')</div>
+      <div class="fact"><b>4</b>שאלות פתוחות (חלק ב')</div>
+    </div>
+    <a class="dl" href="assets/homer-lamivchan.pdf" target="_blank" rel="noopener" style="text-decoration:none;background:var(--poor)">📄 דף החומר למבחן (הנושאים והמושגים)</a>
+    <nav class="toc" aria-label="תוכן החזרה">
+      <a href="#howto">📚 איך לומדים</a><a href="#p1">1 גוף האדם</a><a href="#p2">2 אנרגיה, אנזימים וקרום</a><a href="#p3">3 התא</a><a href="#p4">4 ההרכב הכימי</a><a href="#p5">5 החומר התורשתי</a><a href="#p6">6 מ-DNA לחלבון</a><a href="#p7">7 תורשה מנדלית</a><a href="#p8">8 גרפים</a><a href="#p9">9 שאלות פתוחות ומשעממ"ת</a><a href="#pend">📒 טעויות וקובץ</a><a href="https://view.genial.ly/65964ab65b2bd50014db1943" target="_blank" rel="noopener">📖 מושג ביום</a>
+    </nav>
+  </section>
+
+  <section class="card">
+    <h2 id="howto">📚 איך לומדים למבחן</h2>
+    <p class="note"><b>האתר הזה הוא חזרה, ולא תחליף ללמידה.</b> לומדים מהמחברת, מהקלאסרום ומחומרי מט״ח, ובאתר בודקים מה כבר יודעים ומה עוד צריך לחזק.</p>
+    <div class="tips">
+      <div><b>1. המחברת.</b> עוברים על כל החומר במחברת.</div>
+      <div><b>2. הקלאסרום.</b> עוברים על החומר שנמצא בקלאסרום.</div>
+      <div><b>3. מט״ח: קורסים אונליין, הילקוט הדיגיטלי.</b> שם כל היחידות שלמדנו, עם תרגול ומצגות. סגנון השאלות במבחן דומה לסגנון השאלות בקורס של מט״ח, ולכן כדאי מאוד לתרגל שם.</div>
+      <div><b>4. ספרי הלימוד.</b> הפרקים הרלוונטיים בספרים "ביולוגיה של האדם" ו"התא – יחידת החיים".</div>
+      <div><b>5. "מושג ביום".</b> ודאו שאתם יודעים את כל המושגים שבעמודה הצבועה בטבלת הנושאים. "מושג ביום" פותח על ידי הדס גרדי. <a href="https://view.genial.ly/65964ab65b2bd50014db1943" target="_blank" rel="noopener">לפתיחה</a></div>
+      <div><b>6. דף החומר למבחן.</b> בו כל הנושאים והמושגים למבחן. <a href="assets/homer-lamivchan.pdf" target="_blank" rel="noopener">לפתיחה</a></div>
+      <div><b>7. שאלות לא ברורות?</b> כותבים בקבוצת הוואטסאפ המשותפת, לא בפרטי. מי שיודע את התשובה מוזמן לענות.</div>
+      <div><b>8. ואז האתר הזה.</b> סיכום, שאלות ברוח הבגרות, גרפים ושאלות פתוחות, ובסוף דף הטעויות שלכם, לחזרה נוספת.</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>איך עונים במבחן</h2>
+    <div class="tips">
+      <div><b>שאלה סגורה:</b> מתלבטים בין שני מסיחים? בוחרים את התשובה הנכונה <b>ביותר</b>. חפשו מילים כמו "תמיד", "רק", "כל".</div>
+      <div><b>שאלה פתוחה:</b> כותבים לפי <a href="#p9">תשובה משעממ"ת</a>. התשובה ממוקדת במה שנשאל: "ציינו" ≠ "הסבירו" ≠ "השוו".</div>
+      <div><b>מושגים:</b> כתבו את המושג הביולוגי המדויק: אוסמוזה, העברה פעילה, משוב שלילי, תעתוק, תרגום.</div>
+      <div><b>מידע שגוי מוריד נקודות</b>, גם אם הוא לא קשור לשאלה. אל תוסיפו מידע מיותר.</div>
+      <div><b>בלי טלאולוגיה ובלי האנשה:</b> לא "כדי", לא "התא רוצה". סיבה ← תוצאה. <a href="#p9">דוגמאות</a></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>📖 מושג ביום</h2>
+    <p>רשימת המושגים המלאה, עם הסבר קצר לכל מושג. עברו על כל המושגים שבטבלת הנושאים למבחן, וסמנו את מה שעוד לא בטוח לכם.</p>
+    <a class="dl" href="https://view.genial.ly/65964ab65b2bd50014db1943" target="_blank" rel="noopener" style="text-decoration:none">פתיחת "מושג ביום" ←</a>
+    <p class="hint">"מושג ביום" פותח על ידי הדס גרדי.</p>
+  </section>
+
+  <!-- 1 -->
+  <div class="part-h" id="p1"><span class="n">1</span><h2>גוף האדם: תיאום, ויסות והומאוסטזיס</h2></div>
+  <section class="card"><div class="sum"><ul>
+    <li>גוף האדם בנוי מתאים, רקמות, איברים ומערכות. התפקוד של הגוף כולו מותנה ב<b>תיאום</b> וב<b>ויסות</b> של פעילות כל המערכות.</li>
+    <li>התיאום מתבצע באמצעות תקשורת בין <b>מערכת העצבים</b>, <b>מערכת ההובלה</b> ו<b>המערכת ההורמונלית</b>.</li>
+    <li>הורמון מופרש מבלוטה לדם, ומשפיע רק על <b>תאי מטרה</b> שיש בהם <b>קולטן</b> ייחודי לו.</li>
+    <li><b>הומאוסטזיס:</b> הסביבה הפנימית (תאים, נוזל בין־תאי, דם) נשמרת יציבה בתחום מסוים, לא קבועה לגמרי. השמירה מתבצעת בעיקר ב<b>משוב שלילי</b>: סטייה מהתחום מעוררת תגובה שמחזירה אליו.</li>
+    <li>העור ורקמות החיפוי הם הגבול בין הסביבה הפנימית לחיצונית. בין הגוף לסביבה: קליטת חומרים, אנרגיה ומידע, הפרשת חומרים ופליטת חום.</li>
+  </ul><div id="d1"></div></div>
+  <p class="terms"><i>מושגים:</i><span>תיאום</span><span>ויסות</span><span>הומאוסטזיס</span><span>משוב שלילי</span><span>הורמון</span><span>תא מטרה</span><span>קולטן</span><span>סביבה פנימית</span></p></section>
+  <div class="qs" id="q1"></div>
+
+  <!-- 2 -->
+  <div class="part-h" id="p2"><span class="n">2</span><h2>אנרגיה, אנזימים ומעבר חומרים דרך הקרום</h2></div>
+  <section class="card"><div class="sum"><ul>
+    <li><b>חילוף חומרים (מטבוליזם):</b> כל תהליכי הפירוק וההרכבה בתא, המזורזים על ידי אנזימים.</li>
+    <li><b>אנזימים</b> הם חלבונים שמזרזים תגובות. הם ייחודיים לסובסטרט ואינם מתכלים בתגובה. הפעילות מושפעת מטמפרטורה, pH, ריכוז הסובסטרט וריכוז האנזים. שינוי במבנה המרחבי (<b>דנטורציה</b>) מפסיק את הפעילות.</li>
+    <li><b>נשימה תאית:</b> פירוק חומרים אורגניים, בעיקר גלוקוז. חלק מהאנרגיה נאגר ב-<b>ATP</b>, וחלק משתחרר כחום. ATP נוצר בתהליכים משחררי אנרגיה ומנוצל בתהליכים צורכי אנרגיה.</li>
+    <li><b>קרום התא בררני:</b> שכבה כפולה של פוספוליפידים, ובה חלבונים (נשאים ותעלות).</li>
+    <li><b>דיפוזיה</b> ו<b>אוסמוזה</b> מתרחשות לפי מפל הריכוזים, בלי השקעת אנרגיה. <b>העברה פעילה</b> מתרחשת נגד מפל הריכוזים, באמצעות נשאים ועם השקעת ATP.</li>
+  </ul><div id="d2"></div></div>
+  <p class="terms"><i>מושגים:</i><span>ATP</span><span>נשימה תאית</span><span>אנזים</span><span>סובסטרט</span><span>אתר פעיל</span><span>דנטורציה</span><span>קרום בררני</span><span>דיפוזיה</span><span>אוסמוזה</span><span>העברה פעילה</span></p></section>
+  <div class="qs" id="q2"></div>
+
+  <!-- 3 -->
+  <div class="part-h" id="p3"><span class="n">3</span><h2>מאפייני החיים ומבנה התא</h2></div>
+  <section class="card"><div class="sum"><ul>
+    <li><b>מאפייני חיים:</b> הפרדה מהסביבה החיצונית, סביבה פנימית יציבה, חילוף חומרים, התרבות, תגובה לגירוי, גדילה והתפתחות.</li>
+    <li>התא הוא יחידת המבנה והתפקוד. יש <b>אחידות</b> במבנה הבסיסי, בהרכב ובתהליכים, לצד <b>שונות</b> בצורה ובתפקוד. דוגמה להתאמה בין מבנה לתפקוד: בתאי שריר יש מיטוכונדריה רבות.</li>
+    <li><b>פרוקריוט</b> (חיידק): בלי גרעין ובלי אברונים עטופי קרום. <b>אאוקריוט:</b> גרעין ואברונים. האברונים יוצרים <b>מידור</b>: תהליכים שונים מתרחשים במקביל, בתנאים שונים.</li>
+    <li><b>אברונים:</b> גרעין (DNA), ריבוזום (בניית חלבונים), מיטוכונדריה (נשימה תאית, ATP), כלורופלסט (פוטוסינתזה), ליזוזום (אנזימי פירוק), חלולית.</li>
+    <li><b>נגיף אינו תא:</b> חומר תורשתי ומעטפת חלבון, בלי חילוף חומרים עצמאי. הוא מתרבה רק בתוך תא חי, בחומרים ובריבוזומים של התא המאכסן.</li>
+    <li>ככל שהתא קטן יותר, <b>היחס בין שטח הפנים לנפח</b> גדול יותר.</li>
+  </ul><div id="d3"></div></div>
+  <p class="terms"><i>מושגים:</i><span>פרוקריוט</span><span>אאוקריוט</span><span>מידור</span><span>ריבוזום</span><span>מיטוכונדריה</span><span>ליזוזום</span><span>דופן</span><span>נגיף</span><span>שטח פנים לנפח</span></p></section>
+  <div class="qs" id="q3"></div>
+
+  <!-- 4 -->
+  <div class="part-h" id="p4"><span class="n">4</span><h2>ההרכב הכימי של התא</h2></div>
+  <section class="card"><div class="sum"><ul>
+    <li>היסודות העיקריים בחומרים האורגניים: <b>C, H, O, N, P, S</b>. רוב התהליכים בתא מתרחשים בסביבה מימית.</li>
+    <li><b>פחמימות:</b> חד־סוכר (גלוקוז), דו־סוכר (סוכרוז), רב־סוכר: עמילן וגליקוגן (חומרי תשמורת) ותאית (דופן התא בצמח).</li>
+    <li><b>חלבונים:</b> שרשראות של חומצות אמיניות בקשרים פפטידיים. רצף החומצות האמיניות נקבע ב-DNA וקובע את המבנה המרחבי ואת הפעילות.</li>
+    <li><b>חומרי תשמורת</b> (גליקוגן ושומן בבעלי חיים, עמילן ושמן בצמחים) אינם מסיסים במים, ולכן אגירתם אינה משנה את ריכוז המומסים בתא.</li>
+    <li><b>מים ומינרלים:</b> מים הם ממס ומשתתפים בתגובות. מינרלים הם רכיבים של חומרים בתא, למשל חנקן וזרחן בחומצות גרעין, וברזל בהמוגלובין.</li>
+  </ul><div id="d4"></div></div>
+  <p class="terms"><i>מושגים:</i><span>חד־סוכר</span><span>רב־סוכר</span><span>חומר תשמורת</span><span>גליקוגן</span><span>עמילן</span><span>חומצה אמינית</span><span>קשר פפטידי</span><span>נוקלאוטיד</span></p></section>
+  <div class="qs" id="q4"></div>
+
+  <!-- 5 -->
+  <div class="part-h" id="p5"><span class="n">5</span><h2>החומר התורשתי וחלוקת התא</h2></div>
+  <section class="card"><div class="sum"><ul>
+    <li><b>DNA</b> הוא סליל כפול של שני גדילים. נוקלאוטיד = סוכר (דאוקסיריבוז) + זרחה + בסיס חנקני. זיווג משלים: <b>A–T</b>, <b>G–C</b>.</li>
+    <li><b>כרומוזום:</b> DNA המלופף סביב חלבונים. מספר הכרומוזומים קבוע ואופייני למין (באדם 46, כלומר 23 זוגות הומולוגיים). כרומוזום משוכפל = שתי כרומטידות המחוברות בצנטרומר.</li>
+    <li><b>שכפול DNA</b> מתרחש לפני החלוקה: הגדילים נפרדים, ולפי כל גדיל נבנה גדיל משלים חדש.</li>
+    <li><b>מיטוזה:</b> בתאי גוף. נוצרים תאים זהים לתא האם, באותו מספר כרומוזומים: גדילה, התחדשות, רבייה אל־זוויגית.</li>
+    <li><b>מיוזה</b> (חלוקת הפחתה): ביצירת תאי רבייה. ההומולוגיים נפרדים, ונוצרים תאים הפלואידיים (n). שחלוף והפרדה בלתי תלויה מגדילים את השונות. ההפריה מחזירה את המספר 2n.</li>
+  </ul><div id="d5"></div></div>
+  <p class="terms"><i>מושגים:</i><span>נוקלאוטיד</span><span>בסיס חנקני</span><span>גדיל משלים</span><span>כרומטידה</span><span>צנטרומר</span><span>הומולוגיים</span><span>דיפלואיד</span><span>הפלואיד</span><span>זיגוטה</span></p></section>
+  <div class="qs" id="q5"></div>
+
+  <!-- 6 -->
+  <div class="part-h" id="p6"><span class="n">6</span><h2>מ-DNA לחלבון ובקרה על ביטוי גנים</h2></div>
+  <section class="card"><div class="sum"><ul>
+    <li><b>גן</b> הוא קטע DNA המקודד לחלבון. המסלול: DNA ← <b>תעתוק</b> (בגרעין) ← mRNA ← <b>תרגום</b> (בריבוזום) ← חלבון.</li>
+    <li><b>תעתוק:</b> אנזים מתעתק בונה mRNA בזיווג משלים לגדיל ה-DNA. ב-RNA יש U במקום T.</li>
+    <li><b>תרגום:</b> כל <b>קודון</b> (שלושה נוקלאוטידים ב-mRNA) מקודד לחומצה אמינית. <b>tRNA</b> מביא את החומצה האמינית המתאימה לריבוזום. הצופן הגנטי אחיד בכל היצורים.</li>
+    <li><b>בקרה על ביטוי גנים</b> קובעת <b>אמ"ע</b>: <b>א</b>יפה (באיזה תא), <b>מ</b>תי, וב<b>ע</b>וצמה. בכל תאי הגוף אותו גנום, אבל בכל תא מתבטא רק חלק מהגנים. התא אינו "מחליט": הוא מגיב לאותות. הבקרה יכולה להתרחש בכל שלב בדרך מהגן לחלבון הפעיל.</li>
+    <li> גנים של <b>תחזוקה שוטפת</b> מתבטאים בכל התאים. האותות יכולים להיות תוך־תאיים או חוץ־תאיים, למשל הורמון שנקשר לקולטן.</li>
+    <li><b>התמיינות:</b> מושתקים גנים מסוימים ומופעלים אחרים. <b>תאי גזע</b> אינם ממוינים, מתחלקים, ויכולים להתמיין לסוגי תאים שונים.</li>
+  </ul><div id="d6"></div></div>
+  <p class="terms"><i>מושגים:</i><span>גן</span><span>תעתוק</span><span>תרגום</span><span>mRNA</span><span>tRNA</span><span>קודון</span><span>צופן גנטי</span><span>התמיינות</span><span>תא גזע</span><span>גנים לתחזוקה שוטפת</span><span>אמ"ע</span></p>
+  <p class="hint">לחזרה מלאה: <a href="https://hagit2303.github.io/genetika/bakara/index.html" target="_blank" rel="noopener">יחידת בקרה על ביטוי גנים באתר</a> (מצגת ותרגול).</p></section>
+  <div class="qs" id="q6"></div>
+
+  <!-- 7 -->
+  <div class="part-h" id="p7"><span class="n">7</span><h2>תורשה מנדלית</h2></div>
+  <section class="card"><div class="sum"><ul>
+    <li><b>אללים</b> הם גרסאות של אותו גן. <b>גנוטיפ</b> = הרכב האללים. <b>פנוטיפ</b> = התכונה הנראית, המושפעת גם מהסביבה.</li>
+    <li>אלל <b>דומיננטי</b> מתבטא גם בהטרוזיגוט. אלל <b>רצסיבי</b> מתבטא רק בהומוזיגוט.</li>
+    <li>תכונה שמופיעה בצאצא ולא בהורים: האלל שלה רצסיבי, ושני ההורים הטרוזיגוטים.</li>
+    <li>במיוזה האללים נפרדים: מחצית מהגמטות של Aa נושאות A, ומחציתן a.</li>
+    <li><b>הכלאת מבחן:</b> הכלאה עם הומוזיגוט רצסיבי. כל הצאצאים דומיננטיים ← ההורה הנבדק הומוזיגוט. מחצית ומחצית ← הטרוזיגוט.</li>
+  </ul><div id="d7"></div></div>
+  <p class="terms"><i>מושגים:</i><span>אלל</span><span>גנוטיפ</span><span>פנוטיפ</span><span>הומוזיגוט</span><span>הטרוזיגוט</span><span>זן טהור</span><span>F1, F2</span><span>הכלאת מבחן</span><span>שושלת</span></p>
+  <p class="hint">לחזרה מלאה: <a href="https://hagit2303.github.io/genetika/mendel/index.html" target="_blank" rel="noopener">יחידת התורשה המנדלית באתר</a> (מצגות, סימולציה ומעבדות).</p></section>
+  <div class="qs" id="q7"></div>
+
+  <!-- 8 -->
+  <div class="part-h" id="p8"><span class="n">8</span><h2>תרגול גרפים</h2></div>
+  <p class="hint">לפני שעונים: מה על כל ציר? מה היחידות? איפה העקום עולה, יורד או קבוע?</p>
+  <div class="qs" id="q8"></div>
+
+  <!-- 9 -->
+  <div class="part-h" id="p9"><span class="n">9</span><h2>שאלות פתוחות בסגנון בגרות</h2></div>
+  <section class="card mshm">
+    <h2>✍️ תשובה משעממ"ת</h2>
+    <p>לפני שכותבים, ואחרי שמסיימים, עוברים על ששת השלבים:</p>
+    <div class="tips">
+      <div><b class="ini">מ</b> <b>מבנה.</b> פתיחה, אמצע וסוף. פותחים מתוך השאלה ("ידוע ש…", "מהגרף עולה ש…"), ועונים רק על מה שנשאל, לפי מילת השאלה (ציינו, נמקו, הסבירו).</div>
+      <div><b class="ini">ש</b> <b>שרשור סיבתי.</b> סיבה ← תוצאה. "…גורם ל…", "כתוצאה מכך…", "לכן…". אפשר לשרטט בצד תרשים זרימה.</div>
+      <div><b class="ini">ע</b> <b>עקרונות ביולוגיים.</b> כשמתאים, מנמקים בעיקרון: ויסות והומאוסטזיס, יחסי גומלין, התאמה בין מבנה לתפקוד, המשכיות תורשתית, גדילה והתפתחות, אבולוציה.</div>
+      <div><b class="ini">מ</b> <b>מקרו ← מיקרו.</b> לא נשארים בשטח. עוברים בין רמות הארגון, מהגוף ועד התא והמולקולה, עד שמגיעים ליעד.</div>
+      <div><b class="ini">מ</b> <b>מושגים.</b> בטיוטה כותבים רשימת מושגים שמתאימים לשאלה, ומשתמשים בהם בתשובה.</div>
+      <div><b class="ini">ת</b> <b>תסגרו את התשובה.</b> משפט סיום שעונה ישירות על השאלה. מ.ש.ל.</div>
+    </div>
+    <p class="hint">"תשובה משעממ"ת" — צוות ביולוגיה, הכפר הירוק.</p>
+  </section>
+  <section class="card">
+    <h2>🚫 בלי טלאולוגיה ובלי האנשה</h2>
+    <p>תשובה ביולוגית מתארת <b>סיבה ותוצאה</b>, לא מטרה או רצון. תא, איבר או חיידק אינם "רוצים", "מנסים", "צריכים" או "מחליטים". ניסוח כזה מוריד נקודות.</p>
+    <div class="tips">
+      <div><b>✘</b> "הלבלב מפריש אינסולין <u>כדי</u> להוריד את הגלוקוז."<br><span class="ri">✔</span> "עלייה בגלוקוז גורמת להפרשת אינסולין, <u>ולכן</u> ריכוז הגלוקוז יורד."</div>
+      <div><b>✘</b> "התא <u>רוצה</u> להכניס מים."<br><span class="ri">✔</span> "ריכוז המומסים בתא גבוה מבתמיסה, <u>ולכן</u> מים נכנסים לתא באוסמוזה."</div>
+      <div><b>✘</b> "החיידקים <u>התרגלו</u> לאנטיביוטיקה."<br><span class="ri">✔</span> "חיידקים עמידים שרדו והתרבו, <u>ולכן</u> שכיחותם עלתה."</div>
+      <div><b>מילים לבדוק בתשובה:</b> כדי, על מנת, בשביל, לצורך, נועד, רוצה, מנסה, צריך, מחליט. במקומן: גורם ל…, כתוצאה מכך…, ולכן…</div>
+    </div>
+  </section>
+  <p class="hint">כתבו תשובה מלאה, כמו במבחן, לפי משעממ"ת. רק אחרי הכתיבה נפתח המחוון: סמנו ביושר מה כלול בתשובה שלכם, וראו כמה נקודות הייתם מקבלים ומה חסר.</p>
+  <div class="qs" id="q9"></div>
+
+  <section class="card" id="pend">
+    <h2>📒 דף הטעויות שלי</h2>
+    <p class="hint">כל שאלה שבה טעיתם, עם התשובה הנכונה וההסבר. לפני המבחן, עברו על הדף הזה שוב.</p>
+    <div id="mist"></div>
+  </section>
+
+  <section class="card">
+    <h2>⬇ קובץ למורה</h2>
+    <p class="hint">בקובץ: השם, כמה תשובות נכונות היו בניסיון הראשון, כל התשובות שלכם ודף הטעויות. אפשר להוריד בכל שלב.</p>
+    <p class="note" id="prog"></p><button class="dl" id="dl" type="button">⬇ הורדת קובץ PDF</button><p class="hint" id="dlmsg"></p>
+  </section>
+
+  <footer>ביולוגיה · כיתות י״ב · חזרה למבחן רבעון א' תשפ״ז. השאלות מבוססות על בחינות בגרות, על חוברת שאלות ממוינות מבחינות בגרות, ועל שאלות שנכתבו ברוח הבגרות. "מושג ביום" פותח על ידי הדס גרדי. החזרה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים. נבנתה על ידי חגית ברגמן.</footer>
+</div>
+<div id="report"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="assets/lab.js"></script>
+<script src="assets/pdf.js"></script>
+<script src="assets/charts.js"></script>
+<script src="assets/diagrams.js"></script>
+<script src="assets/q.js"></script>
+<script>
+window.REPORT_FOOT = 'ביולוגיה י״ב · חזרה למבחן רבעון א\'';
+[1, 2, 3, 4, 5, 6, 7].forEach(i => { $('d' + i).innerHTML = DIA['t' + i] });
+[[T1, 'a'], [T2, 'b'], [T3, 'c'], [T4, 'd'], [T5, 'e'], [T6, 'f'], [T7, 'g'], [GR, 'h']].forEach(([Q, tag], i) => renderQuestions($('q' + (i + 1)), Q, tag));
+renderBagrut($('q9'), OPEN, 'o');
+const TOTAL = document.querySelectorAll('.opts').length + OPEN.reduce((s, q) => s + q.parts.length, 0);
+function progress() { const n = Object.keys(Lab.log).length; $('prog').innerHTML = n >= TOTAL ? '✓ עניתם על כל השאלות. כל הכבוד!' : `עניתם על <b>${n}</b> מתוך <b>${TOTAL}</b> שאלות וסעיפים.` }
+setInterval(progress, 800); progress();
+$('dl').onclick = () => { if (!(window.STUDENT && window.STUDENT.name)) { $('gate').hidden = false; $('gErr').textContent = 'לפני ההורדה: כתבו שם וכיתה, הם יופיעו בקובץ.'; $('gName').focus(); window.AFTER_GATE = () => $('dl').click(); return } labPdf('חזרה למבחן רבעון א\' · י״ב', 'חזרה-רבעון-א') };
+</script>
+<script>(function(){const g=document.getElementById('gate'),n=document.getElementById('gName'),c=document.getElementById('gClass');
+let saved={};try{saved=JSON.parse(localStorage.getItem('bio12-student')||'{}')}catch(e){}
+n.value=saved.name||'';c.value=saved.cls||'';
+const fill=(nm,cl)=>document.querySelectorAll('[data-fill="name"]').forEach(e=>e.textContent='👋 '+nm+' · '+cl);
+if(saved.name&&saved.cls){window.STUDENT={name:saved.name,cls:saved.cls};fill(saved.name,saved.cls)}else{g.hidden=false;n.focus()}
+document.getElementById('gGo').onclick=()=>{const nm=n.value.trim(),cl=c.value.trim();
+ if(nm.replace(/\s/g,'').length<2||!cl){document.getElementById('gErr').textContent='כתבו שם (לפחות 2 אותיות) וכיתה.';return}
+ try{localStorage.setItem('bio12-student',JSON.stringify({name:nm,cls:cl}))}catch(e){}
+ fill(nm,cl);window.STUDENT={name:nm,cls:cl};g.hidden=true;if(window.AFTER_GATE){const f=window.AFTER_GATE;window.AFTER_GATE=null;f()}};
+n.addEventListener('keydown',e=>{if(e.key==='Enter')c.focus()});c.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('gGo').click()});})();</script>
+</body>
+</html>
