@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>בקרה בפרוקריוטים: אופרון הלקטוז</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Rubik:wght@400;500;700&family=Amatic+SC:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--desk:#CDBB98;--parch:#F6EDD6;--parch2:#EEDFBE;--ink:#2E2A22;--mut:#6B5F4B;--olive:#8C9A5B;--olive2:#6F7D44;--terra:#C9794E;--slate:#7D8A8E;--pink:#E0578C;--blue:#4E6FD3;--ok:#3E7B3A;--okbg:#E2EFD3;--no:#B8423A;--nobg:#F6DAD3;--hl:#F2D35B}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+html{font-size:clamp(24px,2.9vmin + 1.15vw,52px)}
+body{overflow:hidden;color:var(--ink);font-family:Rubik,Arial,sans-serif;background:var(--desk);
+ background-image:radial-gradient(circle at 20% 30%,rgba(255,255,255,.18),transparent 40%),radial-gradient(circle at 80% 70%,rgba(0,0,0,.08),transparent 45%)}
+.deck{position:fixed;inset:clamp(6px,1.6vmin,22px) clamp(6px,1.6vmin,22px) calc(clamp(6px,1.6vmin,22px) + 2.4rem)}
+/* דף קלף: צבע, כתמים וקצוות לא ישרים */
+.s{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;align-items:stretch;gap:.45rem;
+ padding:clamp(14px,2.6vmin,40px) clamp(20px,5vmin,80px);overflow-y:auto;
+ background:radial-gradient(ellipse at 15% 10%,rgba(170,130,70,.18),transparent 35%),radial-gradient(ellipse at 90% 95%,rgba(150,110,60,.22),transparent 40%),radial-gradient(ellipse at 50% 50%,var(--parch) 55%,var(--parch2) 100%);
+ clip-path:polygon(0% 1.2%,6% 0%,14% .9%,23% .1%,31% 1%,42% .2%,55% 1.1%,63% .2%,74% .8%,86% 0%,94% 1%,100% .3%,99.4% 9%,100% 21%,99.2% 34%,100% 47%,99.3% 60%,100% 73%,99.4% 86%,100% 99.2%,92% 100%,81% 99.1%,70% 100%,58% 99.2%,46% 100%,35% 99.3%,24% 100%,12% 99.1%,3% 100%,0% 98.6%,.7% 87%,0% 74%,.6% 61%,0% 48%,.8% 35%,0% 22%,.6% 10%)}
+.s.on{display:flex}
+h1,h2,h3{font-family:"Secular One",Rubik,sans-serif;font-weight:400;line-height:1.1;text-wrap:balance}
+h1{font-size:2.4rem}h2{font-size:1.55rem;text-align:center}h3{font-size:1.1rem}
+p,li{font-size:1rem;line-height:1.4}
+.big{font-size:1.25rem;line-height:1.3}
+.small{font-size:.72rem;color:var(--mut)}
+.note{font-family:"Amatic SC",cursive;font-size:1.3rem;color:var(--terra);line-height:1}
+.c{text-align:center}
+.L{direction:ltr;unicode-bidi:isolate;display:inline-block}
+mark{background:linear-gradient(transparent 50%,var(--hl) 50% 92%,transparent 92%);color:inherit;padding:0 .1em}
+.row{display:flex;gap:.8rem;align-items:center;justify-content:center;flex-wrap:wrap}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:1rem;align-items:center}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}
+@media (max-width:700px){.cols,.cols3{grid-template-columns:1fr}}
+.card{background:rgba(255,253,245,.75);border:3px solid var(--olive2);border-radius:6px;padding:.55rem .75rem;box-shadow:3px 4px 0 rgba(110,90,50,.18)}
+.card.t{border-color:var(--terra)}.card.r{border-color:var(--no)}.card.g{border-color:var(--ok)}
+.card h3{color:var(--olive2)}.card.t h3{color:var(--terra)}
+.def{background:#FFF8DC;border:3px dashed var(--terra);padding:.6rem .9rem;font-size:1.05rem;line-height:1.35;border-radius:4px}
+.chain{display:flex;flex-direction:column;gap:.25rem;align-items:center}
+.chain>*{background:rgba(255,253,245,.8);border:2.5px solid var(--olive2);padding:.15rem .6rem;border-radius:30px;font-size:.85rem;text-align:center}
+.chain .ar{border:0;background:none;padding:0;font-size:.9rem;color:var(--terra);line-height:1}
+.chain.h{flex-direction:row;flex-wrap:wrap;justify-content:center}
+/* פרגמנטים: נחשפים בלחיצה על "הבא" */
+.f{opacity:0;transform:translateY(12px);transition:opacity .45s,transform .45s}
+.f.in{opacity:1;transform:none}
+.swap>.f{display:none}.swap>.f.cur{display:block}
+/* החיידק */
+.ph{border:6px solid #fff;box-shadow:3px 5px 0 rgba(110,90,50,.25);transform:rotate(-1.5deg);max-width:100%;object-fit:cover}
+.bug{display:inline-block;width:clamp(120px,22vmin,260px)}
+.bug.xl{width:clamp(170px,34vmin,380px)}.bug.sm{width:clamp(90px,15vmin,170px)}
+.bug svg{width:100%;height:auto;overflow:visible}
+.bug .wob{animation:wob 3.2s ease-in-out infinite;transform-origin:120px 95px;transform-box:view-box}
+.bug .eyes{animation:blink 4.5s infinite;transform-origin:center;transform-box:fill-box}
+.bug .zz{animation:zz 2.4s infinite}
+@keyframes wob{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(-7deg) translateY(-4px)}}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.08)}}
+@keyframes zz{0%{opacity:0;transform:translate(0,0)}30%{opacity:1}100%{opacity:0;transform:translate(14px,-30px)}}
+/* אופרון */
+.op{width:100%;max-height:38vh;display:block;margin:auto}
+.op text{font-family:Rubik,Arial,sans-serif;font-weight:500}
+.op .lbl{font-size:23px;fill:#222}.op .tiny{font-size:17px;fill:#222}
+.pol{transform-box:view-box}
+.pol.blocked{animation:shake .5s ease-in-out infinite}
+.pol.go{animation:polgo 4s ease-in-out forwards}
+.pol.loop{animation:polloop 4s linear infinite}
+.pol.weak{animation:weak 2.2s ease-in-out infinite}
+@keyframes shake{0%,100%{transform:translateX(0)}30%{transform:translateX(-12px)}60%{transform:translateX(5px)}}
+@keyframes polgo{0%{transform:translateX(0)}100%{transform:translateX(-520px)}}
+@keyframes polloop{0%{transform:translateX(0);opacity:1}85%{transform:translateX(-520px);opacity:1}100%{transform:translateX(-520px);opacity:0}}
+@keyframes weak{0%,100%{transform:translate(0,0)}40%{transform:translate(10px,-55px)}70%{transform:translate(0,0)}}
+.mrna{stroke-dasharray:900;stroke-dashoffset:900}
+.mrna.go{animation:draw 4s ease-in-out forwards}
+.mrna.loop{animation:drawl 4s linear infinite}
+.mrna.weak{stroke-dashoffset:0;opacity:.25}
+.mrna.done{stroke-dashoffset:0}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes drawl{0%{stroke-dashoffset:900}85%,100%{stroke-dashoffset:0}}
+.prot{opacity:0;transform-box:fill-box;transform-origin:center}
+.prot.go{animation:pop .6s ease-out forwards}
+.prot.done{opacity:1}
+@keyframes pop{0%{opacity:0;transform:scale(.2)}80%{transform:scale(1.15)}100%{opacity:1;transform:scale(1)}}
+.rep{transition:transform 1s ease-in-out}
+.rep.off{transform:translate(390px,-72px) rotate(10deg)}
+.seq .lacin{animation:lacin 1.2s ease-out forwards}
+@keyframes lacin{from{transform:translate(260px,-120px)}to{transform:translate(0,0)}}
+.seq .rep.leave{animation:leave 1.2s ease-in-out 1.3s forwards}
+@keyframes leave{to{transform:translate(390px,-72px) rotate(10deg)}}
+.seq .pol.go{animation-delay:2.5s}.seq .mrna.go{animation-delay:2.5s}
+.seq .prot.go{animation-delay:6.4s}.seq .prot.go.p2{animation-delay:6.7s}.seq .prot.go.p3{animation-delay:7s}
+.dim{opacity:.25}
+/* בנייה הדרגתית של שקף המילון */
+.dict .b1,.dict .b2,.dict .b3,.dict .b4,.dict .b5{opacity:0;transition:opacity .6s}
+.dict.st1 .b1,.dict.st2 .b2,.dict.st3 .b3,.dict.st4 .b4,.dict.st5 .b5{opacity:1}
+/* מהלכים: הנחה, תשובה, בחירה */
+button{font:inherit;cursor:pointer}
+.rv{font:500 .8rem Rubik,Arial,sans-serif;background:var(--olive2);color:#fff;border:0;padding:.3rem .8rem;border-radius:30px;align-self:center}
+.ans{display:none;background:#FFFDF2;border-inline-start:6px solid var(--ok);padding:.35rem .6rem;font-size:.8rem;line-height:1.35}
+.ans.show{display:block}
+.mc{display:flex;flex-direction:column;gap:.35rem}
+.mc button{font:400 .9rem Rubik,Arial,sans-serif;text-align:start;background:rgba(255,253,245,.85);border:2.5px solid var(--olive2);padding:.35rem .7rem;border-radius:6px;color:var(--ink)}
+.mc button.ok{background:var(--okbg);border-color:var(--ok)}.mc button.no{background:var(--nobg);border-color:var(--no)}
+.mc button:disabled{cursor:default}
+.mcfb{font-size:.85rem;min-height:1.2em}
+/* הדמיה */
+.tog{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center}
+.tog button{font:500 .85rem Rubik,Arial,sans-serif;border:3px solid var(--olive2);background:#fff;padding:.3rem .8rem;border-radius:30px;color:var(--ink)}
+.tog button[aria-pressed="true"]{background:var(--olive2);color:#fff}
+.meter{height:.7rem;background:#fff;border:2.5px solid var(--olive2);border-radius:20px;overflow:hidden;width:min(100%,520px);margin:auto}
+.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--terra),var(--hl));width:0;transition:width .8s}
+table.st{border-collapse:collapse;margin:auto;background:rgba(255,253,245,.85);font-size:.78rem}
+table.st th,table.st td{border:2px solid var(--olive2);padding:.25rem .55rem;text-align:center}
+table.st th{background:var(--olive2);color:#fff;font-weight:500}
+table.st td.h{color:transparent;cursor:pointer;background:repeating-linear-gradient(45deg,#EFE4C8 0 8px,#F6EDD6 8px 16px)}
+table.st td.h.show{color:inherit;background:none}
+/* נורות */
+.lamp{cursor:pointer;background:none;border:0}
+.lamp svg{width:clamp(56px,10vmin,120px)}
+.bulb{fill:#F3F0E6;transition:fill .3s}.lit .bulb{fill:#FFD84A}.lit .glow{opacity:1}.glow{opacity:0;transition:opacity .3s}
+/* ניווט */
+.bar{position:fixed;inset-inline:0;bottom:0;height:2.4rem;display:flex;align-items:center;justify-content:center;gap:.6rem;font-size:.7rem}
+.bar button{font:700 .75rem Rubik,Arial,sans-serif;background:var(--parch);border:2.5px solid var(--ink);padding:.15rem .8rem;border-radius:30px;color:var(--ink)}
+.bar #cnt{min-width:4.5em;text-align:center;font-weight:700}
+.prog{position:fixed;top:0;inset-inline-start:0;height:5px;background:var(--terra);width:var(--p,0);transition:width .3s}
+.credit{font-size:.6rem;color:var(--mut);text-align:center}
+@media print{body{overflow:visible}.s{position:relative;display:flex;page-break-after:always;height:100vh}.f{opacity:1;transform:none}.bar,.prog{display:none}}
+.sitebar{position:fixed;top:10px;inset-inline-end:12px;z-index:50;display:flex;gap:6px}
+.sitebar a{font:700 14px Rubik,Arial,sans-serif;color:#1F4D3A;background:#fff;border:2px solid #1F4D3A;padding:5px 10px;text-decoration:none}
+.gate{position:fixed;inset:0;z-index:100;background:rgba(31,77,58,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.gate[hidden]{display:none}
+.gbox{background:#fff;border:3px solid #1F4D3A;max-width:420px;width:100%;padding:22px;display:flex;flex-direction:column;gap:12px;font-family:Rubik,Arial,sans-serif;color:#1F4D3A}
+.gbox h2{font-family:"Secular One",Rubik,sans-serif;font-weight:400;font-size:28px}.gbox label{display:flex;flex-direction:column;gap:4px;font-weight:500}
+.gbox input{font:inherit;font-size:18px;padding:8px;border:2px solid #1F4D3A}
+.gbox button{font:inherit;font-weight:700;font-size:18px;padding:10px;border:0;background:#1F4D3A;color:#fff;cursor:pointer}
+.gerr{color:#B8423A;font-weight:500;min-height:1.2em}
+@media print{.sitebar,.gate{display:none!important}}
+.sitebar{top:auto;bottom:14px;inset-inline-end:16px}
+</style></head><body>
+<div class="prog" id="prog"></div>
+<nav class="sitebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a></nav><div class="deck">
+
+<!-- 1 -->
+<section class="s">
+ <div class="row" style="gap:2rem"><span class="bug xl" data-bug="happy"></span>
+ <div><p class="note">ביולוגיה י״ב · בקרה על ביטוי גנים</p><h1>בקרה בפרוקריוטים</h1><p class="big" style="color:var(--terra)">אופרון הלקטוז</p></div></div>
+</section>
+
+<!-- 2 -->
+<section class="s">
+ <h2>זה תמיד מתחיל באנשים</h2>
+ <div class="row" style="gap:1.6rem">
+  <div class="row" style="gap:.6rem"><img class="ph" src="assets/prok-monod-jacob.jpg" alt="ז׳אק מונו ופרנסואה ז׳קוב במעבדה" style="height:clamp(120px,24vmin,280px)"><img src="assets/prok-nobel.jpg" alt="מדליית פרס נובל" style="height:clamp(100px,19vmin,220px);border-radius:50%"></div>
+  <div style="display:flex;flex-direction:column;gap:.4rem">
+   <p class="big">ז׳אק מונו · פרנסואה ז׳קוב</p><p class="small">(ואיתם אנדרה לבוף)</p>
+   <p>פרס נובל לפיזיולוגיה ולרפואה, 1965</p>
+   <p class="f card">הם גילו את המנגנון הראשון שהיה ידוע של <mark>בקרה על ביטוי גנים ברמת התעתוק</mark>.</p>
+  </div></div>
+</section>
+
+<!-- 2ב -->
+<section class="s">
+ <h2>הפסל הפנימי</h2>
+ <div class="row" style="gap:1.4rem;flex-wrap:nowrap"><img class="ph" src="assets/prok-jacob-book.jpg" alt="כריכת הספר הפסל הפנימי מאת פרנסואה ז׳קוב" style="height:clamp(170px,46vmin,440px)">
+ <div style="display:flex;flex-direction:column;gap:.5rem;max-width:22em">
+  <p class="big">פרנסואה ז׳קוב כתב אוטוביוגרפיה בשם "הפסל הפנימי".</p>
+  <p class="f card">"המפסלת והאזמל, במקרה הזה, הם פגישות והתחברויות."</p>
+  <p class="f">מחקרם של מונו וז׳קוב היה בסיס לגילוי מנגנוני בקרה נוספים.</p>
+ </div></div>
+</section>
+
+<!-- 3 -->
+<section class="s">
+ <h2>מה היתרון בכך שלא כל הגנים מתבטאים כל הזמן?</h2>
+ <div class="row"><span class="bug" data-bug="wow"></span></div>
+ <div class="f card big c">חיסכון באנרגיה ובחומרי גלם</div>
+ <p class="f c">ייצור חלבונים צורך ATP, חומצות אמיניות ונוקלאוטידים.<br>חלבון שנוצר בלי שימוש בא על חשבון ייצור של חלבונים אחרים.</p>
+</section>
+
+<!-- 4 -->
+<section class="s">
+ <h2>ומה היה קורה אילו כל הגנים היו מתבטאים כל הזמן, באותה עוצמה?</h2>
+ <div class="cols3">
+  <div class="f card c"><h3>עודף</h3><p>של חלבונים מסוג אחד</p></div>
+  <div class="f card c t"><h3>מחסור</h3><p>בחלבונים אחרים</p></div>
+  <div class="f card c"><h3>אותות סותרים</h3><p>במסלולי התקשורת בתא</p></div>
+ </div>
+ <p class="f big c"><mark>התא לא היה מתפקד כראוי</mark></p>
+</section>
+
+<!-- 5 -->
+<section class="s">
+ <h2>גלוקוז או לקטוז?</h2>
+ <div class="cols">
+  <div style="display:flex;flex-direction:column;gap:.5rem">
+   <p>החוקרים בדקו את חילוף החומרים של סוכרים בחיידק <i class="L">E. coli</i>.</p>
+   <p class="f card">כשבמצע יש <b>גם גלוקוז וגם לקטוז</b>, החיידקים מפרקים קודם את <b>הגלוקוז</b>.<br>רק כשהגלוקוז אוזל, מתחיל פירוק הלקטוז.</p>
+   <p class="f note">למה? נגלה בהמשך…</p>
+  </div>
+  <div class="c"><svg viewBox="0 0 300 140" style="width:min(100%,360px)" aria-label="גלוקוז ולקטוז"><g id="sugars"></g></svg><br><span class="bug" data-bug="think"></span></div>
+ </div>
+</section>
+
+<!-- 6 -->
+<section class="s">
+ <h2>יש גלוקוז במצע</h2>
+ <p class="c">הגלוקוז חודר לתא החיידק ומנוצל בתהליך הנשימה התאית:</p>
+ <div class="chain h big" style="font-size:1.1rem"><span>גלוקוז</span><span class="ar">+</span><span>חמצן</span><span class="ar">←</span><span>פחמן דו־חמצני</span><span class="ar">+</span><span>מים</span><span class="ar">+</span><span style="border-color:var(--terra)">ATP</span></div>
+ <p class="f c card">אין צורך בשום אנזים נוסף: הגלוקוז הוא חד־סוכר, והוא נכנס ישירות לתהליך.</p>
+</section>
+
+<!-- 7 -->
+<section class="s">
+ <h2>אין גלוקוז, יש לקטוז</h2>
+ <p class="c">לקטוז (סוכר החלב) הוא <b>דו־סוכר</b>. לפני הנשימה התאית הוא מפורק:</p>
+ <svg class="op" viewBox="0 0 900 260" id="split" aria-label="פירוק לקטוז"></svg>
+ <p class="f c card">האנזים <mark>β־גלקטוזידאז</mark> מפרק לקטוז לגלוקוז ולגלקטוז.</p>
+</section>
+
+<!-- 8 -->
+<section class="s">
+ <h2>איך הלקטוז נכנס לתא?</h2>
+ <svg class="op" viewBox="0 0 900 300" id="perm" aria-label="מעבר לקטוז דרך חלבון נשא"></svg>
+ <p class="f c card">דרך <mark>חלבון נשא</mark> בקרום התא: <b>פרמאז</b> (permease).</p>
+</section>
+
+<!-- 9 -->
+<section class="s">
+ <h2>ומה קורה כשאין לקטוז במצע?</h2>
+ <div class="row"><span class="bug xl" data-bug="bed"></span></div>
+ <p class="f c card big">כמעט אין ייצור של β־גלקטוזידאז ושל פרמאז.</p>
+ <p class="f c">שאלת המחקר: <mark>איך נקבע מתי נוצרים האנזימים לניצול לקטוז?</mark></p>
+</section>
+
+<!-- 10 -->
+<section class="s">
+ <h2>שלושה חלבונים, צוות אחד</h2>
+ <div class="row"><img class="ph" src="assets/prok-musketeers.jpg" alt="שלושת המוסקטרים" style="height:clamp(110px,24vmin,260px)"><p class="note">שלושת המוסקטרים:<br>שלושה גנים, אזור בקרה אחד</p></div>
+ <div class="cols3">
+  <div class="f card c"><h3>β־גלקטוזידאז</h3><p class="small">גן Z</p><p>מפרק לקטוז לגלוקוז ולגלקטוז</p></div>
+  <div class="f card c t"><h3>פרמאז</h3><p class="small">גן Y</p><p>חלבון נשא בקרום: לקטוז חודר דרכו לתא</p></div>
+  <div class="f card c"><h3>טרנסאצטילאז</h3><p class="small">גן A</p><p>אנזים שלישי. תפקידו פחות מרכזי</p></div>
+ </div>
+</section>
+
+<!-- 11 -->
+<section class="s">
+ <h2>מה גילו החוקרים?</h2>
+ <p class="f card big c">שלושת הגנים נמצאים זה ליד זה ב־DNA ומתועתקים <b>יחד</b> ל־mRNA אחד.</p>
+ <p class="f card big c t">הם מבוקרים על ידי <b>אזור בקרה אחד</b>.</p>
+ <p class="f def c"><b>אופרון:</b> קבוצה של גנים מבניים סמוכים, שמתועתקים יחד ומבוקרים על ידי אזור בקרה משותף.</p>
+ <p class="f small c">אופרונים נפוצים בפרוקריוטים (חיידקים).</p>
+</section>
+
+<!-- 12 -->
+<section class="s">
+ <h2>מתג אחד, נורה אחת · מתג אחד, שלוש נורות</h2>
+ <p class="c small">לחצו על המתגים</p>
+ <div class="cols">
+  <div class="c"><div class="row"><button class="lamp" data-sw="a" aria-label="מתג"><svg viewBox="0 0 90 120"><rect x="10" y="10" width="70" height="100" rx="10" fill="#3B3A36"/><rect class="knob" x="30" y="22" width="30" height="40" rx="6" fill="#C9794E"/></svg></button><span data-bulbs="a" data-n="1"></span></div><p>גן רגיל: אזור בקרה לכל גן</p></div>
+  <div class="c"><div class="row"><button class="lamp" data-sw="b" aria-label="מתג"><svg viewBox="0 0 90 120"><rect x="10" y="10" width="70" height="100" rx="10" fill="#3B3A36"/><rect class="knob" x="30" y="22" width="30" height="40" rx="6" fill="#C9794E"/></svg></button><span data-bulbs="b" data-n="3"></span></div><p>אופרון: אזור בקרה אחד לכמה גנים</p></div>
+ </div>
+ <table class="st f"><tr><th>באנלוגיה</th><th>באופרון</th></tr><tr><td>מתג</td><td>אזור הבקרה</td></tr><tr><td>נורה</td><td>גן מבני</td></tr><tr><td>נורה דולקת</td><td>הגן מתבטא: נוצר חלבון</td></tr><tr><td>היד שמדליקה</td><td>RNA פולימראז (האנזים המתעתק)</td></tr></table>
+</section>
+
+<!-- 13: מילון -->
+<section class="s dict">
+ <h2>מילון אופרון הלקטוז</h2>
+ <svg class="op" viewBox="0 0 1200 400" data-op='{"dict":1}' aria-label="מבנה אופרון הלקטוז"></svg>
+ <div class="swap c">
+  <p class="f def"><b>גנים מבניים:</b> גנים המקודדים לחלבונים. כאן: Z, ‏Y, ‏A. הם מתועתקים יחד ל־mRNA אחד.</p>
+  <p class="f def"><b>אתר מקדם:</b> רצף נוקלאוטידים שאליו נקשר האנזים המתעתק.</p>
+  <p class="f def"><b>RNA פולימראז (האנזים המתעתק):</b> נקשר לאתר המקדם ויוצר mRNA לפי רצף הגנים.</p>
+  <p class="f def"><b>אתר מפעיל:</b> רצף נוקלאוטידים שאליו נקשר החלבון המווסת (הדכאן).</p>
+  <p class="f def"><b>גן מווסת:</b> מקודד לחלבון המווסת, הדכאן. הוא <u>אינו</u> חלק מהאופרון, ויש לו אתר מקדם משלו.</p>
+ </div>
+</section>
+
+<!-- 14 -->
+<section class="s">
+ <h2>בקרה שלילית ובקרה חיובית</h2>
+ <p class="c">נקבעות לפי פעולת <b>החלבון המווסת</b>:</p>
+ <div class="cols">
+  <div class="f card r c"><h3 style="color:var(--no)">בקרה שלילית</h3><p>החלבון המווסת <b>מונע</b> את התעתוק</p></div>
+  <div class="f card g c"><h3 style="color:var(--ok)">בקרה חיובית</h3><p>החלבון המווסת <b>מחזק</b> את קישור האנזים המתעתק לאתר המקדם, והתעתוק מוגבר</p></div>
+ </div>
+ <p class="f c card">באופרון הלקטוז פועלות <mark>שתיהן</mark>.</p>
+</section>
+
+<!-- 15 -->
+<section class="s">
+ <h2>בקרה שלילית: אין לקטוז</h2>
+ <svg class="op" viewBox="0 0 1200 400" data-op='{"rep":"on","pol":"blocked","regexpr":1}' aria-label="דכאן קשור לאתר המפעיל"></svg>
+ <div class="chain h">
+  <span class="f">הגן המווסת מתבטא כל הזמן</span><span class="ar f">←</span><span class="f">נוצר דכאן</span><span class="ar f">←</span><span class="f">הדכאן נקשר לאתר המפעיל</span><span class="ar f">←</span><span class="f" style="border-color:var(--no)">אין תעתוק של הגנים המבניים</span>
+ </div>
+</section>
+
+<!-- 16 -->
+<section class="s">
+ <h2>בקרה שלילית: יש לקטוז</h2>
+ <svg class="op seq" viewBox="0 0 1200 400" data-op='{"rep":"leave","pol":"go","lac":1,"mrna":"go","prot":"go"}' aria-label="לקטוז משחרר את הדכאן"></svg>
+ <div class="chain h">
+  <span class="f">לקטוז נקשר לדכאן</span><span class="ar f">←</span><span class="f">המבנה המרחבי של הדכאן משתנה</span><span class="ar f">←</span><span class="f">הדכאן מתנתק מהאתר המפעיל</span><span class="ar f">←</span><span class="f" style="border-color:var(--ok)">תעתוק ← תרגום ← 3 חלבונים</span>
+ </div>
+ <p class="f small c">הלקטוז משמש <b>משרן</b>. (העשרה: בפועל נקשרת לדכאן נגזרת של לקטוז, אלולקטוז.)</p>
+</section>
+
+<!-- 17 -->
+<section class="s">
+ <h2>וכשהלקטוז נגמר?</h2>
+ <div class="cols">
+  <div class="chain">
+   <span class="f">β־גלקטוזידאז מפרק את הלקטוז</span><span class="ar f">↓</span>
+   <span class="f">ריכוז הלקטוז בתא יורד</span><span class="ar f">↓</span>
+   <span class="f">הדכאן, בלי לקטוז, חוזר להיקשר לאתר המפעיל</span><span class="ar f">↓</span>
+   <span class="f" style="border-color:var(--no)">התעתוק נפסק</span>
+  </div>
+  <div class="c"><span class="bug" data-bug="bed"></span><p class="f card">ייצור האנזימים מתרחש רק בזמן שיש לקטוז.</p></div>
+ </div>
+</section>
+
+<!-- 18 -->
+<section class="s">
+ <h2>בקרה חיובית: קשר חלש</h2>
+ <svg class="op" viewBox="0 0 1200 400" data-op='{"rep":"off","pol":"weak","lac":1,"mrna":"weak","capsite":1}' aria-label="RNA פולימראז נקשר חלש"></svg>
+ <p class="f card c">גם כשהדכאן אינו קשור, הקשר בין RNA פולימראז לאתר המקדם של אופרון הלקטוז <mark>חלש</mark>.</p>
+ <p class="f c">התוצאה: תעתוק בקצב <b>נמוך</b>.</p>
+</section>
+
+<!-- 19 -->
+<section class="s">
+ <h2>בקרה חיובית: CAP ו־cAMP</h2>
+ <svg class="op" viewBox="0 0 1200 400" data-op='{"rep":"off","pol":"loop","lac":1,"mrna":"loop","cap":1,"capsite":1}' aria-label="CAP-cAMP מחזק את הקישור"></svg>
+ <div class="chain h">
+  <span class="f">ריכוז הגלוקוז יורד</span><span class="ar f">←</span><span class="f">ריכוז cAMP בתא עולה</span><span class="ar f">←</span><span class="f">cAMP נקשר לחלבון CAP</span><span class="ar f">←</span><span class="f">התצמיד <span class="L">CAP-cAMP</span> נקשר לאתר CAP, ליד האתר המקדם</span><span class="ar f">←</span><span class="f" style="border-color:var(--ok)">הקשר של RNA פולימראז לאתר המקדם מתחזק ← תעתוק בקצב גבוה</span>
+ </div>
+</section>
+
+<!-- 20: הדמיה -->
+<section class="s" id="sim">
+ <h2>הדמיה: מה קורה באופרון?</h2>
+ <div class="tog"><button data-k="lac" aria-pressed="false">🥛 לקטוז במצע</button><button data-k="glu" aria-pressed="true">🍬 גלוקוז במצע</button></div>
+ <div class="row" style="flex-wrap:nowrap;gap:.5rem"><svg class="op" id="simop" viewBox="0 0 1200 400" style="max-height:40vh" aria-label="מצב האופרון"></svg><span class="bug sm" id="simbug"></span></div>
+ <div class="meter"><i id="simm"></i></div>
+ <p class="c" id="simt" style="font-size:.85rem"></p>
+</section>
+
+<!-- 21 -->
+<section class="s">
+ <h2>מסכמים: ארבעה מצבים</h2>
+ <p class="c small">לחצו על משבצת מפוספסת לחשיפה</p>
+ <div style="overflow-x:auto"><table class="st">
+  <tr><th>גלוקוז</th><th>לקטוז</th><th>הדכאן על האתר המפעיל?</th><th><span class="L">CAP-cAMP</span> קשור?</th><th>תעתוק הגנים המבניים</th></tr>
+  <tr><td>יש</td><td>אין</td><td class="h">קשור</td><td class="h">לא</td><td class="h">כמעט אין</td></tr>
+  <tr><td>אין</td><td>אין</td><td class="h">קשור</td><td class="h">כן</td><td class="h">כמעט אין</td></tr>
+  <tr><td>יש</td><td>יש</td><td class="h">לא קשור</td><td class="h">לא</td><td class="h">נמוך</td></tr>
+  <tr><td>אין</td><td>יש</td><td class="h">לא קשור</td><td class="h">כן</td><td class="h"><b>גבוה</b></td></tr>
+ </table></div>
+ <p class="f card c">עכשיו אפשר להסביר: כשיש גלוקוז ולקטוז, הגלוקוז מנוצל קודם, כי קצב התעתוק של אופרון הלקטוז נמוך.</p>
+</section>
+
+<!-- 22 -->
+<section class="s">
+ <h2>וגם הפוך: אופרון הטריפטופן</h2>
+ <p class="c small">נשאל בבגרות תשפ״ג (פעמיים)</p>
+ <div class="cols">
+  <div class="card t"><h3>אופרון הלקטוז</h3><p>האנזימים <b>מפרקים</b> לקטוז.</p><p>לקטוז נקשר לדכאן ← הדכאן <b>מתנתק</b> ← תעתוק.</p><p class="small">לקטוז = משרן</p></div>
+  <div class="card"><h3>אופרון הטריפטופן</h3><p>האנזימים <b>מייצרים</b> טריפטופן (חומצה אמינית).</p><p>טריפטופן נקשר לדכאן ← הדכאן <b>נקשר</b> לאתר המפעיל ← אין תעתוק.</p><p class="small">טריפטופן אינו משרן</p></div>
+ </div>
+ <p class="f card c">הרבה טריפטופן בתא ← אין ייצור אנזימים · מעט טריפטופן ← ייצור אנזימים</p>
+</section>
+
+<!-- 23 -->
+<section class="s">
+ <p class="note c">בגרות, קיץ תשס״ד</p>
+ <h2>מהי התוצאה של פעולת אופרון הלקטוז אצל חיידקים?</h2>
+ <div class="mc" data-ans="1" data-why="האנזימים מפרקי הלקטוז נוצרים רק כשיש לקטוז, כי רק אז הדכאן מתנתק מהאתר המפעיל. חיידקים אינם מייצרים גנים (גנים נמצאים ב־DNA ומשוכפלים, לא מיוצרים בתגובה לסביבה).">
+  <button>1. כאשר אין בסביבת החיידקים לקטוז, הם מייצרים לקטוז.</button>
+  <button>2. החיידקים מייצרים אנזימים מפרקי לקטוז רק כאשר יש בסביבתם לקטוז.</button>
+  <button>3. החיידקים מייצרים גנים של אופרון הלקטוז רק בנוכחות לקטוז.</button>
+  <button>4. כשמכניסים את החיידקים לסביבה שיש בה לקטוז, כמות הלקטוז בסביבה גדלה.</button>
+ </div><p class="mcfb"></p>
+</section>
+
+<!-- 24 -->
+<section class="s">
+ <p class="note c">בגרות, קיץ תשע״ח, שאלה 31</p>
+ <svg class="op seg6" viewBox="0 0 1200 230" aria-label="איור ששת הקטעים"></svg>
+ <p class="big"><b>א.</b> אילו מששת הקטעים מקודדים ליצירת חלבונים?</p>
+ <button class="rv">תשובה</button><p class="ans">קטעים <b>1, 4, 5, 6</b>. קטע 1 הוא הגן המווסת (מקודד לדכאן); קטעים 4–6 הם הגנים המבניים. קטע 2 הוא האתר המקדם וקטע 3 הוא האתר המפעיל: הם אינם מקודדים לחלבון.</p>
+</section>
+
+<section class="s">
+ <p class="note c">בגרות, קיץ תשע״ח, שאלה 31ב</p>
+ <svg class="op seg6" viewBox="0 0 1200 230" aria-label="איור ששת הקטעים"></svg>
+ <p><b>ב.</b> בזן מוטנטי מיוצרים בקביעות אנזימים לפירוק לקטוז, גם בהיעדר לקטוז. באיזה קטע יכולה להיות המוטציה? הסבירו.</p>
+ <button class="rv">תשובה</button><p class="ans"><b>קטע 1</b> (הגן המווסת): לא נוצר דכאן תקין, והוא אינו נקשר לאתר המפעיל. <b>או קטע 3</b> (האתר המפעיל): השתנה רצף האתר, והדכאן אינו נקשר אליו. בשני המקרים RNA פולימראז מתעתק את הגנים המבניים גם בלי לקטוז.</p>
+</section>
+
+<!-- 25 -->
+<section class="s">
+ <p class="note c">בגרות, קיץ תשע״ח, שאלה 31ג</p>
+ <p class="big">על מצע עם <b>לקטוז וגלוקוז</b> גידלו חיידקים עם אופרון לקטוז תקין. עם הזמן ריכוז הגלוקוז ירד.</p>
+ <p>כיצד תשפיע הירידה על ייצור האנזימים לניצול לקטוז? הסבירו, והתייחסו לדרך השפעת הגלוקוז על האופרון.</p>
+ <button class="rv">תשובה</button>
+ <div class="ans"><p>ייצור האנזימים <b>יגדל</b>.</p><div class="chain h" style="margin-top:.3rem"><span>אין גלוקוז</span><span class="ar">←</span><span>ריכוז cAMP עולה</span><span class="ar">←</span><span>cAMP נקשר ל־CAP</span><span class="ar">←</span><span><span class="L">CAP-cAMP</span> נקשר ליד האתר המקדם</span><span class="ar">←</span><span>קישור חזק יותר של RNA פולימראז</span><span class="ar">←</span><span>תעתוק מוגבר</span></div></div>
+</section>
+
+<!-- 26 -->
+<section class="s">
+ <p class="note c">בגרות, קיץ תשפ״ב, שאלה 33ב</p>
+ <div class="cols">
+  <svg viewBox="0 0 420 300" style="width:100%;max-height:44vh" id="graph" aria-label="גרף כמות האנזים וה-mRNA"></svg>
+  <div><p>הוסיפו לקטוז למצע (דקה 3) והוציאו אותו (דקה 10). קבעו איזה עקום מתאר את <b>האנזים</b> ואיזה את ה־<b>mRNA</b>. נמקו לפי הגרף.</p>
+  <button class="rv">תשובה</button><div class="ans"><p><b>a = mRNA</b>: עולה ראשון (תעתוק קודם לתרגום), ויורד מהר אחרי הוצאת הלקטוז: התעתוק נפסק וה־mRNA מתפרק.</p><p><b>b = אנזים</b>: מתחיל לעלות אחרי ה־mRNA (נוצר בתרגום שלו), ונשאר קבוע אחרי הוצאת הלקטוז: לא נוצר אנזים חדש, אך האנזים שכבר נוצר אינו מתפרק מהר.</p></div></div>
+ </div>
+</section>
+
+<!-- 27 -->
+<section class="s">
+ <p class="note c">בגרות, קיץ תשפ״ד, שאלה 33א</p>
+ <table class="st"><tr><th></th><th>מצע I</th><th>מצע II</th><th>מצע III</th></tr><tr><td>סוכרים</td><td>100% לקטוז</td><td>100% גלוקוז</td><td>50% לקטוז + 50% גלוקוז</td></tr></table>
+ <p><b>(1)</b> באיזה מצע מידת התעתוק של הגנים המבניים הגבוהה ביותר, ובאיזה הנמוכה ביותר?</p>
+ <button class="rv">תשובה</button><p class="ans">הגבוהה ביותר: <b>מצע I</b> (יש לקטוז ואין גלוקוז). הנמוכה ביותר: <b>מצע II</b> (אין לקטוז, הדכאן קשור לאתר המפעיל).</p>
+ <p><b>(2)</b> הסבירו את השפעת היעדר הגלוקוז במצע I. התייחסו לחוזק הקשר בין האנזים המתעתק לאתר המקדם.</p>
+ <button class="rv">תשובה</button><p class="ans">אין גלוקוז ← ריכוז cAMP גבוה ← <span class="L">CAP-cAMP</span> נקשר ליד האתר המקדם ← הקשר בין RNA פולימראז לאתר המקדם <b>מתחזק</b> ← מידת התעתוק גבוהה.</p>
+</section>
+
+<!-- 28 -->
+<section class="s">
+ <p class="note c">בגרות תשע״ו ותשפ״ג (מועד מיוחד)</p>
+ <h2>באיזה שלב במסלול מ־DNA לחלבון מתבצעת הבקרה באופרון?</h2>
+ <div class="mc" data-ans="0" data-why="הדכאן ו־<span class="L">CAP-cAMP</span> משפיעים על קישור RNA פולימראז ועל יצירת ה־mRNA, כלומר הבקרה היא ברמת התעתוק.">
+  <button>בשלב התעתוק</button><button>בשלב התרגום</button><button>בשלב שכפול ה־DNA</button><button>אחרי יצירת החלבון (פעילות החלבון)</button>
+ </div><p class="mcfb"></p>
+</section>
+
+<!-- 29 -->
+<section class="s">
+ <h2>בואו נמציא אופרון!</h2>
+ <div class="cols">
+  <ol style="display:flex;flex-direction:column;gap:.3rem;padding-inline-start:1.2rem">
+   <li>בחרו חומר שחיידק יכול לפרק (למשל סוכר אחר).</li>
+   <li>שרטטו: גנים מבניים, אתר מקדם, אתר מפעיל, גן מווסת.</li>
+   <li>מה קורה כשהחומר נמצא במצע? וכשהוא חסר?</li>
+   <li>איזו מוטציה תגרום לייצור קבוע של האנזימים?</li>
+  </ol>
+  <div class="c"><span class="bug xl" data-bug="happy"></span></div>
+ </div>
+ <p class="row"><a href="lab-prok.html" class="rv" style="text-decoration:none;font-size:.9rem">לתרגול שאלות הבגרות ←</a></p>
+ <p class="credit">היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים. איורים: חגית ברגמן.</p>
+</section>
+
+</div>
+<nav class="bar" aria-label="ניווט במצגת"><button id="prev" aria-label="הקודם">→ הקודם</button><span id="cnt"></span><button id="next" aria-label="הבא">הבא ←</button></nav>
+
+<script>
+/* ---------- החיידק עם העיניים ---------- */
+function bug(m){
+ let pili='';for(let k=0;k<22;k++){const a=k/22*Math.PI*2,cx=120+Math.cos(a)*112,cy=95+Math.sin(a)*62,ex=120+Math.cos(a)*134,ey=95+Math.sin(a)*80;pili+=`<line x1="${cx.toFixed(1)}" y1="${cy.toFixed(1)}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" stroke="#4D6B1F" stroke-width="5" stroke-linecap="round"/>`}
+ const bed=m==='bed',sleep=m==='sleep'||bed;
+ const eyes=sleep?`<path d="M80 88 q15 12 30 0 M132 88 q15 12 30 0" stroke="#1d1d1b" stroke-width="5" fill="none" stroke-linecap="round"/>`
+  :`<g class="eyes"><ellipse cx="95" cy="82" rx="22" ry="27" fill="#fff" stroke="#1d1d1b" stroke-width="4"/><ellipse cx="148" cy="82" rx="22" ry="27" fill="#fff" stroke="#1d1d1b" stroke-width="4"/>
+   <circle cx="${m==='think'?102:99}" cy="${m==='think'?74:86}" r="10" fill="#1d1d1b"/><circle cx="${m==='think'?155:152}" cy="${m==='think'?74:86}" r="10" fill="#1d1d1b"/><circle cx="${m==='think'?99:96}" cy="${m==='think'?71:83}" r="3" fill="#fff"/><circle cx="${m==='think'?152:149}" cy="${m==='think'?71:83}" r="3" fill="#fff"/></g>`;
+ const mouth={happy:'<path d="M98 120 Q122 146 146 120" stroke="#1d1d1b" stroke-width="5" fill="#7A2E2E" stroke-linecap="round"/>',
+  wow:'<ellipse cx="122" cy="128" rx="11" ry="14" fill="#7A2E2E" stroke="#1d1d1b" stroke-width="4"/>',
+  think:'<path d="M108 128 q14 -6 28 0" stroke="#1d1d1b" stroke-width="5" fill="none" stroke-linecap="round"/>',
+  meh:'<path d="M106 126 h32" stroke="#1d1d1b" stroke-width="5" stroke-linecap="round"/>',
+  sleep:'<ellipse cx="122" cy="126" rx="7" ry="5" fill="#7A2E2E"/>'}[m]||'';
+ const B=bed?`<rect x="-34" y="150" width="300" height="34" rx="6" fill="#F3EEE2" stroke="#5B4630" stroke-width="5"/><path d="M-12 118 q40 -14 80 0 t80 0 t80 0 t40 0 v52 h-280z" fill="#C9794E" stroke="#7A4426" stroke-width="5"/><path d="M10 140 h200 M10 158 h200" stroke="#E9B48F" stroke-width="4" stroke-dasharray="14 10"/><rect x="-40" y="70" width="16" height="150" rx="5" fill="#8A6A45" stroke="#5B4630" stroke-width="4"/><rect x="256" y="110" width="16" height="110" rx="5" fill="#8A6A45" stroke="#5B4630" stroke-width="4"/><ellipse cx="235" cy="108" rx="34" ry="18" fill="#fff" stroke="#5B4630" stroke-width="4"/>`:'';
+ const z=sleep?'<g class="zz"><text x="196" y="40" font-family="Secular One" font-size="30" fill="#6B5F4B">z</text><text x="214" y="18" font-family="Secular One" font-size="22" fill="#6B5F4B">z</text></g>':'';
+ return `<svg viewBox="${bed?'-50 -40 330 270':'-20 -20 280 230'}" aria-hidden="true"><g class="${bed?'':'wob'}">${pili}<rect x="8" y="33" width="224" height="124" rx="62" fill="#A8CC4C" stroke="#4D6B1F" stroke-width="6"/>
+  <ellipse cx="45" cy="70" rx="9" ry="6" fill="#8DB33A"/><ellipse cx="200" cy="120" rx="11" ry="7" fill="#8DB33A"/><ellipse cx="60" cy="125" rx="7" ry="5" fill="#8DB33A"/><ellipse cx="190" cy="62" rx="6" ry="4" fill="#8DB33A"/>
+  ${eyes}${bed?'':mouth}${B}</g>${z}</svg>`}
+document.querySelectorAll('[data-bug]').forEach(e=>e.innerHTML=bug(e.dataset.bug));
+
+/* ---------- סוכרים ---------- */
+const hex=(x,y,r,f,t)=>{let p='';for(let k=0;k<6;k++){const a=Math.PI/6+k*Math.PI/3;p+=`${(x+r*Math.cos(a)).toFixed(1)},${(y+r*Math.sin(a)).toFixed(1)} `}
+ return `<polygon points="${p}" fill="${f}" stroke="#4a3d2c" stroke-width="3"/>${t?`<text x="${x}" y="${y+6}" text-anchor="middle" font-family="Rubik" font-size="${r*.42}" fill="#fff" font-weight="700">${t}</text>`:''}`};
+const lactose=(x,y,r)=>hex(x-r*.9,y,r,'#7D8A8E')+hex(x+r*.9,y,r,'#C9794E');
+document.getElementById('sugars').innerHTML=hex(70,70,46,'#7D8A8E','גלוקוז')+`<text x="150" y="80" text-anchor="middle" font-family="Secular One" font-size="30" fill="#2E2A22">או</text>`+hex(205,70,34,'#7D8A8E')+hex(262,70,34,'#C9794E')+`<text x="233" y="132" text-anchor="middle" font-family="Rubik" font-size="22" fill="#2E2A22">לקטוז</text>`;
+document.getElementById('split').innerHTML=`<style>#split .gl{animation:spl1 2.4s ease-in-out 1s forwards}#split .ga{animation:spl2 2.4s ease-in-out 1s forwards}#split .en{animation:enz 1.6s ease-in-out forwards}
+ @keyframes spl1{to{transform:translate(-150px,30px)}}@keyframes spl2{to{transform:translate(150px,30px)}}@keyframes enz{from{transform:translateY(-120px)}to{transform:none}}</style>
+ <g class="gl">${hex(390,110,58,'#7D8A8E','גלוקוז')}</g><g class="ga">${hex(490,110,58,'#C9794E','גלקטוז')}</g>
+ <g class="en"><path d="M400 40 l40 -30 h40 l40 30 z" fill="#4E6FD3" stroke="#2c3f7a" stroke-width="3"/><text x="460" y="32" text-anchor="middle" font-family="Rubik" font-size="20" fill="#fff">אנזים</text></g>
+ <text x="440" y="240" text-anchor="middle" font-family="Rubik" font-size="26" fill="#2E2A22">לקטוז ← גלוקוז + גלקטוז</text>`;
+let mem='';for(let x=0;x<=900;x+=36)mem+=`<circle cx="${x}" cy="130" r="13" fill="#E9C77B" stroke="#a88a44" stroke-width="2"/><circle cx="${x}" cy="186" r="13" fill="#E9C77B" stroke="#a88a44" stroke-width="2"/>`;
+document.getElementById('perm').innerHTML=`<style>#perm .lm{animation:thru 3.5s ease-in-out infinite}#perm .lm2{animation-delay:1.75s}@keyframes thru{0%{transform:translateY(-110px);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translateY(130px);opacity:0}}</style>
+ <text x="880" y="40" font-family="Rubik" font-size="24" fill="#6B5F4B">מחוץ לתא</text><text x="880" y="285" font-family="Rubik" font-size="24" fill="#6B5F4B">בתוך התא</text>
+ ${mem}<rect x="410" y="104" width="90" height="108" rx="20" fill="#C9794E" stroke="#7a4426" stroke-width="4"/><rect x="440" y="104" width="30" height="108" fill="#F6EDD6"/>
+ <g class="lm">${lactose(455,158,20)}</g><g class="lm lm2">${lactose(455,158,20)}</g>
+ <text x="300" y="160" text-anchor="middle" font-family="Rubik" font-size="24" fill="#2E2A22">פרמאז ←</text>`;
+
+/* ---------- האופרון ---------- */
+const SEG=[['g3',30,170,'#A58BDB',['גן 3','A'],'b1'],['g2',170,310,'#6FA9E3',['גן 2','Y'],'b1'],['g1',310,450,'#7FC77C',['גן 1','Z'],'b1'],
+ ['op',450,560,'#F2D35B',['אתר','מפעיל'],'b4'],['pr',560,690,'#F0A14F',['אתר','מקדם'],'b2'],['cs',690,760,'#6CC9C4',['אתר','CAP'],'cs'],
+ ['rg',860,1030,'#9097E8',['גן','מווסת'],'b5'],['rp',1030,1170,'#F0A14F',['אתר','מקדם'],'b5']];
+function op(o){
+ const D=o.dict;let s='';
+ s+=`<line x1="20" y1="180" x2="1180" y2="180" stroke="#555" stroke-width="3" stroke-dasharray="${''}"/>`;
+ s+=`<line x1="760" y1="180" x2="860" y2="180" stroke="#F6EDD6" stroke-width="8"/><line x1="760" y1="180" x2="860" y2="180" stroke="#555" stroke-width="3" stroke-dasharray="10 8"/>`;
+ SEG.forEach(([id,a,b,c,t,cl])=>{if(id==='cs'&&!o.capsite)return;
+  s+=`<g class="${D?cl:''}"><rect x="${a}" y="152" width="${b-a}" height="56" fill="${c}" stroke="#333" stroke-width="2.5"/>`+
+   (t[1].length<3?`<text class="lbl" x="${(a+b)/2}" y="188" text-anchor="middle">${t[0]} <tspan font-size="17" fill="#333">(${t[1]})</tspan></text>`
+   :`<text class="tiny" x="${(a+b)/2}" y="176" text-anchor="middle">${t[0]}</text><text class="tiny" x="${(a+b)/2}" y="198" text-anchor="middle">${t[1]}</text>`)+'</g>'});
+ if(D||o.brackets)s+=`<g class="${D?'b1':''}"><path d="M30 140 v-12 h420 v12" fill="none" stroke="#333" stroke-width="2"/><text class="tiny" x="240" y="120" text-anchor="middle">גנים מבניים</text></g>`;
+ // הגן המווסת: mRNA ודכאן
+ if(D||o.regexpr)s+=`<g class="${D?'b5':''}"><path d="M1020 245 q15 -10 30 0 t30 0 t30 0" fill="none" stroke="#8C5BB5" stroke-width="5"/><text class="tiny" x="1140" y="250">mRNA</text>
+  <path d="M945 220 v28" stroke="#333" stroke-width="3" marker-end=""/><g transform="translate(905,262)"><rect width="84" height="46" rx="10" fill="#4E6FD3" stroke="#22397a" stroke-width="3"/><text x="42" y="30" text-anchor="middle" font-size="20" fill="#fff">דכאן</text></g></g>`;
+ // CAP-cAMP
+ if(o.cap)s+=`<g><rect x="694" y="100" width="64" height="50" rx="12" fill="#2A9D8F" stroke="#14544c" stroke-width="3"/><text x="726" y="132" text-anchor="middle" font-size="18" fill="#fff">CAP</text><circle cx="756" cy="98" r="15" fill="#F2D35B" stroke="#8a7420" stroke-width="2.5"/><text x="756" y="103" text-anchor="middle" font-size="11" fill="#333">cAMP</text></g>`;
+ // mRNA של הגנים המבניים
+ const mr=o.mrna||(D?'done':'');
+ if(mr){let p='M450 250';for(let x=450;x>30;x-=30)p+=` q-7.5 -12 -15 0 t-15 0`;
+  s+=`<g class="${D?'b1':''}"><path class="mrna ${mr}" d="${p}" fill="none" stroke="#8C5BB5" stroke-width="5"/><text class="tiny" x="${D?470:470}" y="258">mRNA</text></g>`}
+ // חלבונים
+ const pr=o.prot||(D?'done':'');
+ if(pr){const blob=(x,c,cl,t)=>`<g class="prot ${pr} ${cl}"><path d="M${x} 300 q25 -22 45 2 q22 18 4 40 q-18 24 -44 10 q-26 -14 -5 -52z" fill="${c}" stroke="#333" stroke-width="2.5"/><text class="tiny" x="${x+20}" y="385" text-anchor="middle">${t}</text></g>`;
+  s+=`<g class="${D?'b1':''}">${blob(355,'#7FC77C','p1','β־גלקטוזידאז')+blob(215,'#6FA9E3','p2','פרמאז')+blob(75,'#A58BDB','p3','טרנסאצטילאז')}</g>`}
+ // דכאן על האתר המפעיל
+ if(o.rep||D){const st=o.rep==='off'?'off':o.rep==='leave'?'leave':'';
+  s+=`<g class="rep ${st} ${D?'b4':''}"><path d="M458 150 v-48 a10 10 0 0 1 10 -10 h22 v14 h30 v-14 h22 a10 10 0 0 1 10 10 v48 z" fill="#4E6FD3" stroke="#22397a" stroke-width="3"/><text x="505" y="140" text-anchor="middle" font-size="20" fill="#fff">דכאן</text>
+   ${o.lac?`<g class="${o.rep==='leave'?'lacin':''}">${lactose(505,92,13)}</g>`:''}</g>`}
+ if(D)s+=`<g class="b5"><path d="M945 250 C 800 330, 620 320, 520 215" fill="none" stroke="#333" stroke-width="3" stroke-dasharray="7 6"/></g>`;
+ // RNA פולימראז
+ if(o.pol||D){s+=`<g class="pol ${o.pol||''} ${D?'b3':''}"><path d="M565 150 a60 58 0 0 1 120 0 z" fill="#E0578C" stroke="#8e2350" stroke-width="3"/><text x="625" y="120" text-anchor="middle" font-size="17" fill="#fff">RNA</text><text x="625" y="140" text-anchor="middle" font-size="15" fill="#fff">פולימראז</text></g>`}
+ if(o.lac&&o.rep!=='leave'&&o.rep!=='off')s+='';
+ return s}
+function drawOps(sl){sl.querySelectorAll('[data-op]').forEach(e=>{e.innerHTML=op(JSON.parse(e.dataset.op))})}
+
+/* ששת הקטעים, כמו באיור של הבגרות */
+document.querySelectorAll('.seg6').forEach(function(g){let s='<line x1="40" y1="120" x2="1170" y2="120" stroke="#555" stroke-width="3"/>';
+ const W=[[6,90,200],[5,200,310],[4,310,420],[3,420,530],[2,530,640],[1,860,970]];
+ W.forEach(([n,a,b])=>s+=`<rect x="${a}" y="96" width="${b-a}" height="48" fill="#D9D3C2" stroke="#333" stroke-width="2.5"/><text x="${(a+b)/2}" y="180" text-anchor="middle" font-size="26" font-family="Rubik">קטע ${n}</text>`);
+ s+=`<rect x="640" y="114" width="220" height="12" fill="#F6EDD6"/><path d="M915 90 C 900 30, 520 20, 475 88" fill="none" stroke="#333" stroke-width="3"/><path d="M466 78 l9 14 l9 -14" fill="none" stroke="#333" stroke-width="3"/><text x="700" y="34" text-anchor="middle" font-size="24" font-family="Rubik" font-weight="700">חלבון מווסת (דכאן)</text>`;
+ g.innerHTML=s});
+
+/* גרף תשפ״ב */
+(function(){const g=document.getElementById('graph'),X=t=>60+t*16,Y=v=>250-v*20;
+ let s=`<line x1="60" y1="250" x2="400" y2="250" stroke="#333" stroke-width="2.5"/><line x1="60" y1="250" x2="60" y2="20" stroke="#333" stroke-width="2.5"/>`;
+ [0,5,10,15,20].forEach(t=>s+=`<text x="${X(t)}" y="272" text-anchor="middle" font-size="16" font-family="Rubik">${t}</text>`);
+ s+=`<text x="230" y="294" text-anchor="middle" font-size="15" font-family="Rubik">זמן (דקות)</text><text x="130" y="14" text-anchor="middle" font-size="15" font-family="Rubik">כמות (יחידות יחסיות)</text>`;
+ s+=`<path d="M${X(3)} ${Y(0)} C ${X(6)} ${Y(1)}, ${X(7)} ${Y(8)}, ${X(9)} ${Y(8.3)} C ${X(10.5)} ${Y(8.5)}, ${X(12)} ${Y(3)}, ${X(15)} ${Y(0)}" fill="none" stroke="#C9794E" stroke-width="4" stroke-dasharray="9 6"/><text x="${X(11.6)}" y="${Y(4.6)}" font-size="22" font-family="Rubik" font-weight="700" fill="#C9794E">a</text>`;
+ s+=`<path d="M${X(4)} ${Y(0)} C ${X(7)} ${Y(1)}, ${X(9)} ${Y(9)}, ${X(13)} ${Y(10)} L ${X(20)} ${Y(10)}" fill="none" stroke="#4E6FD3" stroke-width="4"/><text x="${X(12)}" y="${Y(10.6)}" font-size="22" font-family="Rubik" font-weight="700" fill="#4E6FD3">b</text>`;
+ s+=`<path d="M${X(3)} 262 v-14 M${X(10)} 262 v-14" stroke="#333" stroke-width="2"/><text x="${X(3)}" y="${Y(-2.4)}" text-anchor="middle" font-size="13" font-family="Rubik"></text>`;
+ s+=`<text x="${X(3)}" y="${Y(11.3)}" text-anchor="middle" font-size="14" font-family="Rubik" fill="#3E7B3A">↓ הוספת לקטוז</text><text x="${X(10)}" y="${Y(11.3)}" text-anchor="middle" font-size="14" font-family="Rubik" fill="#B8423A">↓ הוצאת לקטוז</text>`;
+ s+=`<line x1="${X(3)}" y1="${Y(10.8)}" x2="${X(3)}" y2="250" stroke="#3E7B3A" stroke-width="1.5" stroke-dasharray="4 4"/><line x1="${X(10)}" y1="${Y(10.8)}" x2="${X(10)}" y2="250" stroke="#B8423A" stroke-width="1.5" stroke-dasharray="4 4"/>`;
+ g.innerHTML=s})();
+
+/* נורות ומתגים */
+const bulb=()=>`<svg viewBox="0 0 80 120" style="width:clamp(38px,6.5vmin,76px)"><circle class="glow" cx="40" cy="44" r="40" fill="#FFE98A" opacity=".5"/><path class="bulb" d="M40 8 a32 32 0 0 1 18 58 v14 h-36 v-14 a32 32 0 0 1 18 -58z" stroke="#555" stroke-width="3"/><rect x="24" y="84" width="32" height="20" rx="4" fill="#8A8F93"/></svg>`;
+document.querySelectorAll('[data-bulbs]').forEach(e=>{e.innerHTML=bulb().repeat(+e.dataset.n);e.style.display='inline-flex';e.style.gap='.3rem'});
+document.querySelectorAll('[data-sw]').forEach(b=>b.onclick=()=>{const t=document.querySelector(`[data-bulbs="${b.dataset.sw}"]`);t.classList.toggle('lit');b.querySelector('.knob').setAttribute('y',t.classList.contains('lit')?'68':'22')});
+
+/* תשובות נפתחות, טבלה, שאלות בחירה */
+document.querySelectorAll('.rv').forEach(b=>{if(b.tagName==='BUTTON')b.onclick=()=>b.nextElementSibling.classList.toggle('show')});
+document.querySelectorAll('td.h').forEach(td=>td.onclick=()=>td.classList.add('show'));
+document.querySelectorAll('.mc').forEach(q=>{const bs=[...q.querySelectorAll('button')],a=+q.dataset.ans,fb=q.nextElementSibling;
+ bs.forEach((b,k)=>b.onclick=()=>{bs.forEach(x=>x.disabled=true);bs[a].classList.add('ok');if(k!==a)b.classList.add('no');
+  fb.innerHTML=(k===a?'✓ נכון! ':'✘ התשובה הנכונה מסומנת בירוק. ')+q.dataset.why})});
+
+/* ---------- הדמיה ---------- */
+const SIM={lac:false,glu:true};
+function sim(){const r=SIM.lac?'off':'on',cap=!SIM.glu,pol=r==='on'?'blocked':cap?'loop':'weak';
+ document.getElementById('simop').innerHTML=op({rep:r,lac:SIM.lac,cap,capsite:1,pol,mrna:r==='on'?'':cap?'loop':'weak',regexpr:1});
+ const lvl=r==='on'?3:cap?100:25;document.getElementById('simm').style.width=lvl+'%';
+ document.getElementById('simbug').innerHTML=bug(r==='on'?'bed':cap?'happy':'meh');
+ const t=[];t.push(SIM.lac?'יש לקטוז ← לקטוז נקשר לדכאן ← הדכאן מתנתק מהאתר המפעיל.':'אין לקטוז ← הדכאן קשור לאתר המפעיל.');
+ t.push(SIM.glu?'יש גלוקוז ← ריכוז cAMP נמוך ← CAP אינו קשור.':'אין גלוקוז ← ריכוז cAMP גבוה ← <span class="L">CAP-cAMP</span> קשור ליד האתר המקדם.');
+ t.push('<b>'+(r==='on'?'כמעט אין תעתוק של הגנים המבניים.':cap?'תעתוק בקצב גבוה.':'תעתוק בקצב נמוך: הקשר של RNA פולימראז לאתר המקדם חלש.')+'</b>');
+ document.getElementById('simt').innerHTML=t.join('<br>')}
+document.querySelectorAll('#sim .tog button').forEach(b=>b.onclick=()=>{SIM[b.dataset.k]=!SIM[b.dataset.k];b.setAttribute('aria-pressed',SIM[b.dataset.k]);sim()});
+
+/* ---------- ניווט: שקפים ופרגמנטים ---------- */
+(function(){const S=[...document.querySelectorAll('.s')];let i=0,st=0;
+ const cnt=document.getElementById('cnt'),bar=document.getElementById('prog');
+ const frags=s=>[...s.querySelectorAll('.f')];
+ function show(s,n){const F=frags(s);F.forEach((f,k)=>{f.classList.toggle('in',k<n);f.classList.toggle('cur',k===n-1)});
+  for(let k=1;k<=6;k++)s.classList.toggle('st'+k,k<=n)}
+ function go(n,full){i=Math.max(0,Math.min(S.length-1,n));S.forEach((s,k)=>s.classList.toggle('on',k===i));
+  const s=S[i];st=full?frags(s).length:0;show(s,st);drawOps(s);if(s.id==='sim')sim();
+  cnt.textContent=(i+1)+' / '+S.length;bar.style.setProperty('--p',((i+1)/S.length*100)+'%');
+  try{history.replaceState(null,'','#s'+(i+1))}catch(e){}}
+ function next(){const s=S[i],F=frags(s);if(st<F.length){st++;show(s,st)}else if(i<S.length-1)go(i+1)}
+ function prev(){const s=S[i];if(st>0){st--;show(s,st)}else if(i>0)go(i-1,true)}
+ document.getElementById('next').onclick=next;document.getElementById('prev').onclick=prev;
+ addEventListener('keydown',e=>{if(['ArrowLeft','PageDown',' ','Enter'].includes(e.key)&&!e.target.closest('button')){e.preventDefault();next()}
+  if(['ArrowRight','PageUp'].includes(e.key)){e.preventDefault();prev()}});
+ let tx=null;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+ addEventListener('touchend',e=>{if(tx==null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>60)(d>0?next:prev)();tx=null});
+ const m=/#s(\d+)/.exec(location.hash);go(m?+m[1]-1:0);window.goSlide=go})();
+</script>
+</body></html>

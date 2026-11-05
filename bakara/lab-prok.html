@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,">
+<title>תרגול: אופרון הלקטוז</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Rubik:wght@400;500;700&family=Amatic+SC:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="unit.css">
+<link rel="stylesheet" href="lab.css">
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+/* עיצוב הקלף של מצגת האופרון */
+body{background:#CDBB98;background-image:radial-gradient(circle at 20% 20%,rgba(255,255,255,.18),transparent 40%),radial-gradient(circle at 80% 80%,rgba(0,0,0,.07),transparent 45%)}
+main.w{background:radial-gradient(ellipse at 50% 40%,#F6EDD6 60%,#EEDFBE 100%);padding:28px clamp(14px,4vw,40px) 40px;margin-block:18px;box-shadow:0 6px 20px rgba(80,60,30,.25)}
+.card,.step{background:#FDF8EA;border-color:#6F7D44}
+.qn{font-family:"Amatic SC",cursive;font-size:26px;color:#C9794E;line-height:1}
+.note{color:#C9794E}
+.cols5{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:10px}
+.bin{display:flex;flex-direction:column;gap:6px;border:2px dashed #6F7D44;background:#FFFDF4;min-height:120px;padding:8px}
+.bin h4{font-family:"Secular One",Rubik;font-weight:400;font-size:17px;text-align:center;border-bottom:1px solid #E3D6B5;padding-bottom:4px}
+.bin.on{background:#FFF3B8}
+.pool{display:flex;flex-wrap:wrap;gap:8px;background:#F4ECD6;border:1.5px dashed #C9B98F;padding:10px;min-height:56px}
+.chrom.gc{flex-direction:row;gap:0;background:#fff;border:2px solid var(--ink);padding:6px 10px;font:500 15px Rubik,Arial,sans-serif;line-height:1.3;max-width:100%}
+.chrom.gc.ok{background:var(--okbg);border-color:var(--ok)}.chrom.gc.no{background:var(--nobg);border-color:var(--red)}
+.hero{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.hero svg.bugi{width:clamp(110px,22vw,170px);flex:none}
+.fig{width:100%;max-width:640px;display:block;margin:6px auto;background:#fff;border:1.5px solid #E3D6B5}
+.fig text{font-family:Rubik,Arial,sans-serif}
+.sitebar{position:fixed;top:10px;inset-inline-end:12px;z-index:50;display:flex;gap:6px}
+.sitebar a{font:700 14px Rubik,Arial,sans-serif;color:#1F4D3A;background:#fff;border:2px solid #1F4D3A;padding:5px 10px;text-decoration:none}
+.gate{position:fixed;inset:0;z-index:100;background:rgba(31,77,58,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.gate[hidden]{display:none}
+.gbox{background:#fff;border:3px solid #1F4D3A;max-width:420px;width:100%;padding:22px;display:flex;flex-direction:column;gap:12px;font-family:Rubik,Arial,sans-serif;color:#1F4D3A}
+.gbox h2{font-family:"Secular One",Rubik,sans-serif;font-weight:400;font-size:28px}.gbox label{display:flex;flex-direction:column;gap:4px;font-weight:500}
+.gbox input{font:inherit;font-size:18px;padding:8px;border:2px solid #1F4D3A}
+.gbox button{font:inherit;font-weight:700;font-size:18px;padding:10px;border:0;background:#1F4D3A;color:#fff;cursor:pointer}
+.gerr{color:#B8423A;font-weight:500;min-height:1.2em}
+@media print{.sitebar,.gate{display:none!important}}
+</style>
+</head>
+<body>
+<nav class="sitebar" aria-label="ניווט"><a href="../index.html">🏠 דף הבית</a><a href="index.html">→ לשיעור</a></nav>
+<div class="gate" id="gate"><div class="gbox" role="dialog" aria-modal="true" aria-labelledby="gTitle"><h2 id="gTitle">לפני שמתחילים</h2><p>כתבו את השם והכיתה שלכם. הם יופיעו בקובץ שתעלו למשימה ב־Classroom.</p><label>שם מלא<input id="gName" autocomplete="name"></label><label>כיתה<input id="gClass"></label><p class="gerr" id="gErr"></p><button id="gGo">מתחילים</button></div></div>
+<main class="w">
+<div class="hero"><svg class="bugi" id="bugi" viewBox="-20 -20 280 230" aria-hidden="true"></svg>
+<div><span class="note">יחידה 2 · תרגול אחרי מצגת אופרון הלקטוז</span>
+<h1>תרגול: אופרון הלקטוז</h1></div></div>
+<p class="lead">בכל משימה ובכל שאלה יש <b>ניסיון אחד</b>: אחרי הבדיקה היא ננעלת ומוצגים התשובה הנכונה וההסבר. השאלות מבוססות על בחינות בגרות. בסוף: "דף הטעויות שלי" והורדת קובץ להגשה.</p>
+<p class="src">בבגרות תשפ״ז ✓ · מושגים: אופרון, גן מבני, גן מווסת, אתר מקדם, אתר מפעיל, דכאן, משרן, בקרה שלילית, בקרה חיובית, CAP, cAMP</p>
+<label class="tmode" id="tmode"><input type="checkbox"> מצב מורה</label>
+
+<section class="step" data-n="1"><span class="sn">משימה 1 · מה מקודד לחלבון?</span>
+<h3>גררו כל חלק של ה־DNA לקבוצה המתאימה</h3>
+<p class="hint">רמז: בבגרות תשע״ח נשאלה בדיוק השאלה הזו, על איור של ששה קטעים.</p>
+<div class="pool drop" id="p1" aria-label="כרטיסים"></div>
+<div class="cols5" id="b1"></div>
+<button id="c1">בדיקה</button><div class="fb" id="f1" role="status"></div></section>
+
+<section class="step" data-n="2" hidden><span class="sn">משימה 2 · כמה תעתוק?</span>
+<h3>מיינו כל מצב לפי קצב התעתוק של הגנים המבניים באופרון הלקטוז</h3>
+<p class="hint">שאלו את עצמכם שתי שאלות: האם הדכאן קשור לאתר המפעיל? האם <span class="L">CAP-cAMP</span> קשור ליד האתר המקדם?</p>
+<div class="pool drop" id="p2" aria-label="כרטיסים"></div>
+<div class="cols5" id="b2"></div>
+<button id="c2">בדיקה</button><div class="fb" id="f2" role="status"></div>
+<p class="tnote">המצבים עם המוטציות מכינים לשאלות 31ב (תשע״ח) ו־33ב (תשפ״ד).</p></section>
+
+<section class="card"><h2>שאלות בגרות</h2><p class="hint">משוב מיידי. כל ניסיון נרשם בדוח.</p>
+<p><b>האיור לשאלות 2 ו־3</b> (בגרות קיץ תשע״ח):</p><svg class="fig" id="seg6" viewBox="0 0 1200 230" aria-label="איור ששת הקטעים"></svg>
+<p><b>הגרף לשאלה 4</b> (בגרות קיץ תשפ״ב): הוסיפו לקטוז למצע בדקה 3 והוציאו אותו בדקה 10.</p><svg class="fig" id="graph" viewBox="0 0 420 300" style="max-width:420px" aria-label="גרף כמות האנזים וה-mRNA"></svg></section>
+<div id="qs"></div>
+
+<section class="card"><h2>שאלות פתוחות מבחינות הבגרות</h2><p class="hint">כתבו תשובה מלאה, כמו בבחינה. אחר כך פתחו את המחוון וסמנו מה כלול בתשובה שלכם.</p></section>
+<div id="bq"></div>
+
+<section class="card"><h2>התאמת מושגים</h2><div class="match" id="match"></div><button id="mchk">בדיקה</button><div class="fb" id="mfb" role="status"></div></section>
+
+<section class="card"><h2>סיום: הורדת קובץ</h2><p>הקובץ כולל את השם, את המשימות, את התשובות ואת הניסיון הראשון בכל שאלה. העלו אותו למשימה ב-Classroom.</p>
+<button class="dl" id="dl">⬇ הורדת קובץ PDF</button><p class="hint" id="dlmsg"></p></section>
+
+<p class="row"><a class="btn ghost" href="deck-prok.html">→ מצגת אופרון הלקטוז</a><a class="btn" href="index.html">לדף היחידה ←</a></p>
+<p class="credit">היחידה מתבססת על חומרי מט״ח ומורחבת בחומרים נוספים.</p>
+</main>
+<div id="report" aria-hidden="true"></div>
+<script src="lab.js"></script>
+<script>
+(function(){const tm=$('tmode');let on=false;try{on=localStorage.getItem('genetika-teacher')==='1'}catch(e){}
+ const set=v=>{document.body.classList.toggle('teacher',v);tm.querySelector('input').checked=v};set(on);
+ tm.querySelector('input').onchange=e=>{set(e.target.checked);try{localStorage.setItem('genetika-teacher',e.target.checked?'1':'0')}catch(er){}}})();
+
+// החיידק מהמצגת
+(function(){let p='';for(let k=0;k<22;k++){const a=k/22*Math.PI*2;p+=`<line x1="${(120+Math.cos(a)*112).toFixed(1)}" y1="${(95+Math.sin(a)*62).toFixed(1)}" x2="${(120+Math.cos(a)*134).toFixed(1)}" y2="${(95+Math.sin(a)*80).toFixed(1)}" stroke="#4D6B1F" stroke-width="5" stroke-linecap="round"/>`}
+ $('bugi').innerHTML=`<g transform="rotate(-10 120 95)">${p}<rect x="8" y="33" width="224" height="124" rx="62" fill="#A8CC4C" stroke="#4D6B1F" stroke-width="6"/><ellipse cx="45" cy="70" rx="9" ry="6" fill="#8DB33A"/><ellipse cx="200" cy="120" rx="11" ry="7" fill="#8DB33A"/>
+ <ellipse cx="95" cy="82" rx="22" ry="27" fill="#fff" stroke="#1d1d1b" stroke-width="4"/><ellipse cx="148" cy="82" rx="22" ry="27" fill="#fff" stroke="#1d1d1b" stroke-width="4"/><circle cx="102" cy="74" r="10" fill="#1d1d1b"/><circle cx="155" cy="74" r="10" fill="#1d1d1b"/>
+ <path d="M108 128 q14 -6 28 0" stroke="#1d1d1b" stroke-width="5" fill="none" stroke-linecap="round"/></g>`})();
+
+// איור ששת הקטעים וגרף, כמו בבחינות
+(function(){let s='<line x1="40" y1="120" x2="1170" y2="120" stroke="#555" stroke-width="3"/>';
+ [[6,90,200],[5,200,310],[4,310,420],[3,420,530],[2,530,640],[1,860,970]].forEach(([n,a,b])=>s+=`<rect x="${a}" y="96" width="${b-a}" height="48" fill="#D9D3C2" stroke="#333" stroke-width="2.5"/><text x="${(a+b)/2}" y="180" text-anchor="middle" font-size="26">קטע ${n}</text>`);
+ s+=`<rect x="640" y="114" width="220" height="12" fill="#fff"/><path d="M915 90 C 900 30, 520 20, 475 88" fill="none" stroke="#333" stroke-width="3"/><path d="M466 78 l9 14 l9 -14" fill="none" stroke="#333" stroke-width="3"/><text x="700" y="34" text-anchor="middle" font-size="24" font-weight="700">חלבון מווסת (דכאן)</text>`;
+ $('seg6').innerHTML=s;
+ const X=t=>60+t*16,Y=v=>250-v*20;let g=`<line x1="60" y1="250" x2="400" y2="250" stroke="#333" stroke-width="2.5"/><line x1="60" y1="250" x2="60" y2="20" stroke="#333" stroke-width="2.5"/>`;
+ [0,5,10,15,20].forEach(t=>g+=`<text x="${X(t)}" y="272" text-anchor="middle" font-size="16">${t}</text>`);
+ g+=`<text x="230" y="294" text-anchor="middle" font-size="15">זמן (דקות)</text><text x="130" y="14" text-anchor="middle" font-size="15">כמות (יחידות יחסיות)</text>`;
+ g+=`<path d="M${X(3)} ${Y(0)} C ${X(6)} ${Y(1)}, ${X(7)} ${Y(8)}, ${X(9)} ${Y(8.3)} C ${X(10.5)} ${Y(8.5)}, ${X(12)} ${Y(3)}, ${X(15)} ${Y(0)}" fill="none" stroke="#333" stroke-width="3" stroke-dasharray="9 6"/><text x="${X(11.6)}" y="${Y(4.6)}" font-size="22" font-weight="700">a</text>`;
+ g+=`<path d="M${X(4)} ${Y(0)} C ${X(7)} ${Y(1)}, ${X(9)} ${Y(9)}, ${X(13)} ${Y(10)} L ${X(20)} ${Y(10)}" fill="none" stroke="#333" stroke-width="3"/><text x="${X(12)}" y="${Y(10.6)}" font-size="22" font-weight="700">b</text>`;
+ g+=`<text x="${X(3)}" y="${Y(11.3)}" text-anchor="middle" font-size="14">↓ הוספת לקטוז</text><text x="${X(10)}" y="${Y(11.3)}" text-anchor="middle" font-size="14">↓ הוצאת לקטוז</text>`;
+ $('graph').innerHTML=g})();
+
+// מיון כרטיסים לסלים
+const card = (id, txt) => `<span class="chrom gc" data-drag="1" data-v="${id}" tabindex="0" role="button">${txt}</span>`;
+function sorter(pool, bins, items, cats) {
+ $(bins).innerHTML = cats.map(([k, t]) => `<div class="bin drop" data-k="${k}" aria-label="${t}"><h4>${t}</h4></div>`).join('');
+ $(pool).innerHTML = shuffle(items.slice()).map(([id, t]) => card(id, t)).join('');
+}
+function checkSort(bins, items, out, title, done, n) {
+ const want = Object.fromEntries(items.map(([id, , k]) => [id, k])), names = Object.fromEntries(items.map(([id, t]) => [id, t]));
+ const cards = [...document.querySelectorAll(`#${bins} .chrom, #${bins.replace('b', 'p')} .chrom`)];
+ const left = cards.filter(c => !c.closest('.bin')).length;
+ if (left) return fb($(out), false, left === 1 ? 'נשאר כרטיס אחד שלא מוין.' : `נשארו ${left} כרטיסים שלא מוינו.`);
+ const wrong = [];
+ cards.forEach(c => { const bin = c.closest('.bin'), ok = bin.dataset.k === want[c.dataset.v]; c.classList.add(ok ? 'ok' : 'no');
+  if (!ok) { wrong.push(`${names[c.dataset.v]} ← ${document.querySelector(`#${bins} .bin[data-k="${want[c.dataset.v]}"] h4`).textContent}`);
+   document.querySelector(`#${bins} .bin[data-k="${want[c.dataset.v]}"]`).appendChild(c); c.insertAdjacentHTML('beforeend', ' <small>(הועבר למקום הנכון)</small>') } });
+ const ok = !wrong.length;
+ fb($(out), ok, ok ? '✓ ' + done : `✘ ${wrong.length === 1 ? 'כרטיס אחד לא היה במקום. הוא הועבר עכשיו למקום הנכון (מסומן באדום)' : wrong.length + ' כרטיסים לא היו במקום. הם הועברו עכשיו למקום הנכון (מסומנים באדום)'}.<br>${done.replace(/^נכון! /, '')}`);
+ Lab.rec(title, ok, ok ? 'הכול במקום' : `${wrong.length} טעויות`, wrong.join(' · '), done.replace(/^נכון! /, '')); Lab.finish(n);
+}
+const I1 = [['z','גן Z (β־גלקטוזידאז)','P'],['y','גן Y (פרמאז)','P'],['a','גן A (טרנסאצטילאז)','P'],['r','הגן המווסת','P'],
+ ['pr','האתר המקדם','N'],['op','האתר המפעיל','N'],['cap','אתר הקישור של CAP','N']];
+const C1 = [['P','מקודד לחלבון'],['N','רצף בקרה: אינו מקודד לחלבון']];
+sorter('p1','b1',I1,C1);
+$('c1').onclick = () => checkSort('b1', I1, 'f1', 'משימה 1: מה מקודד לחלבון', 'נכון! הגנים המבניים והגן המווסת מקודדים לחלבונים (הגן המווסת לדכאן). האתר המקדם, האתר המפעיל ואתר CAP הם רצפים שחלבונים נקשרים אליהם, והם אינם מתורגמים.', 1);
+const I2 = [['s1','יש גלוקוז, אין לקטוז','0'],['s2','אין גלוקוז, אין לקטוז','0'],['s3','יש גלוקוז, יש לקטוז','L'],['s4','אין גלוקוז, יש לקטוז','H'],
+ ['s5','מוטציה באתר המפעיל (הדכאן אינו נקשר אליו). אין גלוקוז, אין לקטוז','H'],['s6','מוטציה באתר המקדם (RNA פולימראז אינו נקשר אליו). אין גלוקוז, יש לקטוז','0']];
+const C2 = [['0','כמעט אין תעתוק'],['L','תעתוק בקצב נמוך'],['H','תעתוק בקצב גבוה']];
+sorter('p2','b2',I2,C2);
+$('c2').onclick = () => checkSort('b2', I2, 'f2', 'משימה 2: קצב התעתוק', 'נכון! בלי לקטוז הדכאן קשור לאתר המפעיל ואין תעתוק. עם לקטוז, הקצב תלוי בגלוקוז: בלי גלוקוז <span class="L">CAP-cAMP</span> מחזק את קישור RNA פולימראז, והתעתוק גבוה. מוטציה באתר המפעיל מבטלת את השפעת הדכאן; מוטציה באתר המקדם מונעת תעתוק בכל מצב.', 2);
+
+// שאלות בגרות (אוגדן בחינות הבגרות 2004–2025)
+const QS = [
+ {src:'בגרות קיץ תשס״ד, שאלה לב', stem:'מהי התוצאה של פעולת אופרון הלקטוז אצל חיידקים?',
+  opts:['כאשר אין בסביבת החיידקים לקטוז, הם מייצרים לקטוז.','החיידקים מייצרים אנזימים מפרקי לקטוז רק כאשר יש בסביבתם לקטוז.','החיידקים מייצרים גנים של אופרון הלקטוז רק בנוכחות לקטוז.','כשמכניסים את החיידקים לסביבה שיש בה לקטוז, כמות הלקטוז בסביבה גדלה.'], ans:1,
+  ok:'נכון. רק כשיש לקטוז הדכאן מתנתק מהאתר המפעיל, והגנים לאנזימים מתועתקים.', no:['האופרון קשור לפירוק לקטוז, לא לייצורו.','','גנים אינם מיוצרים בתגובה לסביבה: הם נמצאים ב־DNA כל הזמן. מה שמשתנה הוא הביטוי שלהם.','החיידקים מפרקים לקטוז, ולכן כמותו בסביבה קטנה.']},
+ {src:'בגרות קיץ תשע״ח, שאלה 31א', stem:'לפי האיור, אילו מששת הקטעים מקודדים ליצירת חלבונים?',
+  opts:['קטעים 1, 4, 5, 6','קטעים 4, 5, 6 בלבד','קטעים 1, 2, 3','כל ששת הקטעים'], ans:0,
+  ok:'נכון. קטע 1 הוא הגן המווסת (מקודד לדכאן), וקטעים 4–6 הם הגנים המבניים. קטע 2 (אתר מקדם) וקטע 3 (אתר מפעיל) אינם מקודדים לחלבון.', no:['','שכחתם את הגן המווסת: גם הוא מקודד לחלבון, הדכאן.','קטעים 2 ו־3 הם האתר המקדם והאתר המפעיל: רצפי בקרה שאינם מקודדים לחלבון.','האתר המקדם והאתר המפעיל אינם מקודדים לחלבון.']},
+ {src:'בגרות קיץ תשע״ח, שאלה 31ב', stem:'בזן מוטנטי של <span class="L">E. coli</span> מיוצרים בקביעות אנזימים לפירוק לקטוז, גם בהיעדר לקטוז. באיזה קטע יכולה להיות המוטציה?',
+  opts:['קטע 1 או קטע 3','קטע 2 בלבד','אחד מהקטעים 4–6','קטע 2 או קטע 4'], ans:0,
+  ok:'נכון. מוטציה בגן המווסת (1) יכולה למנוע יצירת דכאן תקין; מוטציה באתר המפעיל (3) יכולה למנוע את קישור הדכאן. בשני המקרים הגנים המבניים מתועתקים גם בלי לקטוז.', no:['','מוטציה באתר המקדם עלולה למנוע את קישור RNA פולימראז, כלומר להפחית תעתוק, לא להגביר אותו.','מוטציה בגן מבני משנה את החלבון עצמו, אבל אינה משנה את הבקרה על התעתוק.','מוטציה באתר המקדם או בגן מבני אינה מבטלת את פעולת הדכאן.']},
+ {src:'בגרות קיץ תשפ״ב, שאלה 33ב', stem:'לפי הגרף, איזה עקום מתאר את כמות ה־mRNA המקודד לאנזים מפרק הלקטוז?',
+  opts:['עקום a','עקום b'], ans:0,
+  ok:'נכון. עקום a עולה ראשון (התעתוק קודם לתרגום), ויורד מהר אחרי הוצאת הלקטוז: התעתוק נפסק וה־mRNA מתפרק. עקום b הוא האנזים: הוא עולה אחרי ה־mRNA ונשאר קבוע.', no:['','עקום b מתחיל לעלות אחרי a ונשאר גבוה אחרי הוצאת הלקטוז. כך מתנהג האנזים, שנוצר בתרגום ה־mRNA ואינו מתפרק מהר.']},
+ {src:'בגרות קיץ תשפ״ד, שאלה 33א(1)', stem:'חיידקים גדלו על שלושה מצעים: I: 100% לקטוז. II: 100% גלוקוז. III: 50% לקטוז + 50% גלוקוז. באיזה מצע מידת התעתוק של הגנים המבניים של אופרון הלקטוז הגבוהה ביותר?',
+  opts:['מצע I','מצע II','מצע III'], ans:0,
+  ok:'נכון. במצע I יש לקטוז (הדכאן אינו קשור) ואין גלוקוז (<span class="L">CAP-cAMP</span> מחזק את קישור RNA פולימראז). במצע II התעתוק הנמוך ביותר: אין לקטוז והדכאן קשור לאתר המפעיל.', no:['','במצע II אין לקטוז, ולכן הדכאן קשור לאתר המפעיל: זו מידת התעתוק הנמוכה ביותר.','במצע III יש לקטוז, אבל יש גם גלוקוז: <span class="L">CAP-cAMP</span> אינו קשור, והקשר של RNA פולימראז לאתר המקדם חלש.']},
+ {src:'בגרות קיץ תשע״ו, שאלה 31ב; תשפ״ג מועד מיוחד, שאלה 31ג', stem:'באיזה שלב במסלול מ־DNA לחלבון מתבצעת הבקרה באופרון?',
+  opts:['בשלב התעתוק','בשלב התרגום','בשלב שכפול ה־DNA','אחרי יצירת החלבון'], ans:0,
+  ok:'נכון. הדכאן ו־<span class="L">CAP-cAMP</span> משפיעים על קישור RNA פולימראז ועל יצירת ה־mRNA.', no:['','הבקרה פועלת לפני שנוצר mRNA, כלומר עוד לפני התרגום.','שכפול DNA אינו קשור לביטוי גנים.','החלבונים המווסתים פועלים על ה־DNA, לא על החלבון שכבר נוצר.']},
+ {src:'בגרות קיץ תשפ״ג, שאלה 32ב', stem:'באופרון הטריפטופן, הדכאן נקשר לאתר המפעיל רק כשיש טריפטופן בתא. האם טריפטופן משמש משרן, באותה דרך שלקטוז משמש משרן באופרון הלקטוז?',
+  opts:['לא: טריפטופן גורם לדכאן להיקשר לאתר המפעיל ולעצור את התעתוק, ואילו לקטוז גורם לדכאן להתנתק ממנו.','כן: בשני האופרונים החומר גורם לדכאן להתנתק מהאתר המפעיל.','כן: בשני האופרונים החומר נקשר לאתר המפעיל במקום הדכאן.','לא: טריפטופן נקשר לאתר המקדם ומונע את קישור RNA פולימראז.'], ans:0,
+  ok:'נכון. משרן מאפשר תעתוק. טריפטופן עושה את ההפך: הוא מאפשר לדכאן להיקשר, והתעתוק נעצר.', no:['','באופרון הטריפטופן הדכאן נקשר לאתר המפעיל רק כשטריפטופן נמצא בתא, כלומר טריפטופן לא מנתק אותו.','לא לקטוז ולא טריפטופן נקשרים ל־DNA. שניהם נקשרים לדכאן.','טריפטופן נקשר לדכאן, לא לאתר המקדם.']},
+ {src:'בגרות קיץ תשפ״ד, שאלה 33ב', stem:'לחיידקים מסוימים יש אופרון לקטוז, אך הם אינם יכולים לנצל לקטוז בגלל מוטציה. איזו מוטציה יכולה לגרום לכך?',
+  opts:['מוטציה בגן Y: לא נוצר פרמאז תקין, והלקטוז אינו חודר לתא.','מוטציה באתר המפעיל, שבגללה הדכאן אינו נקשר אליו.','מוטציה בגן המווסת, שבגללה לא נוצר דכאן.','מוטציה שבגללה ריכוז cAMP בתא גבוה כל הזמן.'], ans:0,
+  ok:'נכון. בלי חלבון נשא תקין הלקטוז אינו נכנס לתא. גם מוטציה בגן Z (אנזים לא תקין) או באתר המקדם (אין תעתוק) הייתה מתאימה.', no:['','מוטציה כזו גורמת לתעתוק קבוע, כלומר לייצור אנזימים גם בלי לקטוז, ולא מונעת את ניצולו.','בלי דכאן הגנים מתועתקים כל הזמן, והחיידק כן מנצל לקטוז.','עודף cAMP מגביר את התעתוק, ולא מונע ניצול לקטוז.']}
+];
+renderQuestions($('qs'), QS, 'q');
+
+renderBagrut($('bq'), [
+ {src:'בגרות קיץ תשע״ח, שאלה 31ג; תשפ״א נבצרים, שאלה 33ב', title:'ירידה בריכוז הגלוקוז', stem:'<p>על מצע מזון שהכיל לקטוז וגלוקוז גידלו זן של חיידקי <span class="L">E. coli</span>, שפעילות אופרון הלקטוז שלהם תקינה. עם הזמן ריכוז הגלוקוז במצע ירד.</p>',
+  parts:[{n:'', task:'כיצד תשפיע ירידת ריכוז הגלוקוז על מידת ייצור האנזימים לניצול לקטוז? הסבירו, והתייחסו לדרך השפעת הגלוקוז על אופרון הלקטוז.', pts:3,
+   rubric:[['ייצור האנזימים יגדל',20],['ירידת ריכוז הגלוקוז ← עלייה בריכוז cAMP',25],['cAMP נקשר ל־CAP, והתצמיד <span class="L">CAP-cAMP</span> נקשר ליד האתר המקדם',25],['הקשר בין RNA פולימראז לאתר המקדם מתחזק ← התעתוק מוגבר',30]],
+   model:'ייצור האנזימים יגדל. כשריכוז הגלוקוז יורד, ריכוז cAMP בתא עולה. cAMP נקשר לחלבון CAP, והתצמיד <span class="L">CAP-cAMP</span> נקשר ליד האתר המקדם. התצמיד מחזק את הקשר בין RNA פולימראז לאתר המקדם, ולכן התעתוק של הגנים המבניים מוגבר ונוצרים יותר אנזימים.'}]},
+ {src:'בגרות קיץ תשפ״ב, שאלה 33', title:'לקטוז נכנס, לקטוז יוצא', stem:'<p>אופרון הלקטוז פועל במינים רבים של חיידקים. היעזרו בגרף שבראש שאלות הבגרות.</p>',
+  parts:[
+   {n:'א', task:'בחיידקים בסביבה שאין בה לקטוז, אין תעתוק של הגנים המבניים באופרון. הסבירו מהו היתרון בכך עבור החיידקים.', pts:2.5,
+    rubric:[['לא נוצרים אנזימים שאין להם מצע (לקטוז) בסביבה',50],['חיסכון באנרגיה (ATP) ובחומרי גלם (חומצות אמיניות, נוקלאוטידים)',50]],
+    model:'כשאין לקטוז, האנזימים לפירוקו אינם בשימוש. כשהם אינם נוצרים, החיידק חוסך אנרגיה (ATP) וחומרי גלם (חומצות אמיניות ונוקלאוטידים), שמנוצלים בייצור של חלבונים אחרים.'},
+   {n:'ב', task:'קבעו איזה עקום, a או b, מתאר את כמות האנזים, ואיזה את כמות ה־mRNA. נמקו כל קביעה על פי נתונים מהגרף.', pts:3.5,
+    rubric:[['a = mRNA, ‏b = אנזים',30],['נימוק: a מתחיל לעלות לפני b, כי התרגום מתרחש אחרי התעתוק',35],['נימוק: אחרי הוצאת הלקטוז (דקה 10) a יורד עד 0 (התעתוק נפסק וה־mRNA מתפרק), ו־b נשאר קבוע (האנזים אינו מתפרק מהר)',35]],
+    model:'a הוא ה־mRNA ו־b הוא האנזים. a מתחיל לעלות כבר בדקה 3, ו־b רק בדקה 4 בערך: קודם מתרחש תעתוק ונוצר mRNA, ורק אחר כך תרגום ונוצר אנזים. אחרי הוצאת הלקטוז בדקה 10, a יורד ל־0 בתוך כ־5 דקות: התעתוק נפסק וה־mRNA מתפרק. b נשאר קבוע: לא נוצר אנזים חדש, אבל האנזים שכבר נוצר נשאר בתא.'}]},
+ {src:'בגרות קיץ תשפ״ד, שאלה 33א(2)', title:'מצע בלי גלוקוז', stem:'<p>במצע I יש 100% לקטוז ואין גלוקוז.</p>',
+  parts:[{n:'', task:'הסבירו את ההשפעה של היעדר הגלוקוז על מידת התעתוק של הגנים המבניים של אופרון הלקטוז. התייחסו לחוזק הקשר בין האנזים המתעתק לבין האתר המקדם.', pts:3,
+   rubric:[['אין גלוקוז ← ריכוז cAMP גבוה',30],['<span class="L">CAP-cAMP</span> נקשר ליד האתר המקדם',30],['הקשר בין האנזים המתעתק לאתר המקדם מתחזק ← מידת התעתוק גבוהה',40]],
+   model:'כשאין גלוקוז, ריכוז cAMP בתא גבוה. cAMP נקשר ל־CAP, והתצמיד נקשר ליד האתר המקדם. כך מתחזק הקשר בין האנזים המתעתק (RNA פולימראז) לאתר המקדם, ומידת התעתוק של הגנים המבניים גבוהה.'}]},
+ {src:'בגרות קיץ תשפ״ג (מועד מיוחד), שאלה 31', title:'אופרון הטריפטופן', stem:'<p>חיידקים מסוימים מייצרים את החומצה האמינית טריפטופן. הבקרה על הגנים המבניים של ייצור טריפטופן נעשית באמצעות דכאן. הדכאן נקשר לאתר המפעיל כשבתא יש רמות גבוהות של טריפטופן.</p>',
+  parts:[
+   {n:'א', task:'הסבירו כיצד החומצה האמינית טריפטופן מווסתת את כמותה בתא החיידק.', pts:4,
+    rubric:[['כשריכוז הטריפטופן גבוה, טריפטופן נקשר לדכאן',25],['הדכאן נקשר לאתר המפעיל ← אין תעתוק ← לא נוצרים האנזימים לייצור טריפטופן',35],['ייצור הטריפטופן נפסק וריכוזו יורד; אז הדכאן מתנתק מהאתר המפעיל והתעתוק מתחדש',40]],
+    model:'כשבתא הרבה טריפטופן, הוא נקשר לדכאן, והדכאן נקשר לאתר המפעיל. אין תעתוק של הגנים המבניים, ולא נוצרים האנזימים לייצור טריפטופן, ולכן ריכוזו יורד. כשריכוז הטריפטופן נמוך, הדכאן אינו קשור לאתר המפעיל, הגנים מתועתקים, נוצרים האנזימים, וריכוז הטריפטופן עולה.'},
+   {n:'ב', task:'מוטציה בגן המקודד לדכאן תביא לייצור קבוע של טריפטופן. הסבירו מדוע.', pts:3,
+    rubric:[['בעקבות המוטציה אין דכאן תקין, או שהדכאן אינו נקשר לאתר המפעיל',50],['RNA פולימראז מתעתק את הגנים המבניים כל הזמן ← האנזימים נוצרים כל הזמן ← ייצור קבוע של טריפטופן',50]],
+    model:'בעקבות המוטציה נוצר דכאן לא תקין, שאינו נקשר לאתר המפעיל גם כשיש הרבה טריפטופן. לכן RNA פולימראז מתעתק את הגנים המבניים כל הזמן, האנזימים נוצרים כל הזמן, והטריפטופן מיוצר ללא הפסקה.'}]},
+ {src:'שאלה מתוך המצגת המקורית של חגית (מודל השיזוף)', title:'מודל אופרון לשיזוף העור', stem:'<p>מלנין הוא הצבען שמעניק לתאי העור את הצבע הכהה של השיזוף. הוא נוצר מהחומצה האמינית טירוזין, בתהליך שמזורז על ידי האנזים <b>טירוזינאז</b>.</p><p>מדענים הציעו מודל למנגנון הגנטי של השיזוף, המבוסס על מודל האופרון בחיידקים: <b>ויטמין D</b>, שנוצר בעור בהשפעת אור השמש, משמש משרן ומפסיק את פעולתו של חלבון דכאן. הדכאן מיוצר לפי גן מווסת. במודל: גן מווסת · אתר מקדם · אתר מפעיל · גן לטירוזינאז.</p>',
+  parts:[
+   {n:'א', task:'מהו תפקוד האתר המקדם במודל? ומהו תפקוד האתר המפעיל?', pts:2,
+    rubric:[['האתר המקדם: האזור שאליו נקשר RNA פולימראז, ומשם מתחיל תעתוק הגן לטירוזינאז',50],['האתר המפעיל: האזור שאליו נקשר הדכאן; כשהדכאן קשור, הגן אינו מתועתק',50]],
+    model:'האתר המקדם הוא הרצף שאליו נקשר RNA פולימראז, ומשם מתחיל התעתוק של הגן לטירוזינאז. האתר המפעיל הוא הרצף שאליו נקשר הדכאן. כשהדכאן קשור אליו, הגן לטירוזינאז אינו מתועתק.'},
+   {n:'ב', task:'הסבירו כיצד אור השמש יכול לגרום לשיזוף, על פי המודל.', pts:3,
+    rubric:[['אור השמש ← נוצר ויטמין D בעור',20],['ויטמין D נקשר לדכאן ← הדכאן מתנתק מהאתר המפעיל',30],['תעתוק ותרגום של הגן לטירוזינאז ← נוצר האנזים',25],['טירוזינאז מזרז את הפיכת הטירוזין למלנין ← העור כהה יותר',25]],
+    model:'בהשפעת אור השמש נוצר בעור ויטמין D. ויטמין D נקשר לדכאן, והדכאן מתנתק מהאתר המפעיל. RNA פולימראז מתעתק את הגן לטירוזינאז, וה־mRNA מתורגם לאנזים. הטירוזינאז מזרז את הפיכת הטירוזין למלנין, ותאי העור נעשים כהים יותר.'},
+   {n:'ג', task:'לבקן (אלבינו) הוא אדם שבגופו לא נוצר מלנין כלל. ניסו לטפל בלבקנות במתן ויטמין D, בלי הצלחה. הציעו הסבר לכך.', pts:3,
+    rubric:[['ויטמין D פועל רק על הדכאן, כלומר על הבקרה על התעתוק',30],['אצל הלבקן יש כנראה מוטציה בגן לטירוזינאז (נוצר אנזים לא תקין) או באתר המקדם (אין תעתוק)',40],['לכן גם כשהדכאן מתנתק, לא נוצר טירוזינאז פעיל ולא נוצר מלנין',30]],
+    model:'ויטמין D משפיע רק על הדכאן: הוא מנתק אותו מהאתר המפעיל. אצל הלבקן הבעיה כנראה אינה בדכאן, אלא למשל במוטציה בגן לטירוזינאז, שבגללה נוצר אנזים לא פעיל, או במוטציה באתר המקדם, שבגללה אין תעתוק. לכן גם כשהדכאן מתנתק, לא נוצר טירוזינאז פעיל, ולא נוצר מלנין.'}]}
+], 'b');
+
+renderMatch($('match'), [
+ ['אופרון','קבוצה של גנים מבניים סמוכים, שמתועתקים יחד ומבוקרים על ידי אזור בקרה משותף'],
+ ['גן מבני','גן המקודד לחלבון, למשל אנזים'],
+ ['גן מווסת','גן המקודד לדכאן; אינו חלק מהאופרון'],
+ ['אתר מקדם','רצף שאליו נקשר RNA פולימראז'],
+ ['אתר מפעיל','רצף שאליו נקשר הדכאן'],
+ ['דכאן','חלבון שקשור לאתר המפעיל ומונע את תעתוק הגנים המבניים'],
+ ['משרן','חומר שנקשר לדכאן ומנתק אותו מהאתר המפעיל, למשל לקטוז'],
+ ['CAP-cAMP','תצמיד שנקשר ליד האתר המקדם ומחזק את קישור RNA פולימראז']
+], $('mchk'), $('mfb'));
+$('dl').onclick = () => labPdf('תרגול: אופרון הלקטוז', 'אופרון-הלקטוז');
+</script>
+<script>async function downloadPdf(el,fname,filter){const scale=2;const canvas=await htmlToImage.toCanvas(el,{pixelRatio:scale,backgroundColor:'#ffffff',filter});
+ const{jsPDF}=window.jspdf;const pdf=new jsPDF({unit:'mm',format:'a4'});const pw=190,ph=277,px=canvas.width/pw,pageH=Math.floor(ph*px);let y=0,first=true;
+ while(y<canvas.height-2){const end=Math.min(y+pageH,canvas.height);const c=document.createElement('canvas');c.width=canvas.width;c.height=end-y;c.getContext('2d').drawImage(canvas,0,y,canvas.width,end-y,0,0,canvas.width,end-y);
+  if(!first)pdf.addPage();pdf.addImage(c.toDataURL('image/jpeg',.9),'JPEG',10,10,pw,(end-y)/px);first=false;y=end}deliverPdf(pdf,fname)}
+/* מסירת הקובץ: ניסיון הורדה אוטומטית + חלון עם כפתורים שהתלמיד לוחץ בעצמו (כרום, טלפונים ואפליקציות חוסמים הורדה אוטומטית) */
+function deliverPdf(pdf,fname){const blob=pdf.output('blob'),url=URL.createObjectURL(blob);let file=null;try{file=new File([blob],fname,{type:'application/pdf'})}catch(e){}
+ try{const a=document.createElement('a');a.href=url;a.download=fname;a.style.display='none';document.body.appendChild(a);a.click();setTimeout(()=>a.remove(),1000)}catch(e){}
+ const canShare=!!(file&&navigator.canShare&&navigator.canShare({files:[file]}));const inApp=/; wv\)|GSA\/|FBAN|FBAV|Instagram|Line\/|CriOS/.test(navigator.userAgent);
+ let box=document.getElementById('pdfBox');if(!box){box=document.createElement('div');box.id='pdfBox';document.body.appendChild(box)}
+ box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');
+ box.style.cssText='position:fixed;inset:0;z-index:2000;background:rgba(31,77,58,.55);display:flex;align-items:center;justify-content:center;padding:16px;font-family:Rubik,Arial,sans-serif;direction:rtl';
+ const btn='display:block;text-align:center;text-decoration:none;font:700 18px Rubik,Arial,sans-serif;padding:12px;border:2px solid #1F4D3A;margin-top:8px;cursor:pointer;width:100%;box-sizing:border-box';
+ box.innerHTML=`<div style="background:#fff;border:3px solid #1F4D3A;max-width:440px;width:100%;padding:20px;color:#1F4D3A"><h2 style="font-family:'Secular One',Rubik,sans-serif;font-weight:400;margin:0 0 6px">✅ הקובץ מוכן</h2>
+ <p style="margin:0 0 6px">שמרו את הקובץ, ואז העלו אותו למשימה ב-Classroom. אם ההורדה לא התחילה לבד — לחצו כאן:</p>
+ <a href="${url}" download="${fname}" style="${btn};background:#1F4D3A;color:#fff">⬇ הורדת הקובץ</a>
+ ${canShare?`<button type="button" id="pdfShare" style="${btn};background:#F4D35E;color:#1F4D3A">📤 שיתוף / שמירה בקבצים</button>`:''}
+ <a href="${url}" target="_blank" rel="noopener" style="${btn};background:#fff;color:#1F4D3A">📄 פתיחת הקובץ (ומשם שמירה)</a>
+ ${inApp?'<p style="background:#FFFBEA;border:1.5px dashed #C9A21A;padding:8px;font-size:15px">פתחתם מתוך אפליקציה? אם לא מצליח: לחצו על ⋮ או על ••• ובחרו "פתיחה בדפדפן" (Chrome או Safari), וחזרו על הלחיצה.</p>':''}
+ <p style="font-size:14px;color:#5C6F66;margin:8px 0 0">שם הקובץ: ${fname}</p>
+ <button type="button" id="pdfClose" style="${btn};background:#fff;color:#5C6F66;border-color:#5C6F66">סגירה</button></div>`;
+ const sh=document.getElementById('pdfShare');if(sh)sh.onclick=()=>navigator.share({files:[file],title:fname}).catch(()=>{});
+ document.getElementById('pdfClose').onclick=()=>{box.remove()}}</script><script>(function(){const g=document.getElementById('gate'),n=document.getElementById('gName'),c=document.getElementById('gClass');
+try{const s=JSON.parse(localStorage.getItem('genetika-student')||'{}');n.value=s.name||'';c.value=s.cls||''}catch(e){}
+document.getElementById('gGo').onclick=()=>{const nm=n.value.trim(),cl=c.value.trim();
+ if(nm.length<2||!cl){document.getElementById('gErr').textContent='כתבו שם (לפחות 2 אותיות) וכיתה.';return}
+ try{localStorage.setItem('genetika-student',JSON.stringify({name:nm,cls:cl}))}catch(e){}
+ document.querySelectorAll('[data-fill="name"]').forEach(e=>{if('value' in e)e.value=nm;else e.textContent=nm});
+ document.querySelectorAll('[data-fill="class"]').forEach(e=>{if('value' in e)e.value=cl;else e.textContent=cl});
+ window.STUDENT={name:nm,cls:cl};g.hidden=true};n.focus()})();</script>
+</body>
+</html>
