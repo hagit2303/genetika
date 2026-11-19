@@ -372,6 +372,7 @@ function deliverPdf(pdf,fname){const blob=pdf.output('blob'),url=URL.createObjec
  box.style.cssText='position:fixed;inset:0;z-index:2000;background:rgba(31,77,58,.55);display:flex;align-items:center;justify-content:center;padding:16px;font-family:Rubik,Arial,sans-serif;direction:rtl';
  const btn='display:block;text-align:center;text-decoration:none;font:700 18px Rubik,Arial,sans-serif;padding:12px;border:2px solid #1F4D3A;margin-top:8px;cursor:pointer;width:100%;box-sizing:border-box';
  box.innerHTML=`<div style="background:#fff;border:3px solid #1F4D3A;max-width:440px;width:100%;padding:20px;color:#1F4D3A"><h2 style="font-family:'Secular One',Rubik,sans-serif;font-weight:400;margin:0 0 6px">✅ הקובץ מוכן</h2>
+ <p style="margin:0 0 8px;background:#FFF4E5;border:2px solid #E07A00;padding:8px;font-weight:700;color:#7A3E00">⚠️ במשימה ב-Classroom: "הוספה או יצירה" ← "קובץ" ← בוחרים את הקובץ ששמרתם. לא מדביקים קישור: קישור כזה נפתח רק במחשב שלכם, ואי אפשר לבדוק אותו.</p>
  <p style="margin:0 0 6px">שמרו את הקובץ, ואז העלו אותו למשימה ב-Classroom. אם ההורדה לא התחילה לבד — לחצו כאן:</p>
  <a href="${url}" download="${fname}" style="${btn};background:#1F4D3A;color:#fff">⬇ הורדת הקובץ</a>
  ${canShare?`<button type="button" id="pdfShare" style="${btn};background:#F4D35E;color:#1F4D3A">📤 שיתוף / שמירה בקבצים</button>`:''}
